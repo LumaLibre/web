@@ -1,2 +1,1 @@
-submodule-folder/** linguist-vendored=false
-web/**/*.kts linguist-language=Kotlin
+*.kts linguist-language=Kotlin
