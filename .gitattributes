@@ -1,0 +1,2 @@
+submodule-folder/** linguist-vendored=false
+web/**/*.kts linguist-language=Kotlin
