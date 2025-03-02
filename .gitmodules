@@ -1,6 +1,8 @@
 [submodule "webapp"]
 	path = webapp
 	url = https://github.com/LumaLibre/webapp.git
+	branch = master
 [submodule "webserver"]
 	path = webserver
 	url = https://github.com/LumaLibre/webserver.git
+	branch = master
