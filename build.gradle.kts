@@ -34,7 +34,7 @@ tasks {
 
     build {
         dependsOn(":webapp:npmBuild")
-        dependsOn(":webserver:shadowJar")
+        dependsOn(":webserver:build")
 
         val sharedOutputDir = file("${projectDir}/output")
         sharedOutputDir.mkdirs()
