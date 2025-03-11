@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://lumamc.net">
-    <img src="https://github.com/LumaLibre/artwork/blob/master/web/EventLuma.png?raw=true" alt="Luma" width="" height="300">
+    <img src="https://github.com/LumaLibre/artwork/blob/master/lumas/styled/EventLuma.png?raw=true" alt="Luma" width="" height="300">
   </a>
 </p>
 
