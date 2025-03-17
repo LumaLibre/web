@@ -51,7 +51,9 @@ tasks {
             }
         }
 
-        finalizedBy(pterodactylDeploy)
+        if (System.getenv("PTERO_URL") != null) { // todo: need to fix this on pterodeploy
+            finalizedBy(pterodactylDeploy)
+        }
     }
 
     pterodactylDeploy {
