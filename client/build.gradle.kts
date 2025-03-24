@@ -6,7 +6,7 @@ plugins {
 
 node {
     version = "22.13.1"
-    npmVersion = "10.9.2"
+    yarnVersion = "1.22.22"
     download = true
 }
 
@@ -17,19 +17,19 @@ tasks {
     //    "lint": "eslint .",
     //    "preview": "vite preview"
 
-    register<NpmTask>("npmBuild") {
+    register<NpmTask>("yarnBuild") {
         args.set(arrayListOf("run", "build"))
     }
 
-    register<NpmTask>("npmDev") {
+    register<NpmTask>("yarnDev") {
         args.set(arrayListOf("run", "dev"))
     }
 
-    register<NpmTask>("npmLint") {
+    register<NpmTask>("yarnLint") {
         args.set(arrayListOf("run", "lint"))
     }
 
-    register<NpmTask>("npmPreview") {
+    register<NpmTask>("yarnPreview") {
         args.set(arrayListOf("run", "preview"))
     }
 }

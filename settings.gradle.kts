@@ -1,5 +1,5 @@
 rootProject.name = "web"
-include("webapp", "webserver")
+include("client", "server")
 
 pluginManagement {
     repositories {
