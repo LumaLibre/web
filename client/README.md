@@ -8,4 +8,4 @@
 
 > The front-end (it's what you see :O) [dev.lumamc.net](https://dev.lumamc.net).
 
-## This project is licensed under CC BY-NC-ND 4.0!
+## This project is licensed under CC BY-NC-ND 4.0
