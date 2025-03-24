@@ -1,0 +1,82 @@
+@use "@/App.module" as *;
+
+.topVoterContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.bodyRenderContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.bodyRenderImage {
+    width: 50%;
+    display: block;
+    margin: auto;
+
+    @media (max-width: 468px) { // Small display
+        left: -3%;
+        width: 40%;
+    }
+}
+
+.textContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    margin-top: 2rem;
+}
+
+.textStyling {
+    position: absolute;
+    margin-top: 8vh;
+    text-align: center;
+    text-transform: uppercase;
+    flex-wrap: wrap;
+    //display: block;
+
+
+
+
+    h5 {
+        position: relative;
+        top: 0;
+        color: $primary-color;
+        font-family: 'Paytone One', sans-serif;
+        word-wrap: break-word;
+        word-break: break-word;
+        font-size: 90%;
+
+        @media (max-width: 768px) {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        @media (max-width: 468px) { // Small display
+            font-size: 80%;
+        }
+    }
+
+    h4 {
+        position: relative;
+        font-family: 'Poppins', sans-serif;
+        color: $secondary-color;
+
+        @media (max-width: 468px) { // Small display
+            font-size: 80%;
+        }
+
+        @media (max-width: 768px) {
+            margin-top: -2vh;
+        }
+    }
+}

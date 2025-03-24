@@ -1,0 +1,269 @@
+@use "@/App.module.scss" as *;
+
+.rulesBackground {
+    @include artBackground("@/assets/BlurredStarsBackground.webp");
+    padding-bottom: 10px;
+
+    @media (max-width: 768px) { // Phone
+        padding-bottom: 100%;
+    }
+
+    @media (max-width: 1024px) { // Tablet
+
+    }
+}
+
+
+
+// Rules Cards
+
+.rulesCardSelector {
+    @include cardParent;
+    justify-content: flex-start;
+    width: 20%;
+    margin-right: 60%;
+
+    @media (max-width: 768px) { // Phone
+        height: auto; // Adjust height based on content
+        max-height: 6%;
+        margin-top: 37%;
+        margin-right: 0;
+    }
+
+    @media (max-width: 1024px) { // Tablet
+
+    }
+}
+
+
+.rulesCardSelectorTitle {
+    text-align: center;
+
+    @media (max-width: 768px) { // Phone
+        display: none;
+    }
+    @media (max-width: 1024px) { // Tablet
+        font-size: 2rem;
+    }
+}
+
+.rulesCardSelectorNavItem {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1px;
+    box-sizing: border-box;
+    transition: 0.25s;
+    color: $primary-color;
+    padding: 0.5rem calc(1.75rem - 5px);
+    display: block;
+    border-left: 5px solid $primary-color;
+    cursor: pointer;
+    user-select: none;
+
+    //@media (max-width: 428px) { // normal iphones
+    //    padding: 0.5rem calc(1.75rem - 5px);
+    //}
+
+    @media (max-width: 768px) { // Phone
+        border-left: none;
+        //border-top: 5px solid $primary-color;
+        max-width: 80px;
+        margin-top: 10px;
+
+        h2 {
+            display: none;
+        }
+    }
+
+    &:hover {
+        background-color: rgba($primary-color, 0.1); /* Light background on hover */
+        border-left: 5px solid $primary-color; /* Highlight the left border */
+        @media (max-width: 768px) { // Phone
+            background-color: unset;
+            border-left: none;
+        }
+    }
+
+    &:active {
+        transform: scale(0.98); /* Slight shrink effect on click */
+        background-color: rgba($primary-color, 0.2); /* Darker background when active */
+
+        @media (max-width: 768px) {
+            background-color: unset;
+        }
+    }
+}
+
+.rulesCard {
+    @include cardParent;
+    overflow: auto;
+    width: 57%;
+    margin-left: 24%;
+
+    // Hide for modern browsers
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    // Hide for Firefox
+    scrollbar-width: none;
+    // Hide for IE and Edge (legacy)
+    -ms-overflow-style: none;
+
+    @media (max-width: 768px) { // Phone
+        margin-top: 90%;
+        margin-left: 0;
+    }
+}
+
+
+@mixin littleImgParent {
+    position: absolute;
+    transition: transform 0.3s ease;
+
+    z-index: 10; // Make sure it stays on top
+    //&:hover {
+    //    transform: scale(1.03);
+    //}
+    @media (max-width: 768px) { // Phone
+        display: none;
+    }
+}
+
+.judgeLumaImg {
+    @include littleImgParent;
+    top: 76%;
+    width: 8%;
+    left: 6.7%;
+
+    @media (max-width: 1024px) { // Tablet
+        top: 76%;
+        left: 6%;
+        width: 9%;
+    }
+}
+
+.gavelImg {
+    @include littleImgParent;
+    --gavel-width: 10%;
+    right: 6.9%;
+    width: var(--gavel-width);
+    bottom: calc(var(--gavel-width) * 5.4);
+
+    @media (max-width: 1240px) { // Little bit smaller browser window?
+        right: 6.5%;
+        bottom: calc(var(--gavel-width) * 6.3);
+    }
+
+    @media (max-width: 1024px) { // Tablet
+        right: 6.5%;
+        bottom: calc(var(--gavel-width) * 6.4);
+    }
+}
+//.gavelImg {
+//    @include littleImgParent;
+//    right: 7.2%;
+//    width: 10%;
+//    bottom: 59%;
+//
+//    @media (max-width: 1124px) { // Little bit smaller browser window?
+//        right: 6.5%;
+//        bottom: 64%;
+//    }
+//
+//    @media (max-width: 1024px) { // Tablet
+//        right: 6.5%;
+//        bottom: 64%;
+//    }
+//}
+
+.rulesTextStyles {
+
+    @media (max-width: 768px) {
+        display: flex;
+        flex-direction: row; /* Makes items go left to right */
+        align-items: center;
+        justify-content: center;
+        gap: 6%; /* Adds spacing between items */
+        flex-wrap: wrap; /* Ensures items don’t break */
+    }
+
+    h1 {
+        color: $primary-color;
+        font-family: 'Paytone One', sans-serif;
+        text-transform: uppercase;
+    }
+
+    h2 {
+        color: $primary-color;
+        font-family: 'Paytone One', sans-serif;
+    }
+
+    strong {
+        color: $secondary-color;
+        font-family: 'Paytone One', sans-serif;
+    }
+
+    p {
+        color: $secondary-color;
+        font-size: 90%;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    ul {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+
+    li {
+        color: $secondary-color;
+        font-size: 90%;
+        font-family: 'Poppins', sans-serif;
+    }
+}
+
+.rulesTransition {
+    transition: opacity 300ms ease-in-out;
+    opacity: 0;
+
+    &.active {
+        opacity: 1;
+    }
+}
+
+.rulesTitleText {
+    bottom: 48vh;
+    margin-left: 5vh;
+    opacity: inherit;
+    transition: opacity 300ms ease-in-out;
+}
+
+.rulesBodyText {
+    bottom: 37vh;
+    margin-left: 5vh;
+    width: 80%;
+    opacity: inherit;
+    transition: opacity 800ms ease-in-out;
+}
+
+.iconSmall {
+    font-size: 1.5rem;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+
+    @media (max-width: 768px) {
+        font-size: 4rem;
+    }
+}
+
+.inlineText {
+    display: inline-block;
+    vertical-align: middle;
+    white-space: nowrap;
+    h2 {
+        @media (max-width: 1024px) { // Tablet
+            font-size: 0.3rem;
+        }
+    }
+}

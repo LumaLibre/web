@@ -1,0 +1,29 @@
+@use '@/App.module.scss' as *;
+
+.background {
+    @include artBackground('@/assets/BlurredStarsBackground.webp');
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.loadingLumaImageContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10%;
+}
+
+.loadingLumaImage {
+    width: 40%;
+    height: auto;
+    animation: bounce2 1s ease infinite;
+}
+
+// From: https://codepen.io/nelledejones/pen/gOOPWrK
+@keyframes bounce2 {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-30px);}
+    60% {transform: translateY(-15px);}
+}

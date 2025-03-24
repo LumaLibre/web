@@ -1,0 +1,23 @@
+.contentBackground {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.contentImage {
+  width: 100%;
+  height: auto;
+  max-height: 100vh;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .contentBackground {
+    top: 55%; /* Move text even lower on smaller screens */
+  }
+  .contentImage {
+    height: 100vh;
+    object-fit: cover;
+  }
+}

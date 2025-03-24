@@ -1,0 +1,304 @@
+@use '@/App.module.scss' as *;
+
+.footerContainer {
+    box-sizing: border-box;
+    border: 0;
+    font: inherit;
+    padding: 0;
+    display: block;
+    margin: auto 0 0;
+}
+
+.footerTopContainer {
+    box-sizing: border-box;
+    border: 0;
+    font: inherit;
+    margin: 0;
+    vertical-align: baseline;
+    background-color: rgb(30, 29, 29);
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-grow: 1;
+    justify-content: space-between;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+
+}
+
+.footerTopItems {
+    box-sizing: border-box;
+    border: 0;
+    font: inherit;
+    display: flex;
+    align-items: center;
+    align-self: flex-start;
+    justify-content: flex-start;
+    flex-direction: row;
+    margin-right: auto;
+    gap: 1rem;
+
+    @media (max-width: 768px) {
+        max-width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+        transform: translateX(-7%);
+    }
+}
+
+
+.footerTopLinksContainer {
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 0.5rem;
+    gap: -1rem;
+
+    @media (max-width: 768px) {
+        gap: 3rem;
+        max-width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+
+
+.footerTopLink {
+    width: 45px;
+    position: relative;
+    margin-right: 5rem;
+    will-change: transform;
+    transition: transform 0.3s ease-in-out;
+
+    @media (max-width: 768px) {
+        margin-right: unset;
+        //animation: none !important;
+    }
+}
+
+.discordIcon {
+    @extend .footerTopLink;
+    width: 55px;
+
+    &:hover {
+        animation: elastic-spin 1.8s ease infinite;
+    }
+}
+
+.storeIcon {
+    @extend .footerTopLink;
+
+    &:hover {
+        animation: swing 2s ease infinite;
+    }
+}
+
+.tiktokIcon {
+    @extend .footerTopLink;
+
+    &:hover {
+        animation: gelatin 0.7s ease infinite;
+    }
+}
+
+.wikiIcon {
+    @extend .footerTopLink;
+    width: 40px;
+
+    &:hover {
+        animation: wobble 2s ease infinite;
+    }
+}
+
+.logoSmall {
+    box-sizing: border-box;
+    border: 0;
+    font: inherit;
+    padding: 0;
+    vertical-align: baseline;
+    width: 50px;
+    height: 50px;
+    margin: 0 1rem 0 3rem;
+    position: relative;
+    top: -0.125rem;
+
+    @media (max-width: 768px) {
+        //margin-left: 0.8rem;
+        align-self: center;
+    }
+}
+
+.serverCount {
+    box-sizing: border-box;
+    border: 0;
+    font: inherit;
+    margin: 0;
+    padding: 0;
+    vertical-align: baseline;
+    cursor: pointer;
+    position: relative;
+    top: -0.125rem;
+
+    h4 {
+        font-size: 100%;
+        color: #911AB0;
+        font-family: 'Paytone One', sans-serif;
+        text-transform: uppercase;
+    }
+
+    h5 {
+        margin-top: -20px;
+        font-family: 'Poppins', sans-serif;
+        color: rgba(205, 184, 208);
+        font-size: 85%;
+        text-transform: uppercase;
+        //white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+        //margin-right: 2rem;
+        margin-left: -1rem;
+
+        h4 {
+            font-size: 90%;
+        }
+
+        h5 {
+            font-size: 75%;
+        }
+    }
+
+}
+
+.footerBottomContainer {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 1.5rem 2rem 2rem 3rem;
+    background-color: rgb(22, 22, 22);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+
+.footerBottomItems {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    flex-grow: 1;
+
+    @media (max-width: 768px) {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    img {
+        width: 70px;
+        max-width: 90%;
+    }
+}
+
+.sourceCodeIcon {
+    box-sizing: border-box;
+    border: 0;
+    font: inherit;
+    padding: 0;
+    vertical-align: baseline;
+    cursor: pointer;
+    margin: 0 3.8rem 0.2rem 3rem;
+    position: relative;
+    transition: transform 0.3s ease-in-out;
+
+    &:hover {
+        transform: scale(1.1);
+        filter: drop-shadow(0 0 1em #8225cd);
+
+        //filter: drop-shadow(0 0 2em rgb(96, 0, 159));
+    }
+}
+
+
+
+.footerBottomTextContainer {
+    box-sizing: border-box;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    margin-top: -2vh;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    text-align: center; // Centers text for a better mobile experience
+
+    p {
+        box-sizing: border-box;
+        font: inherit;
+        padding: 0;
+        vertical-align: baseline;
+        color: rgb(156 149 139);
+        font-size: 0.83rem;
+        font-weight: 700;
+        margin-top: -0.6rem;
+    }
+}
+
+
+.footerButton {
+    margin-top: 10px;
+    background-color: $primary-color;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+
+    &:hover {
+        transform: scale(1.001);
+        filter: drop-shadow(0 0 2em rgb(96, 0, 159));
+    }
+}
+
+
+
+
+@keyframes swing {
+    20% { transform: rotate(15deg); }
+    40% { transform: rotate(-10deg); }
+    60% { transform: rotate(5deg); }
+    80% { transform: rotate(-5deg); }
+    100% { transform: rotate(0deg); }
+}
+@keyframes elastic-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+@keyframes gelatin {
+    from, to { transform: scale(1, 1); }
+    25% { transform: scale(0.9, 1.1); }
+    50% { transform: scale(1.1, 0.9); }
+    75% { transform: scale(0.95, 1.05); }
+}
+@keyframes wobble {
+    0% { transform: translateX(0%); }
+    15% { transform: translateX(-25%) rotate(-5deg); }
+    30% { transform: translateX(20%) rotate(3deg); }
+    45% { transform: translateX(-15%) rotate(-3deg); }
+    60% { transform: translateX(10%) rotate(2deg); }
+    75% { transform: translateX(-5%) rotate(-1deg); }
+    100% { transform: translateX(0%); }
+}

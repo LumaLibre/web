@@ -1,0 +1,72 @@
+@use "@/App.module.scss" as *;
+
+.postCard {
+    /* Add shadows to create the "card" effect */
+    width: 311px;
+    height: 440px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    border-radius: 10px; /* 5px rounded corners */
+    background: $card-color;
+
+    img {
+        width: 100%;
+        height: 175px;
+        object-fit: cover;
+        object-position: center;
+        border-radius: 10px 10px 0 0;
+    }
+
+    &:nth-child(n+9) {
+        display: none; /* Hide cards beyond the 8th */
+    }
+
+    &:nth-child(even):hover {
+        transform: scale(1.1) rotate(-2deg);
+    }
+
+    &:hover {
+        will-change: filter;
+        filter: drop-shadow(0 0 2em rgb(96, 0, 159));
+        /*box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);*/
+        transform: scale(1.1) rotate(2deg);
+        cursor: pointer;
+    }
+}
+
+
+@mixin containerStyles($padding-bottom) {
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: $padding-bottom;
+    color: white;
+    display: block;
+
+    img {
+        border-radius: 5px;
+        width: 22px;
+        height: 22px;
+    }
+
+    h3 {
+        color: #911AB0;
+    }
+
+    p {
+        font-family: 'Poppins', sans-serif;
+        font-size: 100%;
+        color: rgba(205,184,208);
+    }
+}
+
+.container {
+    @include containerStyles(12px);
+}
+
+.titleFont {
+    font-family: 'Paytone One', sans-serif;
+}
+
+//.biggerContainer {
+//    @include containerStyles(14px);
+//}

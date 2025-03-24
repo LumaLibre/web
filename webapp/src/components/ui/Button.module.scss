@@ -1,0 +1,27 @@
+.customButton {
+  position: relative;
+  padding: 3px;
+  border: none;
+  background: none;
+  cursor: pointer;
+
+  .gradientBorder {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, #6366f1, #a855f7);
+    border-radius: 8px;
+  }
+
+  .buttonContent {
+    position: relative;
+    padding: 8px 32px;
+    background: linear-gradient(to right, #6366f1, #a855f7);
+    border-radius: 6px;
+    color: white;
+    transition: background 0.2s;
+
+    &:hover {
+      background: transparent;
+    }
+  }
+}

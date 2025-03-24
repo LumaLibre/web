@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Dangrek&family=Paytone+One&family=Poppins:ital,wght@0,700;1,900&family=Titan+One&display=swap');
+
+$primary-color: #911AB0;
+$secondary-color: #cdb8d0;
+$card-color: #200c2c;
+
+#root {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+}
+
+@mixin artBackground($bg-url) {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    position: relative;
+    padding-top: 80px;
+    padding-bottom: 60px;
+    background-image: url($bg-url);
+    background-size: cover;
+    background-position: center;
+}
+
+// TODO: Use this on news pages
+@mixin cardParent {
+    position: absolute;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    border-radius: 15px; // Rounded corners
+    background: #200c2c;
+    margin-top: 14%;
+    height: 50%;
+    padding-bottom: 30px;
+
+    @media (max-width: 768px) { // Phone
+        justify-content: center;
+        width: 90%;
+        padding-bottom: 25%;
+    }
+
+    @media (max-width: 1024px) { // Tablet
+        margin-top: 18%;
+    }
+}
+
+.appContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    overflow: hidden;
+}
