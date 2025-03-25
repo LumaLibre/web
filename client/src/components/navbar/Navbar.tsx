@@ -1,12 +1,17 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import styles from "./Navbar.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faGavel, faCheckCircle, faStore, faMap, faBook, faRocket } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { STORE, WIKI } from "@/constants.ts";
 
+interface NavbarProps {
+    beforeNavbarList?: React.ReactNode;
+    afterNavbarList?: React.ReactNode;
+}
 
-function HomepageNavbar() {
+
+function Navbar({beforeNavbarList, afterNavbarList }: NavbarProps) {
     const [isMenuOpen, setMenuOpen] = useState(false);
 
     const toggleMenu = () => {
@@ -15,6 +20,7 @@ function HomepageNavbar() {
 
     return (
         <nav className={styles.navbar}>
+            {beforeNavbarList && beforeNavbarList}
 
             <div className={`${styles.hamburger} ${isMenuOpen ? styles.open : ""}`} onClick={toggleMenu}>
                 <div/>
@@ -67,8 +73,12 @@ function HomepageNavbar() {
                     </a>
                 </li>
             </ul>
+
+            {afterNavbarList && afterNavbarList}
         </nav>
     );
 }
 
-export default HomepageNavbar;
+
+
+export default Navbar;

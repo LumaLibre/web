@@ -1,12 +1,12 @@
 import styles from "./SecondaryContent.module.scss";
 import generalStyles from "../HeaderSector.module.scss";
-import spaceImg from "@/assets/SpaceBackground.webp";
+import backgroundImage from "@/assets/MainpageBg.png";
 
 
 function SecondSection() {
     return (
-        <section className={generalStyles.contentBackground}>
-            <img src={spaceImg} alt="Main Background" className={generalStyles.contentImage} />
+        <section className={styles.contentBackground}>
+            <img src={backgroundImage} alt="Main Background" className={generalStyles.contentImage} />
         </section>
     );
 }

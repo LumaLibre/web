@@ -21,6 +21,7 @@ const linkElement = (link: string, element: JSX.Element) => {
 
 function Footer() {
     const currentYear = DATE.getFullYear();
+    // eslint-disable-next-line prefer-const
     let { data: rawStatus, isLoading, isError } = useQuery<string>({
         queryKey: ["mcServerStatus"],
         queryFn: fetchServerStatus,

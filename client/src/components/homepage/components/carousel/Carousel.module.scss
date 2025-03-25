@@ -1,0 +1,83 @@
+@use '@/App.module.scss' as *;
+
+.carouselCard {
+    @include cardParent;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 90;
+    margin-top: 17%;
+    height: 22%;
+    width: 90%;
+}
+
+@mixin fade {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    opacity: 0;
+}
+
+.fadeLeft {
+    @include fade;
+    transform: translateX(-10%);
+}
+
+.fadeRight {
+    @include fade;
+    transform: translateX(10%);
+}
+
+.carouselImageContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 4%;
+    margin-left:6%;
+    width: 30%;
+}
+
+.carouselImage {
+    width: 100%;
+}
+
+.carouselTextContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 7%;
+    color: #ae93b4;
+    width: 53%;
+    font-size: 2vw;
+    font-weight: bold;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+    transition: transform 0.3s ease;
+    font-family: 'Paytone One', sans-serif;
+}
+
+
+@mixin carouselNavArrow {
+    box-sizing: border-box;
+    font: inherit;
+    vertical-align: baseline;
+    background-color: rgb(254, 238, 208);
+    bottom: 50%;
+    mask: url("@/assets/CarouselArrow.svg") no-repeat center / cover;
+    position: absolute;
+    width: 1.75rem;
+    border: none;
+    cursor: pointer;
+    filter: drop-shadow(-3px 4px rgba(0, 0, 0, 0.15));
+    height: 1.75rem;
+    //position: relative;
+    flex-shrink: 0;
+}
+
+.leftCarouselArrow {
+    @include carouselNavArrow;
+    left: 2%;
+}
+
+.rightCarouselArrow {
+    @include carouselNavArrow;
+    transform: scaleX(-1);
+    left: 95%;
+}

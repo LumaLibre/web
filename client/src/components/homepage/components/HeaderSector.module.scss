@@ -1,20 +1,24 @@
 .contentBackground {
   position: relative;
   width: 100%;
+  height: 50vh;
+  overflow: hidden;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .contentImage {
   width: 100%;
-  height: auto;
-  max-height: 100vh;
-  object-fit: contain;
+  height: 100%;
+  object-fit: cover;
+  transform: rotate(180deg);
+  object-position: bottom;
 }
 
 @media (max-width: 768px) {
   .contentBackground {
-    top: 55%; /* Move text even lower on smaller screens */
+    top: 55%;
   }
   .contentImage {
     height: 100vh;
