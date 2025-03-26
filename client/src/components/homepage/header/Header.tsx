@@ -53,7 +53,7 @@ function Header() {
             <img src={logo} alt="Luma Logo" className={styles.logo} />
             <div className={styles.titleTextContainer}>
                 <h1 className={styles.welcomeText}>
-                    Welcome To <span className={styles.welcomeTextUnderlying}>Luma!</span>
+                    Welcome to <span className={styles.welcomeTextUnderlying}>Luma!</span>
                 </h1>
                 <img src={littleLuma} alt="Little Luma" className={styles.littleLumaIcon} />
             </div>
