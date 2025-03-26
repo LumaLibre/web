@@ -10,7 +10,6 @@ interface NavbarProps {
     afterNavbarList?: React.ReactNode;
 }
 
-
 function Navbar({beforeNavbarList, afterNavbarList }: NavbarProps) {
     const [isMenuOpen, setMenuOpen] = useState(false);
 
@@ -78,7 +77,5 @@ function Navbar({beforeNavbarList, afterNavbarList }: NavbarProps) {
         </nav>
     );
 }
-
-
 
 export default Navbar;

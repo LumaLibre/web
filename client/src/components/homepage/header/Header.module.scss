@@ -38,9 +38,9 @@
     filter: drop-shadow(0px 0px 20px rgba(215, 111, 249, 0.3));
 
     @media (max-width: 768px) {
-        top: 2vh;
+        top: 4vh;
         left: 50%;
-        width: 30vh;
+        width: 40vh;
     }
 }
 
@@ -51,9 +51,12 @@
     width: 40%;
 
     @media (max-width: 768px) {
-        margin-bottom: 38vh;
-        margin-left: 4vw;
-        width: 100%;
+        margin-bottom: 90vh;
+        margin-left: 20vw;
+        margin-top: -15%;
+        width: 90%;
+
+        display:none;
     }
 }
 
@@ -63,11 +66,16 @@
     font-size: 7vw;
     font-weight: bold;
     text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.7);
+
 }
 
 .welcomeText {
     @include titleText;
     white-space: nowrap;
+
+    @media (max-width: 768px) {
+        font-size: 10vw;
+    }
 
 }
 .welcomeTextUnderlying {
@@ -76,7 +84,8 @@
     margin-left: 12vw;
 
     @media (max-width: 768px) {
-        margin-left: 10vw;
+        margin-left: 16vw;
+        font-size: 10vw;
     }
 }
 
@@ -93,10 +102,6 @@
     }
 
 }
-
-
-
-
 
 .descriptionContainer {
     position: absolute;
@@ -120,6 +125,8 @@
         margin-right: 4vw;
         max-width: 40%;
         font-size: 4vw;
+
+        display: none;
     }
 }
 
@@ -153,7 +160,8 @@
 
     @media (max-width: 768px) {
         margin-right: unset;
-        top: 35%;
+        margin-left: -1vw;
+        margin-bottom: 38%;
     }
 
 
@@ -170,3 +178,29 @@
         }
     }
 }
+
+.discordButtonMobile {
+    position: absolute !important; // todo
+    margin-right: 0;
+    top: 38%;
+    left: 7%;
+
+    height: auto;
+    margin-bottom: 0;
+
+    @media (max-width: 768px) {
+        margin-right: unset;
+        margin-left: 45vw;
+        margin-bottom: 38%;
+    }
+
+    .discordButtonMobileContent {
+
+        @media (max-width: 768px) {
+            padding: 4px 24px;
+            font-size: 4vw;
+            white-space: nowrap;
+        }
+    }
+}
+

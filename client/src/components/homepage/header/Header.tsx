@@ -47,6 +47,12 @@ function Header() {
                     setPlayButtonText("Join 0 Players!")
                 }}
             />
+            <Button
+                text="0 Users Online"
+                href={DISCORD_INV}
+                className={styles.discordButtonMobile}
+                buttonContentClassName={styles.discordButtonMobileContent}
+            />
             <Carousel/>
             <LatestNews/>
         </section>
