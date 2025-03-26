@@ -2,8 +2,12 @@ import styles from "./LatestNews.module.scss";
 import {useQuery} from "@tanstack/react-query";
 import {NewsPostContainer} from "@/scripts/model/NewsPostContainer.tsx";
 import {fetchAllNewsPosts} from "@/scripts/newsPosts.ts";
+import Button from "@/components/ui/Button.tsx";
+import {useNavigate} from "react-router-dom";
+import {useEffect} from "react";
 
 function LatestNews() {
+    const navigate = useNavigate();
     const {
         data: newsPosts,
         isLoading,
@@ -18,21 +22,29 @@ function LatestNews() {
     if (!newsPosts?.length) return <h2>No news posts found.</h2>;
 
     const latestNews = newsPosts.slice(0, 3);
-    console.log(latestNews);
     const cardClasses = ["leftSideCard", "middleCard", "rightSideCard"];
 
     return (
-        <section className={styles.latestNewsContainer}>
-            {latestNews.map((news, index) => (
-                <div key={index} className={styles[cardClasses[index]]}>
-                    <img src={news.thumbnail} alt="News post thumbnail" className={styles.cardImage} />
-                    <div className={styles.cardContent}>
-                        <h3>{news.getAuthorAvatar()} • <span>{news.title}</span></h3>
-                        {news.renderContentSmall()}
+        <>
+            <div className={styles.latestNewsContainer}>
+                {latestNews.map((news, index) => (
+                    <div
+                        key={index}
+                        className={styles[cardClasses[index]]}
+                        onClick={() => {
+                            navigate(`/news/${news.id}`);
+                            window.scrollTo(0, 0);
+                        }}>
+                        <img src={news.thumbnail} alt="News post thumbnail" className={styles.cardImage} />
+                        <div className={styles.cardContent}>
+                            <h3>{news.getAuthorAvatar()} • <span>{news.title}</span></h3>
+                            {news.renderContentSmall()}
+                        </div>
                     </div>
-                </div>
-            ))}
-        </section>
+                ))}
+            </div>
+            <Button text="View all articles" className={styles.viewAllButton} href="/news" />
+        </>
     );
 }
 

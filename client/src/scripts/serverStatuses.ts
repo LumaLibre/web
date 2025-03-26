@@ -2,6 +2,11 @@ import {LUMA_DISCORD_ENDPOINT, LUMA_SERVERSTATS_ENDPOINT} from "@/constants.ts";
 
 const failed = '?';
 
+
+export const fetchServerStatusAppend = async (prefix: string, suffix: string) => {
+    return `${prefix}${await fetchServerStatus()}${suffix}`;
+}
+
 /**
  * Fetches the server status from the mcserverstatus API.
  * @returns A string indicating the number of players online or a failure message.

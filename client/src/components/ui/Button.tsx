@@ -2,7 +2,7 @@ import styles from "./Button.module.scss";
 import React from "react";
 
 type ButtonProps = {
-    text: string;
+    text: string | React.ReactNode;
     href?: string | null;
     onClick?: (() => void) | null;
     onMouseEnter?: (() => void) | null;
