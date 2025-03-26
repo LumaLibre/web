@@ -1,7 +1,7 @@
 import styles from "./LoadingPageContent.module.scss";
 import blackLumaAlert from "@/assets/lumas/BlackLumaAlert.webp";
-import breweryLuma from "@/assets/lumas/BreweryLuma.webp";
-import fishingLuma from "@/assets/lumas/FishingLuma.webp";
+import breweryLuma from "@/assets/lumas/LumaBrewery.webp";
+import fishingLuma from "@/assets/lumas/LumaFishing.webp";
 import {getRandomElement} from "@/utils.ts";
 
 const lumaImages = [
