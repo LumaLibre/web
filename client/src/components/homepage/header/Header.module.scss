@@ -12,9 +12,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 0;
+    //padding: 0;
     margin: 0;
     overflow: visible;
+    padding-bottom: 8%;
 
     @media (max-width: 768px) {
         @include artBackground("@/assets/testBg2.png");
@@ -82,7 +83,7 @@
 .littleLumaIcon {
     position: absolute;
     align-self: start;
-    top: 17%;
+    top: 19%;
     left: 5%;
     width: 12%;
     height: auto;

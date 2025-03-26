@@ -96,7 +96,7 @@ function Carousel() {
 
         interactionTimeoutRef.current = setTimeout(() => {
             startAutoSwipe();
-        }, 5000);
+        }, 12000);
     };
 
     const swipe = (forward: boolean) => {

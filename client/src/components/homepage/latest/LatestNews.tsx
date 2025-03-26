@@ -14,24 +14,24 @@ function LatestNews() {
     });
 
     if (isLoading) return <div></div>;
-    if (error) return <h2>Error fetching news posts: {error.message}</h2>;
-    if (!newsPosts) return <h2>No news posts found.</h2>;
+    if (error) return <h2>Error: {error.message}</h2>;
+    if (!newsPosts?.length) return <h2>No news posts found.</h2>;
 
-    const leftSideNews = newsPosts[0];
-    const middleNews = newsPosts[1];
-    const rightSideNews = newsPosts[2];
+    const latestNews = newsPosts.slice(0, 3);
+    console.log(latestNews);
+    const cardClasses = ["leftSideCard", "middleCard", "rightSideCard"];
 
     return (
         <section className={styles.latestNewsContainer}>
-            <div className={styles.leftSideCard}>
-                <img src={leftSideNews.thumbnail} alt="News post thumbnail" className={styles.cardImage} />
-            </div>
-            <div className={styles.middleCard}>
-                <img src={middleNews.thumbnail} alt="News post thumbnail" className={styles.cardImage} />
-            </div>
-            <div className={styles.rightSideCard}>
-                <img src={rightSideNews.thumbnail} alt="News post thumbnail" className={styles.cardImage} />
-            </div>
+            {latestNews.map((news, index) => (
+                <div key={index} className={styles[cardClasses[index]]}>
+                    <img src={news.thumbnail} alt="News post thumbnail" className={styles.cardImage} />
+                    <div className={styles.cardContent}>
+                        <h3>{news.getAuthorAvatar()} • <span>{news.title}</span></h3>
+                        {news.renderContentSmall()}
+                    </div>
+                </div>
+            ))}
         </section>
     );
 }

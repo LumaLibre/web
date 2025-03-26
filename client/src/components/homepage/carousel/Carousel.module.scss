@@ -2,6 +2,7 @@
 
 .carouselCard {
     @include cardParent;
+    background: rgba(51,15,53, 0.3);
     display: flex;
     align-items: center;
     justify-content: space-between;

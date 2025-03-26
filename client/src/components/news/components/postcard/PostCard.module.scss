@@ -49,13 +49,13 @@
     }
 
     h3 {
-        color: #911AB0;
+        color: $primary-color;
     }
 
     p {
         font-family: 'Poppins', sans-serif;
         font-size: 100%;
-        color: rgba(205,184,208);
+        color: $secondary-color;
     }
 }
 
