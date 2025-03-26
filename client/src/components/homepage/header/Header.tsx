@@ -58,7 +58,7 @@ function Header() {
                 <img src={littleLuma} alt="Little Luma" className={styles.littleLumaIcon} />
             </div>
             <div className={styles.descriptionContainer}>
-                We're a TownySMP server focused on high-quality gameplay and a vibrant, welcoming community.
+                We're a Towny server focused on high-quality gameplay and a vibrant, welcoming community.
             </div>
 
             <Button
