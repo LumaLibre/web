@@ -44,8 +44,8 @@ function Header() {
                 beforeNavbarList={<img src={SmallTextLogo} alt="Luma Logo" className={styles.miniLumaLogo} />}
                 afterNavbarList={
                     <Button
+                        href={DISCORD_INV} newTab
                         text={<><FontAwesomeIcon icon={faDiscord} /><span> {safeDiscordStatus}</span></>}
-                        href={DISCORD_INV}
                         className={styles.navbarDiscordButton}
                     />
                 }
@@ -53,7 +53,7 @@ function Header() {
             <img src={logo} alt="Luma Logo" className={styles.logo} />
             <div className={styles.titleTextContainer}>
                 <h1 className={styles.welcomeText}>
-                    Welcome To <span className={styles.welcomeTextUnderlying}>Luma</span>
+                    Welcome To <span className={styles.welcomeTextUnderlying}>Luma!</span>
                 </h1>
                 <img src={littleLuma} alt="Little Luma" className={styles.littleLumaIcon} />
             </div>

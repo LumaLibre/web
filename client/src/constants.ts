@@ -1,4 +1,4 @@
-export const HOST = "https://dev.lumamc.net"; // Change to lumamc.net when deploying!
+export const HOST = "https://lumamc.net/";
 export const DATE = new Date();
 
 export const LUMA_DISCORD_GUILD_ID = "1188316962258948149";
@@ -19,7 +19,7 @@ export const WIKI_LINK = (endpoint: string) => {
 export const STORE = "https://store.lumamc.net";
 
 // Apis
-export const API_ENDPOINT = `${HOST}/api`;
+export const API_ENDPOINT = `${HOST}api`;
 // TODO: Nest Topvoter's endpoint inside normal API endpoint
 export const LUMA_TOPVOTER_ENDPOINT = `https://topvoter.lumamc.net/`;
 export const MINOTAR_API = "https://minotar.net/";

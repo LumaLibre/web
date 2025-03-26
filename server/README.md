@@ -6,6 +6,6 @@
 
 # webserver
 
-> Party in the back(-end). API + serving of static files [dev.lumamc.net](https://dev.lumamc.net).
+> Party in the back(-end). API + serving of static files [lumamc.net](https://lumamc.net).
 
 ## This project is licensed under CC BY-NC-ND 4.0

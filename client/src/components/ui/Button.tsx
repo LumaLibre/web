@@ -4,6 +4,7 @@ import React from "react";
 type ButtonProps = {
     text: string | React.ReactNode;
     href?: string | null;
+    newTab?: boolean | null;
     onClick?: (() => void) | null;
     onMouseEnter?: (() => void) | null;
     onMouseLeave?: (() => void) | null;
@@ -12,7 +13,7 @@ type ButtonProps = {
     buttonContentClassName?: string;
 };
 
-const Button = ({ text, href, onClick, onMouseEnter, onMouseLeave, className, buttonBorderClassName, buttonContentClassName }: ButtonProps) => {
+const Button = ({ text, href, newTab, onClick, onMouseEnter, onMouseLeave, className, buttonBorderClassName, buttonContentClassName }: ButtonProps) => {
     const validHref = href || "#"; // Ensure href is never null
     const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
         if (onClick) {
@@ -39,6 +40,7 @@ const Button = ({ text, href, onClick, onMouseEnter, onMouseLeave, className, bu
         <a
             className={`${styles.customButton} ${className ? className : ""}`}
             href={validHref}
+            target={newTab ? "_blank" : undefined}
             onClick={onClick ? handleClick : undefined} // Only attach if onClick is provided
             onMouseEnter={onMouseEnter ? handleMouseEnter : undefined}
             onMouseLeave={onMouseLeave ? handleMouseLeave : undefined}

@@ -6,6 +6,6 @@
 
 # web
 
-> Our WIP website. Hosted at [dev.lumamc.net](https://dev.lumamc.net).
+> Our website (still a WIP!). Hosted at [lumamc.net](https://lumamc.net).
 
 ## This project and all of it's subprojects are licensed under CC BY-NC-ND 4.0 
