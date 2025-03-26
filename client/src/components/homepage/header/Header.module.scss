@@ -1,8 +1,6 @@
 @use "@/App.module.scss" as *;
 
-//
 .headerBackground {
-    //@include artBackground("@/assets/testBg2.png");
     @include artBackground("@/assets/testBg2.png");
     background-repeat: no-repeat;
     background-size: cover;
@@ -24,69 +22,11 @@
         background-position: center;
         background-attachment: scroll;
         min-height: 100vh;
+        padding-bottom: 50%;
     }
 }
 
-.welcomeText {
-    text-align: left;
-    margin-bottom: 130vh;
-    margin-right: 40vw;
-    color: #d76ff9; // Adjust color as needed
-
-    @media (max-width: 768px) {
-        margin-bottom: 95vh; // Adjust margin for smaller screens
-        margin-right: 10vw; // Adjust margin for smaller screens
-        text-align: center; // Center text on mobile
-        scale: 90%;
-    }
-}
-
-.welcomeText h1 {
-    font-family: "Titan One", sans-serif;
-    font-size: 7vw; // Responsive text size
-    font-weight: bold;
-    margin: 0;
-    text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.7);
-
-    @media (max-width: 768px) {
-        font-size: 10vw; // Adjust font size for smaller screens
-        margin-bottom: 1rem; // Add spacing between "Welcome To" and "Luma"
-    }
-}
-
-.welcomeText h1:nth-child(2) {
-    margin-left: 12vw;
-
-    @media (max-width: 768px) {
-        margin-left: 0; // Remove margin-left to center on mobile
-    }
-}
-
-.descriptionContainer {
-    position: absolute;
-    top: 28%;
-    left: 5%; /* Center horizontally */
-    width: 100%;
-    max-width: 45%;
-    height: auto;
-    color: #ae93b4;
-    font-size: 1.8vw;
-    font-weight: bold;
-    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
-    transition: transform 0.3s ease;
-    font-family: "Paytone One", sans-serif;
-    z-index: 2;
-
-    @media (max-width: 768px) {
-        top: 20%;
-        left: 50%;
-        transform: translateX(-50%);
-        max-width: 80%; // Adjust width for mobile
-        font-size: 4vw; // Adjust font size for mobile
-    }
-}
-
-.newLogo {
+.logo {
     position: absolute;
     top: 9%;
     left: 75%;
@@ -97,26 +37,88 @@
     filter: drop-shadow(0px 0px 20px rgba(215, 111, 249, 0.3));
 
     @media (max-width: 768px) {
-        padding-top: 5%;
-        top: 15%;
-        left: 34%;
-        transform: translateX(-50%);
-        width: 60%; // Adjust logo size for mobile
-        z-index: 0;
+        top: 2vh;
+        left: 50%;
+        width: 30vh;
+    }
+}
+
+.titleTextContainer {
+    margin-bottom: 127vh;
+    margin-left: -45vw;
+    text-align: start;
+    width: 40%;
+
+    @media (max-width: 768px) {
+        margin-bottom: 38vh;
+        margin-left: 4vw;
+        width: 100%;
+    }
+}
+
+@mixin titleText {
+    font-family: "Titan One", sans-serif;
+    color: #d76ff9;
+    font-size: 7vw;
+    font-weight: bold;
+    text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.7);
+}
+
+.welcomeText {
+    @include titleText;
+    white-space: nowrap;
+
+}
+.welcomeTextUnderlying {
+    @include titleText;
+    display: block;
+    margin-left: 12vw;
+
+    @media (max-width: 768px) {
+        margin-left: 10vw;
     }
 }
 
 .littleLumaIcon {
     position: absolute;
-    top: 15.5%;
-    left: 12%;
-    transform: translateX(-50%);
+    align-self: start;
+    top: 17%;
+    left: 5%;
     width: 12%;
     height: auto;
-    z-index: 4;
 
     @media (max-width: 768px) {
         display: none;
+    }
+
+}
+
+
+
+
+
+.descriptionContainer {
+    position: absolute;
+    top: 28%;
+    margin-left: -45vw;
+    //width: 100%;
+    max-width: 45%;
+    height: auto;
+    color: #ae93b4;
+    font-size: 1.8vw;
+    font-weight: bold;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+    transition: transform 0.3s ease;
+    font-family: "Paytone One", sans-serif;
+
+    @media (max-width: 768px) {
+        top: unset;
+        margin-bottom: 29vh;
+        margin-left: 0;
+        align-self: end;
+        margin-right: 4vw;
+        max-width: 40%;
+        font-size: 4vw;
     }
 }
 
@@ -133,10 +135,37 @@
     }
 }
 
+.discordButton {
+    @media (max-width: 768px) {
+        display: none;
+    }
+}
+
 .playButton {
     position: absolute !important; // todo
-    margin-right: 75%;
+    margin-right: 0;
+    top: 38%;
+    left: 7%;
+
     height: auto;
-    margin-bottom: 20%;
-    z-index: 20;
+    margin-bottom: 0;
+
+    @media (max-width: 768px) {
+        margin-right: unset;
+        top: 35%;
+    }
+
+
+    .playButtonBorder {
+
+    }
+
+    .playButtonContent {
+
+        @media (max-width: 768px) {
+            padding: 4px 24px;
+            font-size: 4vw;
+            white-space: nowrap;
+        }
+    }
 }

@@ -1,7 +1,7 @@
 @use "@/App.module.scss" as *;
 
 .newsPostBackground {
-    @include artBackground("@/assets/SpaceBackground.webp");
+    @include artBackground("@/assets/testBg2.png");
 }
 
 .articleCard {

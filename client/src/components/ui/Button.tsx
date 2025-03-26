@@ -8,9 +8,11 @@ type ButtonProps = {
     onMouseEnter?: (() => void) | null;
     onMouseLeave?: (() => void) | null;
     className?: string;
+    buttonBorderClassName?: string;
+    buttonContentClassName?: string;
 };
 
-const Button = ({ text, href, onClick, onMouseEnter, onMouseLeave, className }: ButtonProps) => {
+const Button = ({ text, href, onClick, onMouseEnter, onMouseLeave, className, buttonBorderClassName, buttonContentClassName }: ButtonProps) => {
     const validHref = href || "#"; // Ensure href is never null
     const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
         if (onClick) {
@@ -41,8 +43,8 @@ const Button = ({ text, href, onClick, onMouseEnter, onMouseLeave, className }: 
             onMouseEnter={onMouseEnter ? handleMouseEnter : undefined}
             onMouseLeave={onMouseLeave ? handleMouseLeave : undefined}
         >
-            <div className={styles.buttonBorder}></div>
-            <div className={styles.buttonContent}>{text}</div>
+            <div className={`${styles.buttonBorder} ${buttonBorderClassName ? buttonBorderClassName : ""}`}></div>
+            <div className={`${styles.buttonContent} ${buttonContentClassName ? buttonContentClassName : ""}`}>{text}</div>
         </a>
     );
 };

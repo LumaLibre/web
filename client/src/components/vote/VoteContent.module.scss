@@ -1,7 +1,7 @@
 @use "@/App.module.scss" as *;
 
 .background {
-    @include artBackground("@/assets/BlurredStarsBackground.webp");
+    @include artBackground("@/assets/testBg2.png");
     padding-bottom: 10px;
 
     @media (max-width: 768px) { // Phone

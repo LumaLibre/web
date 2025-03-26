@@ -1,29 +1,43 @@
-@use '@/App.module.scss' as *;
+@use "@/App.module" as *;
 
 .carouselCard {
     @include cardParent;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    z-index: 90;
     margin-top: 17%;
     height: 22%;
     width: 90%;
+
+    @media (max-width: 768px) {
+        align-self: center;
+        justify-content: unset;
+        margin-top: 35%;
+        width: 98%;
+        height: 10%;
+    }
+
 }
 
 @mixin fade {
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    transition: opacity 0.4s ease, transform 0.4s ease;
     opacity: 0;
 }
 
 .fadeLeft {
     @include fade;
-    transform: translateX(-10%);
+    transform: translateX(10%);
 }
 
 .fadeRight {
     @include fade;
-    transform: translateX(10%);
+    transform: translateX(-10%);
+}
+
+.fadeIn {
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    opacity: 1;
+    transform: translateX(0);
 }
 
 .carouselImageContainer {
@@ -31,12 +45,21 @@
     justify-content: center;
     align-items: center;
     margin-top: 4%;
-    margin-left:6%;
+    margin-left: 6%;
     width: 30%;
+
+    @media (max-width: 768px) {
+        margin-top: 25%;
+        margin-left: 10%;
+        width: 40%;
+    }
 }
 
 .carouselImage {
     width: 100%;
+    @media (max-width: 768px) {
+        width: 90%;
+    }
 }
 
 .carouselTextContainer {
@@ -50,9 +73,16 @@
     font-weight: bold;
     text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
     transition: transform 0.3s ease;
-    font-family: 'Paytone One', sans-serif;
-}
+    font-family: "Paytone One", sans-serif;
 
+    @media (max-width: 768px) {
+        margin-top: 25%;
+        font-size: 3.8vw;
+        margin-right: 0;
+        width: 43%;
+        height: 55%;
+    }
+}
 
 @mixin carouselNavArrow {
     box-sizing: border-box;
@@ -65,10 +95,15 @@
     width: 1.75rem;
     border: none;
     cursor: pointer;
+    user-select: none;
     filter: drop-shadow(-3px 4px rgba(0, 0, 0, 0.15));
     height: 1.75rem;
     //position: relative;
     flex-shrink: 0;
+
+    @media (max-width: 768px) {
+        bottom: 43%;
+    }
 }
 
 .leftCarouselArrow {
@@ -80,4 +115,8 @@
     @include carouselNavArrow;
     transform: scaleX(-1);
     left: 95%;
+
+    @media (max-width: 768px) {
+        left: 90%;
+    }
 }

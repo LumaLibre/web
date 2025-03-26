@@ -33,21 +33,21 @@ tasks {
     }
 
     build {
-        dependsOn(":webapp:npmBuild")
-        dependsOn(":webserver:build")
+        dependsOn(":client:yarnBuild")
+        dependsOn(":server:build")
 
         val sharedOutputDir = file("${projectDir}/output")
         sharedOutputDir.mkdirs()
         doLast {
-            val webappOutputDir = file("webapp/dist")
+            val clientOutputDir = file("client/dist")
             copy {
-                from(webappOutputDir)
-                into("$sharedOutputDir/webapp")
+                from(clientOutputDir)
+                into("$sharedOutputDir/client")
             }
-            val webserverOutputDir = file("webserver/build/libs")
+            val serverOutputDir = file("server/build/libs")
             copy {
-                from(webserverOutputDir)
-                into("$sharedOutputDir/webserver")
+                from(serverOutputDir)
+                into("$sharedOutputDir/server")
             }
         }
 
@@ -62,12 +62,12 @@ tasks {
         serverId = System.getenv("PTERO_SERVER")
 
         clearRunway {
-            removeRemoteDirectories = mutableListOf("webapp")
+            removeRemoteDirectories = mutableListOf("client")
         }
 
         dropIn {
-            uploadDirectories = mutableListOf(Path.of("output/webapp"))
-            uploadFiles = mutableListOf(file("output/webserver/webserver.jar"))
+            uploadDirectories = mutableListOf(Path.of("output/client"))
+            uploadFiles = mutableListOf(file("output/server/server.jar"))
             deployCommands = mutableListOf("reload")
         }
     }

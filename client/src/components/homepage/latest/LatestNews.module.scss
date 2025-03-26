@@ -1,0 +1,80 @@
+@use '@/App.module.scss' as *;
+
+.latestNewsContainer {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    bottom: 4%;
+    width: 80%;
+    height: 38%;
+
+    @media (max-width: 768px) {
+        width: 90%;
+        bottom: 18%;
+        left: 5%;
+        height: 20%;
+        //flex-direction: column;
+        //height: auto; // Let it expand based on content
+        gap: 5%;
+    }
+}
+
+
+
+@mixin latestNewsCard {
+    @include cardParent;
+    position: relative;
+    justify-self: flex-end;
+    width: 30%;
+
+    @media (max-width: 768px) {
+        //gap: 30px;
+        width: 90%;
+        height: 100%;
+    }
+
+    &:hover {
+        will-change: filter;
+        //filter: drop-shadow(0 0 2em rgb(96, 0, 159));
+        /*box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);*/
+        transform: scale(1.1);
+        cursor: pointer;
+    }
+}
+
+.leftSideCard {
+    @include latestNewsCard;
+}
+
+.middleCard {
+    @include latestNewsCard;
+}
+
+.rightSideCard {
+    @include latestNewsCard;
+    @media (max-width: 768px) {
+        display: none;
+    }
+}
+
+
+.cardImage {
+    width: 100%;
+    //height: 400px;
+    height: 50%;
+    //margin-left: 5%;
+    //margin-top: 5%;
+    object-fit: cover; // image fills the height while maintaining aspect ratio
+    object-position: center; // center the image
+    border-radius: 10px 10px 10px 10px; // Rounded corners on top
+    transition: transform 0.3s ease;
+
+    @media (max-width: 768px) {
+        // zoom out of the image more on smaller screens
+        //height: 200px;
+    }
+
+}

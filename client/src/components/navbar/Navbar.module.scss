@@ -90,12 +90,13 @@
     .navItem {
         color: white;
         font-family: 'Paytone One', sans-serif;
-        font-size: 18px;
+        font-size: 1.5vw;
         font-weight: bold;
         cursor: pointer;
         transition: color 0.3s ease, transform 0.3s ease;
         display: flex;
         align-items: center;
+
 
         &:hover {
             color: #f4f4f4;
@@ -104,7 +105,21 @@
 
         .navIcon {
             margin-right: 10px;
-            font-size: 24px;
+            font-size: 2vw;
+            @media (max-width: 934px) {
+                font-size: 4vw;
+            }
+        }
+
+        .navText {
+            margin-top: 1%;
+            @media (max-width: 934px) and (min-width: 768px) {
+                display: none;
+            }
+        }
+
+        span {
+            //margin-left: 1%;
         }
 
         a {

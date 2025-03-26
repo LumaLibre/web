@@ -1,48 +1,48 @@
 @use '@/App.module.scss' as *;
 
 .customButton {
-  position: relative;
-  padding: 3px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.5s ease;
+    position: relative;
+    padding: 3px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.5s ease;
 
-  &:hover {
-    transform: scale(1.02);
+    &:hover {
+        transform: scale(1.02);
 
-    @media (max-width: 768px) { // Phone
-      background-color: unset;
-      border-left: none;
+        @media (max-width: 768px) { // Phone
+            background-color: unset;
+            border-left: none;
+        }
     }
-  }
 
-  &:active {
-    transform: scale(0.98);
-    background-color: rgba($primary-color, 0.2);
+    &:active {
+        transform: scale(0.98);
+        background-color: rgba($primary-color, 0.2);
 
-    @media (max-width: 768px) {
-      background-color: unset;
+        @media (max-width: 768px) {
+            background-color: unset;
+        }
     }
-  }
 }
 
 
 .buttonBorder {
-  position: absolute;
-  inset: 0;
-  //background: linear-gradient(to right, #d76ff9, #d76ff9);
-  background: #d76ff9;
-  border-radius: 8px;
+    position: absolute;
+    inset: 0;
+    //background: linear-gradient(to right, #d76ff9, #d76ff9);
+    background: #d76ff9;
+    border-radius: 8px;
 }
 
 .buttonContent {
-  position: relative;
-  padding: 8px 32px;
-  background: #d76ff9;
-  border-radius: 6px;
-  color: white;
-  font-family: 'Paytone One', sans-serif;
-  transition: background 0.2s;
+    position: relative;
+    padding: 8px 32px;
+    background: #d76ff9;
+    border-radius: 6px;
+    color: white;
+    font-family: 'Paytone One', sans-serif;
+    transition: background 0.2s;
 }
