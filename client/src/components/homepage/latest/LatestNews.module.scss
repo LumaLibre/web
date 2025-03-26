@@ -18,9 +18,13 @@
         bottom: 18%;
         left: 5%;
         height: 20%;
-        //flex-direction: column;
-        //height: auto; // Let it expand based on content
         gap: 5%;
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+        bottom: 3%;
+        left: 5%;
+        height: 55%;
     }
 }
 
@@ -126,5 +130,10 @@
 
     @media (max-width: 768px) {
         left: 25%;
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+        left: 39%;
+        bottom: 4%;
     }
 }

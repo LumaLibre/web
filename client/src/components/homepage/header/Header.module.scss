@@ -12,7 +12,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    //padding: 0;
     margin: 0;
     overflow: visible;
     padding-bottom: 8%;
@@ -24,6 +23,11 @@
         background-attachment: scroll;
         min-height: 100vh;
         padding-bottom: 50%;
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+        @include artBackground("@/assets/MainBackground.webp");
+        height: 90vh;
     }
 }
 
@@ -42,10 +46,14 @@
         left: 50%;
         width: 40vh;
     }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+        width: 30vh;
+    }
 }
 
 .titleTextContainer {
-    margin-bottom: 127vh;
+    margin-bottom: 140vh;
     margin-left: -45vw;
     text-align: start;
     width: 40%;
@@ -58,6 +66,13 @@
 
         display:none;
     }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+        margin-top: 57vh;
+        margin-left: 7vw;
+    }
+
+
 }
 
 @mixin titleText {
@@ -92,7 +107,7 @@
 .littleLumaIcon {
     position: absolute;
     align-self: start;
-    top: 19%;
+    top: 17%;
     left: 5%;
     width: 12%;
     height: auto;
@@ -101,12 +116,16 @@
         display: none;
     }
 
+    @media (min-width: 769px) and (max-width: 1024px) {
+        top: 13%;
+    }
+
 }
 
 .descriptionContainer {
     position: absolute;
-    top: 28%;
-    margin-left: -45vw;
+    top: 27%;
+    margin-left: -40vw;
     //width: 100%;
     max-width: 45%;
     height: auto;
@@ -128,6 +147,13 @@
 
         display: none;
     }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+        display: unset;
+        margin-top: -7vh;
+        margin-left: 7vw;
+        font-size: 2vw;
+    }
 }
 
 
@@ -146,7 +172,7 @@
 @mixin buttonParent {
     position: absolute !important;
     margin-right: 0;
-    top: 38%;
+    top: 36%;
     left: 7%;
 
     height: auto;
@@ -173,6 +199,10 @@
 
     @media (max-width: 768px) {
         margin-left: -1vw;
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+        margin-top: -11%;
     }
 
     .playButtonContent {
@@ -214,4 +244,3 @@
         @include buttonContentParent;
     }
 }
-
