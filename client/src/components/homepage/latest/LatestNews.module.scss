@@ -31,6 +31,7 @@
     position: relative;
     justify-self: flex-end;
     width: 60%;
+    overflow: hidden;
     //max-width: 60%;
     //height: 60%;
 
@@ -122,4 +123,8 @@
 .viewAllButton {
     position: absolute;
     bottom: 2.5%;
+
+    @media (max-width: 768px) {
+        left: 25%;
+    }
 }

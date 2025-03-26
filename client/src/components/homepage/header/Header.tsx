@@ -43,7 +43,7 @@ function Header() {
                     <Button
                         text={<><FontAwesomeIcon icon={faDiscord} /><span> {safeDiscordStatus}</span></>}
                         href={DISCORD_INV}
-                        className={styles.discordButton}
+                        className={styles.navbarDiscordButton}
                     />
                 }
             />
@@ -60,9 +60,13 @@ function Header() {
 
             <Button
                 className={styles.playButton}
-                buttonBorderClassName={styles.playButtonBorder}
                 buttonContentClassName={styles.playButtonContent}
-                text={<><FontAwesomeIcon icon={faPlay} /><span> {playButtonText}</span></>}
+                text={
+                    <>
+                        <FontAwesomeIcon icon={faPlay} className={styles.playButtonIcon} />
+                        <span>{INVIS_CHAR(1)} {playButtonText}</span>
+                    </>
+                }
                 onClick={() => {
                     navigator.clipboard.writeText(LUMA_IP_ADDRESS);
                     setPlayButtonText(`${INVIS_CHAR(9)}Copied!${INVIS_CHAR(9)}`);
@@ -71,7 +75,7 @@ function Header() {
                 onMouseLeave={() => setPlayButtonText(safeMcStatus)}
             />
             <Button
-                text="0 Users Online"
+                text={<><FontAwesomeIcon icon={faDiscord} /><span> {safeDiscordStatus}</span></>}
                 href={DISCORD_INV}
                 className={styles.discordButtonMobile}
                 buttonContentClassName={styles.discordButtonMobileContent}

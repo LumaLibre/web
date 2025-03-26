@@ -142,64 +142,76 @@
     }
 }
 
-.discordButton {
+// TODO: Finish mixin
+@mixin buttonParent {
+    position: absolute !important;
+    margin-right: 0;
+    top: 38%;
+    left: 7%;
+
+    height: auto;
+    margin-bottom: 0;
+
+    @media (max-width: 768px) {
+        margin-right: unset;
+        margin-bottom: 38%;
+    }
+}
+
+
+@mixin buttonContentParent {
+
+    @media (max-width: 768px) {
+        padding: 6px 4vw;
+        font-size: 3.5vw;
+        white-space: nowrap;
+    }
+}
+
+.playButton {
+    @include buttonParent;
+
+    @media (max-width: 768px) {
+        margin-left: -1vw;
+    }
+
+    .playButtonContent {
+        @include buttonContentParent;
+    }
+}
+
+// Mobile only
+
+.playButtonIcon {
+    @media (max-width: 768px) {
+
+    }
+}
+
+.discordButtonIcon {
+    @media (max-width: 768px) {
+
+    }
+}
+
+
+.navbarDiscordButton {
     @media (max-width: 768px) {
         display: none;
     }
 }
 
-.playButton {
-    position: absolute !important; // todo
-    margin-right: 0;
-    top: 38%;
-    left: 7%;
-
-    height: auto;
-    margin-bottom: 0;
-
-    @media (max-width: 768px) {
-        margin-right: unset;
-        margin-left: -1vw;
-        margin-bottom: 38%;
-    }
-
-
-    .playButtonBorder {
-
-    }
-
-    .playButtonContent {
-
-        @media (max-width: 768px) {
-            padding: 4px 24px;
-            font-size: 4vw;
-            white-space: nowrap;
-        }
-    }
-}
-
 .discordButtonMobile {
-    position: absolute !important; // todo
-    margin-right: 0;
-    top: 38%;
-    left: 7%;
-
-    height: auto;
-    margin-bottom: 0;
+    @include buttonParent;
+    display: none;
 
     @media (max-width: 768px) {
-        margin-right: unset;
+        display: unset;
         margin-left: 45vw;
-        margin-bottom: 38%;
     }
 
     .discordButtonMobileContent {
-
-        @media (max-width: 768px) {
-            padding: 4px 24px;
-            font-size: 4vw;
-            white-space: nowrap;
-        }
+        @include buttonContentParent;
     }
 }
 

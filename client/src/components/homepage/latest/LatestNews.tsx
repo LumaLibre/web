@@ -4,9 +4,10 @@ import {NewsPostContainer} from "@/scripts/model/NewsPostContainer.tsx";
 import {fetchAllNewsPosts} from "@/scripts/newsPosts.ts";
 import Button from "@/components/ui/Button.tsx";
 import {useNavigate} from "react-router-dom";
-import {useEffect} from "react";
+import useIsMobile from "@/components/ui/UseIsMobile.tsx";
 
 function LatestNews() {
+    const isMobile = useIsMobile();
     const navigate = useNavigate();
     const {
         data: newsPosts,
@@ -38,7 +39,7 @@ function LatestNews() {
                         <img src={news.thumbnail} alt="News post thumbnail" className={styles.cardImage} />
                         <div className={styles.cardContent}>
                             <h3>{news.getAuthorAvatar()} • <span>{news.title}</span></h3>
-                            {news.renderContentSmall()}
+                            {!isMobile ? news.renderContentSmall() : news.renderContentTiny(15, 6)}
                         </div>
                     </div>
                 ))}

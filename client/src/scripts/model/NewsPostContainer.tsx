@@ -77,6 +77,10 @@ export class NewsPostContainer {
     }
 
     renderContentSmall(): JSX.Element {
+        return this.renderContentTiny(NewsPostContainer.MAX_CHARACTERS_POSTCARD_LINE, NewsPostContainer.MAX_POSTCARD_LINES);
+    }
+
+    renderContentTiny(maxCharactersPerLine: number, maxLines: number): JSX.Element {
         let newContent = this.content
             .replace(/\n+/g, ' ')
             .replace(/\*/g, '')
@@ -89,12 +93,12 @@ export class NewsPostContainer {
         let builtWord = '';
 
         for (const character of newContent) {
-            if (lines.length >= NewsPostContainer.MAX_POSTCARD_LINES) {
-                lines[NewsPostContainer.MAX_POSTCARD_LINES - 1] += '...';
+            if (lines.length >= maxLines) {
+                lines[maxLines - 1] += '...';
                 break;
             }
 
-            if (currentLine.length >= NewsPostContainer.MAX_CHARACTERS_POSTCARD_LINE) {
+            if (currentLine.length >= maxCharactersPerLine) {
                 if (!currentLine.includes(' ') || currentLine.endsWith(' ')) {
                     lines.push(currentLine);
                     currentLine = '';
