@@ -15,7 +15,7 @@ function LatestNews() {
         error,
     } = useQuery<NewsPostContainer[]>({
         queryKey: ["allNewsPosts"],
-        queryFn: fetchAllNewsPosts, // todo: func to just get 3 latest news
+        queryFn: fetchAllNewsPosts,
     });
 
     if (isLoading) return <div></div>;

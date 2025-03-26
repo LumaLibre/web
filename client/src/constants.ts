@@ -24,8 +24,3 @@ export const API_ENDPOINT = `${HOST}/api`;
 export const LUMA_TOPVOTER_ENDPOINT = `https://topvoter.lumamc.net/`;
 export const MINOTAR_API = "https://minotar.net/";
 export const CRAFATAR_API = "https://crafatar.com/";
-
-// Should go in a utils.ts
-export const INVIS_CHAR = (amt: number) => "\u00A0".repeat(amt);
-export const INVIS_BORDER = (str: string, amt: number) =>
-  `${INVIS_CHAR(amt)}${str}${INVIS_CHAR(amt)}`;

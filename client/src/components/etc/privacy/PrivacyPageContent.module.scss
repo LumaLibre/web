@@ -1,0 +1,33 @@
+@use "@/App.module.scss" as *;
+
+.background {
+    @include artBackground("@/assets/MainBackground.webp");
+}
+
+.card {
+    @include cardParent;
+    width: 50%;
+    height: 40%;
+    padding: 1% 1% 1% 1%;
+}
+
+.cardContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.cardTitle {
+    color: $primary-color;
+    font-family: 'Paytone One', sans-serif;
+    text-transform: uppercase;
+}
+
+.cardText {
+    text-align: center;
+    color: $secondary-color;
+    font-family: 'Poppins', sans-serif;
+    font-size: 120%;
+}

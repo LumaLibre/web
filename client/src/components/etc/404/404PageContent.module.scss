@@ -1,0 +1,47 @@
+@use "@/App.module.scss" as *;
+
+.background {
+    @include artBackground("@/assets/MainBackground.webp");
+}
+
+.contentContainer {
+    @include cardParent;
+    margin-top: 5%;
+    width: 70%;
+    display: flex;
+
+    box-shadow: none;
+    background: rgba(51,15,53, 0.0);
+}
+
+.imageContainer {
+    width: 50%;
+    justify-self: flex-start;
+}
+
+.image {
+    width: 100%;
+}
+
+.textContainer {
+    width: 50%;
+    justify-self: flex-end;
+    text-align: center;
+    margin-top: 5%;
+}
+
+.titleText {
+    color: $primary-color;
+    font-family: 'Paytone One', sans-serif;
+    text-transform: uppercase;
+
+    font-size: 500%;
+    margin-bottom: 0.2em;
+}
+
+.text {
+    color: $secondary-color;
+    font-family: 'Paytone One', sans-serif;
+    font-size: 200%;
+    margin: 0;
+}

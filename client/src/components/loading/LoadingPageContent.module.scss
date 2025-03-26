@@ -1,7 +1,7 @@
 @use '@/App.module.scss' as *;
 
 .background {
-    @include artBackground("@/assets/testBg2.png");
+    @include artBackground("@/assets/MainBackground.webp");
     display: flex;
     justify-content: center;
     align-items: center;

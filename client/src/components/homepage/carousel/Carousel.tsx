@@ -1,12 +1,12 @@
 import {useEffect, useRef, useState} from "react";
 import styles from "./Carousel.module.scss";
 
-import lumaFriends from "@/assets/lumas/LumaFriends.png";
-import lumaArtMap from "@/assets/lumas/LumaArtmap.png";
-import lumaFurniture from "@/assets/lumas/LumaFurniture.png";
-import lumaBrewery from "@/assets/lumas/LumaBrewery.png";
-import lumaFishing from "@/assets/lumas/LumaFishing.png";
-import lumaHoarder from "@/assets/lumas/LumaHoarder.png";
+import lumaFriends from "@/assets/lumas/LumaFriends.webp";
+import lumaArtMap from "@/assets/lumas/LumaArtmap.webp";
+import lumaFurniture from "@/assets/lumas/LumaFurniture.webp";
+import lumaBrewery from "@/assets/lumas/LumaBrewery.webp";
+import lumaFishing from "@/assets/lumas/LumaFishing.webp";
+import lumaHoarder from "@/assets/lumas/LumaHoarder.webp";
 
 const carouselBaggage = [
     {

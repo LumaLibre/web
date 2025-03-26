@@ -1,11 +1,11 @@
 import styles from "./Header.module.scss";
-import logo from "@/assets/LumaLogoBig.png";
-import littleLuma from "@/assets/lumas/LumaMainLuma.png";
+import logo from "@/assets/LumaLogoBig.webp";
+import littleLuma from "@/assets/lumas/LumaMainLuma.webp";
 import SmallTextLogo from "@/assets/LumaText.webp";
 import Button from "@/components/ui/Button";
 import Navbar from "@/components/navbar/Navbar.tsx";
 import Carousel from "@/components/homepage/carousel/Carousel.tsx";
-import {DISCORD_INV, INVIS_CHAR, LUMA_IP_ADDRESS} from "@/constants.ts";
+import {DISCORD_INV, LUMA_IP_ADDRESS} from "@/constants.ts";
 import {useEffect, useState} from "react";
 import LatestNews from "@/components/homepage/latest/LatestNews.tsx";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
@@ -13,8 +13,11 @@ import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {useQuery} from "@tanstack/react-query";
 import {fetchDiscordStatus, fetchServerStatus} from "@/scripts/serverStatuses.ts";
+import {INVIS_CHAR} from "@/utils.ts";
+import useIsMobile from "@/components/ui/UseIsMobile.tsx";
 
 function Header() {
+    const isMobile = useIsMobile();
     const { data: mcStatus, isLoading: mcStatusIsLoading, isError: mcStatusError } = useQuery<string>({
         queryKey: ["mcServerStatus"],
         queryFn: fetchServerStatus,
@@ -25,7 +28,7 @@ function Header() {
         queryFn: fetchDiscordStatus
     });
 
-    const safeMcStatus = mcStatusIsLoading || mcStatusError || !mcStatus ? "Loading..." : mcStatus;
+    const safeMcStatus = mcStatusIsLoading || mcStatusError || !mcStatus ? "Loading..." : (isMobile ? mcStatus : `Join ${mcStatus}!`);
     const safeDiscordStatus = discordStatusIsLoading || discordStatusError || !discordStatus ? "Loading..." : discordStatus;
 
     const [playButtonText, setPlayButtonText] = useState(safeMcStatus);

@@ -1,7 +1,7 @@
 @use "@/App.module.scss" as *;
 
 .headerBackground {
-    @include artBackground("@/assets/testBg2.png");
+    @include artBackground("@/assets/MainBackground.webp");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: top center;
@@ -18,7 +18,7 @@
     padding-bottom: 8%;
 
     @media (max-width: 768px) {
-        @include artBackground("@/assets/testBg2.png");
+        @include artBackground("@/assets/MainBackground.webp");
         background-size: cover;
         background-position: center;
         background-attachment: scroll;
