@@ -70,8 +70,14 @@ function Header() {
                 onMouseEnter={() => setPlayButtonText(`${INVIS_CHAR(1)}Click to Copy!${INVIS_CHAR(1)}`)}
                 onMouseLeave={() => setPlayButtonText(safeMcStatus)}
             />
-            <Carousel />
-            <LatestNews />
+            <Button
+                text="0 Users Online"
+                href={DISCORD_INV}
+                className={styles.discordButtonMobile}
+                buttonContentClassName={styles.discordButtonMobileContent}
+            />
+            <Carousel/>
+            <LatestNews/>
         </section>
     );
 }
