@@ -19,6 +19,11 @@
         height: 10%;
     }
 
+    @media (min-width: 769px) and (max-width: 1024px) {
+        margin-top: -10%;
+        left: 2%;
+    }
+
 }
 
 @mixin fade {
