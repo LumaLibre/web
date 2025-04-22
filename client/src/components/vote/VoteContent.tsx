@@ -15,7 +15,8 @@ const voteSites: string[] = [
     'https://topminecraftservers.org/vote/36236',
     'https://minecraft-mp.com/server/327658/vote',
     'https://play-minecraft-servers.com/minecraft-servers/lumamc/?tab=vote',
-    'https://www.curseforge.com/servers/minecraft/game/lumamc/vote'
+    'https://www.curseforge.com/servers/minecraft/game/lumamc/vote',
+    'https://minecraft.menu/server-lumamc.4697/vote'
 ];
 
 function VoteContent() {
