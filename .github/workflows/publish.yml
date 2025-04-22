@@ -27,4 +27,4 @@ jobs:
           PTERO_SERVER: ${{ secrets.PTERO_SERVER }}
           PTERO_TOKEN: ${{ secrets.PTERO_TOKEN }}
         with:
-          arguments: clean build --stacktrace
+          arguments: yarnInstall build --stacktrace

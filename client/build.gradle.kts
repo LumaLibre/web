@@ -17,6 +17,10 @@ tasks {
     //    "lint": "eslint .",
     //    "preview": "vite preview"
 
+    register<NpmTask>("yarnInstall") {
+        args.set(arrayListOf("install"))
+    }
+
     register<NpmTask>("yarnBuild") {
         args.set(arrayListOf("run", "build"))
     }
