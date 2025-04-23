@@ -20,9 +20,6 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: List icon files in CI
-        run: ls -l client/src/assets/icons/
-
       - name: Publish website to lumamc.net
         uses: gradle/gradle-build-action@v3
         env:
@@ -30,4 +27,4 @@ jobs:
           PTERO_SERVER: ${{ secrets.PTERO_SERVER }}
           PTERO_TOKEN: ${{ secrets.PTERO_TOKEN }}
         with:
-          arguments: yarnInstall build --stacktrace
+          arguments: yarnInstall build pterodactylDeploy --stacktrace
