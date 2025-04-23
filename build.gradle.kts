@@ -53,6 +53,8 @@ tasks {
     }
 
     pterodactylDeploy {
+        dependsOn("build")
+
         url = System.getenv("PTERO_URL") ?: return@pterodactylDeploy
         apiKey = System.getenv("PTERO_TOKEN")
         serverId = System.getenv("PTERO_SERVER")

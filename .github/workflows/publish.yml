@@ -28,4 +28,4 @@ jobs:
           PTERO_SERVER: ${{ secrets.PTERO_SERVER }}
           PTERO_TOKEN: ${{ secrets.PTERO_TOKEN }}
         with:
-          arguments: yarnInstall build pterodactylDeploy --stacktrace
+          arguments: yarnInstall pterodactylDeploy --stacktrace
