@@ -4,7 +4,6 @@ import {useQuery} from "@tanstack/react-query";
 import {fetchServerStatus} from "@/scripts/serverStatuses.ts";
 import {DATE, DISCORD_INV, LUMA_IP_ADDRESS, STORE, WIKI} from "@/constants.ts";
 import {JSX, useEffect, useState} from "react";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import sourceCodeIcon from "@/assets/icons/SourceCodeIcon.webp";
 import wikiIcon from "@/assets/icons/WikiIcon.webp";
 import tiktokIcon from "@/assets/icons/TikTokIcon.webp";
