@@ -13,7 +13,7 @@ import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {useQuery} from "@tanstack/react-query";
 import {fetchDiscordStatus, fetchServerStatus} from "@/scripts/serverStatuses.ts";
-import {INVIS_CHAR} from "@/utils.ts";
+import {INVIS_BORDER, INVIS_CHAR} from "@/utils.ts";
 import useIsMobile from "@/components/ui/UseIsMobile.tsx";
 
 function Header() {
@@ -72,9 +72,9 @@ function Header() {
                 }
                 onClick={() => {
                     navigator.clipboard.writeText(LUMA_IP_ADDRESS);
-                    setPlayButtonText(`${INVIS_CHAR(9)}Copied!${INVIS_CHAR(9)}`);
+                    setPlayButtonText(INVIS_BORDER('Copied!', 20));
                 }}
-                onMouseEnter={() => setPlayButtonText(`${INVIS_CHAR(1)}Click to Copy!${INVIS_CHAR(1)}`)}
+                onMouseEnter={() => setPlayButtonText(INVIS_BORDER('Click to Copy!', 13))}
                 onMouseLeave={() => setPlayButtonText(safeMcStatus)}
             />
             <Button

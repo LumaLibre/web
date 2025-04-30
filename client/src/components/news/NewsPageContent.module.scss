@@ -2,6 +2,7 @@
 
 .newsPageBackground {
     @include artBackground("@/assets/MainBackground.webp");
+    padding-bottom: 12rem;
 }
 
 
@@ -12,8 +13,8 @@
     max-width: 1280px;
     width: 100%;
     gap: 1.5rem;
-    padding-top: 12rem;
-    padding-bottom: 8rem;
+    top: 12rem;
+    padding-bottom: 7rem;
     margin: 0 auto;
     justify-items: center;
     align-items: start;
