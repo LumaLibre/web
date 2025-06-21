@@ -8,4 +8,4 @@
 
 > Our website (still a WIP!). Hosted at [lumamc.net](https://lumamc.net).
 
-## This project and all of it's subprojects are licensed under CC BY-NC-ND 4.0 
+## This project and all subprojects are licensed under CC BY-NC-ND 4.0 
