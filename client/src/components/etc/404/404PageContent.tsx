@@ -6,7 +6,7 @@ function NotFoundPageContent() {
         <section className={styles.background}>
             <div className={styles.contentContainer}>
                 <div className={styles.imageContainer}>
-                    <img src={softInterroBangLuma} alt="404 Luma" className={styles.image} />
+                    <img src={softInterroBangLuma} alt="404" className={styles.image} />
                 </div>
                 <div className={styles.textContainer}>
                     <h1 className={styles.titleText}>
