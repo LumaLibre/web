@@ -1,5 +1,5 @@
 import styles from "./404PageContent.module.scss";
-import softInterroBangLuma from "@/assets/lumas/SoftInterroBangLuma.webp";
+import softInterroBangLuma from "@/assets/lumas/SoftInterrobangLuma.webp";
 
 function NotFoundPageContent() {
     return (
