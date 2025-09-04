@@ -1,7 +1,6 @@
-import React from "react";
+import React, {useEffect} from "react";
 import styles from "./App.module.scss";
 import {Routes, Route} from "react-router-dom";
-import {useEffect} from "react";
 import MainPage from "@/pages/MainPage.tsx"; // We're not going to lazy this page since it's the first one we see.
 import LoadingPage from "@/pages/LoadingPage.tsx";
 
@@ -32,7 +31,8 @@ function App() {
     return (
         <div className={styles.appContainer}>
             <Routes>
-                <Route path="/" element={<Lazy><MainPage /></Lazy>}/>
+                <Route path="/loading" element={<LoadingPage />} />
+                <Route path="/" element={<MainPage />}/>
                 <Route path="/rules" element={<Lazy><RulesPage /></Lazy>} />
                 <Route path="/vote" element={<Lazy><VotePage /></Lazy>} />
                 <Route path="/news" element={<Lazy><NewsPage /></Lazy>} />

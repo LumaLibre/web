@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect} from "react";
 import styles from "./RulesContent.module.scss";
 import judgeLuma from "@/assets/lumas/JudgeLuma.webp";
 import gavel from "@/assets/Gavel.webp"
@@ -29,6 +29,13 @@ const tabs = [
 
 function Rules() {
     const [activeTab, setActiveTab] = useState("Overview");
+    const cardRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (cardRef.current) {
+            cardRef.current.scrollTop = 0;
+        }
+    }, [activeTab]);
 
     return (
         <div className={styles.rulesBackground}>
@@ -55,7 +62,7 @@ function Rules() {
                 </div>
             </div>
 
-            <div className={styles.rulesCard}>
+            <div className={styles.rulesCard} ref={cardRef}>
                 <div className={styles.rulesTextStyles}>
                     {tabs.map((tab) => (
                         <div

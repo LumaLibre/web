@@ -1,12 +1,12 @@
 import styles from "./404PageContent.module.scss";
-import unknowPageLuma from "@/assets/lumas/LumaHoarder.webp"; // TODO: Get a 404 Luma from Kat
+import softInterroBangLuma from "@/assets/lumas/SoftInterroBangLuma.webp";
 
 function NotFoundPageContent() {
     return (
         <section className={styles.background}>
             <div className={styles.contentContainer}>
                 <div className={styles.imageContainer}>
-                    <img src={unknowPageLuma} alt="404 Luma" className={styles.image} />
+                    <img src={softInterroBangLuma} alt="404 Luma" className={styles.image} />
                 </div>
                 <div className={styles.textContainer}>
                     <h1 className={styles.titleText}>
