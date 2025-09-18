@@ -4,6 +4,8 @@ import {NewsPostContainer} from "@/scripts/model/NewsPostContainer.tsx";
 import styles from "./NewsPostPageContent.module.scss";
 import {JSX} from "react";
 import Label from "@/components/label/Label.tsx";
+import NotFoundPageContent from "@/components/etc/404/404PageContent.tsx";
+import LoadingPageContent from "@/components/loading/LoadingPageContent.tsx";
 
 
 const newsPostPageSection = (element: JSX.Element)=> {
@@ -35,9 +37,9 @@ function NewsPostPageContent({ id }: { id: string }) {
     });
 
 
-    if (isLoading) return newsPostPageSection(<h2>Loading news post...</h2>);
-    if (error) return newsPostPageSection(<h2>Error fetching news post: {error.message}</h2>);
-    if (!newsPost) return newsPostPageSection(<h2>No news post found.</h2>);
+    if (isLoading) return <LoadingPageContent />;
+    if (error) return <NotFoundPageContent />;
+    if (!newsPost) return <NotFoundPageContent />;
 
     return (
         newsPostPageSection(

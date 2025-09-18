@@ -5,6 +5,8 @@ import {NewsPostContainer} from "@/scripts/model/NewsPostContainer.tsx";
 import {fetchAllNewsPosts} from "@/scripts/newsPosts.ts";
 import {JSX, useEffect, useState} from "react";
 import Label from "@/components/label/Label.tsx";
+import NotFoundPageContent from "@/components/etc/404/404PageContent.tsx";
+import LoadingPageContent from "@/components/loading/LoadingPageContent.tsx";
 
 
 const newsStyleSection = (element: JSX.Element) => {
@@ -45,9 +47,9 @@ function NewsPageContent({ page }: { page: number }) {
         queryFn: fetchAllNewsPosts,
     });
 
-    if (isLoading) return newsStyleSection(<div></div>);
-    if (error) return newsStyleSection(<h2>Error fetching news posts: {error.message}</h2>);
-    if (!newsPosts) return newsStyleSection(<h2>No news posts found.</h2>);
+    if (isLoading) return <LoadingPageContent />;
+    if (error) return <NotFoundPageContent />;
+    if (!newsPosts) return <NotFoundPageContent />;
 
     // Pagination logic
     const startIndex = (page - 1) * postsPerPage;
