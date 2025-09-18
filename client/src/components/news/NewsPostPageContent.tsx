@@ -38,7 +38,7 @@ function NewsPostPageContent({ id }: { id: string }) {
 
 
     if (isLoading) return <LoadingPageContent />;
-    if (error) return <NotFoundPageContent />;
+    if (error) return <NotFoundPageContent error={error.message} />;
     if (!newsPost) return <NotFoundPageContent />;
 
     return (

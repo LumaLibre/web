@@ -48,7 +48,7 @@ function NewsPageContent({ page }: { page: number }) {
     });
 
     if (isLoading) return <LoadingPageContent />;
-    if (error) return <NotFoundPageContent />;
+    if (error) return <NotFoundPageContent error={error.message} />;
     if (!newsPosts) return <NotFoundPageContent />;
 
     // Pagination logic
@@ -59,7 +59,7 @@ function NewsPageContent({ page }: { page: number }) {
 
     if (paginatedPosts.length === 0) {
         window.scrollTo(0, 0);
-        return newsStyleSection(<h2>No news posts found.</h2>);
+        return <NotFoundPageContent error="No news posts found." />
     }
 
     const handleArrowClick = (direction: "forward" | "backward") => {
