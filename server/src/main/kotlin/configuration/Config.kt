@@ -25,6 +25,9 @@ class Config : OkaeriConfig() {
         }
 
     var discordNewsChannelId: Long = -1
-    var embedsOnly: Boolean = true
-    var defaultAuthor = "Jsinco"
+    var authors: Map<String, String> = mapOf(
+        "Jsinco" to "J",
+        "Kataray" to "Kat",
+        "Fielle" to "Fi"
+    )
 }

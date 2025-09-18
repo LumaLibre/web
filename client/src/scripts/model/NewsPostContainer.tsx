@@ -26,7 +26,7 @@ export class NewsPostContainer {
     }
 
     getAuthorAvatarURL(): string {
-        return `${MINOTAR_API}helm/${this.author}`;
+        return `${MINOTAR_API}helm/${this.author}/180.png`;
     }
 
     getAuthorAvatar(): JSX.Element {
@@ -34,7 +34,7 @@ export class NewsPostContainer {
     }
 
     getAuthorAvatarURLWithSize(size: number): string {
-        return `${MINOTAR_API}helm/${this.author}/${size}`;
+        return `${MINOTAR_API}helm/${this.author}/${size}.png`;
     }
 
     getAuthorAvatarWithSize(size: number): JSX.Element {

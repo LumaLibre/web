@@ -18,17 +18,25 @@ object NewsManager {
 
     fun getNewsArticles(): Map<String, NewsArticle> {
         return newsConfig.news
+            .entries
+            .reversed() // reverse the list of Map.Entry
+            .associate { it.toPair() } // rebuild a map
     }
 
     fun getNewsPosts(): Map<String, NewsPost> {
-        return newsConfig.news.mapValues { NewsPost.fromNewsArticle(it.key, it.value) }
+        return newsConfig.news
+            .entries
+            .reversed()
+            .associate { (key, value) -> key to NewsPost.fromNewsArticle(key, value) }
     }
+
 
     // Adding news articles programmatically
 
     fun addNewsArticle(id: String, newsArticle: NewsArticle) {
         newsConfig.news[id] = newsArticle
         newsConfig.save()
+        println("Added news article $id")
     }
 
     fun removeNewsArticle(id: String) {

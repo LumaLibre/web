@@ -57,8 +57,8 @@ tasks {
     }
 
     pterodactylDeploy {
-        url = System.getenv("PTERO_URL") ?: return@pterodactylDeploy
         apiKey = System.getenv("PTERO_TOKEN")
+        url = System.getenv("PTERO_URL")
         serverId = System.getenv("PTERO_SERVER")
 
         clearRunway {
@@ -68,7 +68,7 @@ tasks {
         dropIn {
             uploadDirectories = mutableListOf(Path.of("output/client"))
             uploadFiles = mutableListOf(file("output/server/server.jar"))
-            deployCommands = mutableListOf("reload")
+            //deployCommands = mutableListOf("reload")
         }
     }
 }

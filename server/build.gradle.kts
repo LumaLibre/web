@@ -19,6 +19,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.2")
 
     implementation("net.dv8tion:JDA:5.0.0-beta.24")
+    implementation("com.google.genai:google-genai:1.16.0")
 }
 
 kotlin {
