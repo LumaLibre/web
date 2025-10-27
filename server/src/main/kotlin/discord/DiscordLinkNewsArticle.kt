@@ -6,7 +6,6 @@ import net.lumamc.web.configuration.ConfigManager
 import net.lumamc.web.configuration.sector.NewsArticle
 import java.time.LocalDate
 import java.time.ZoneOffset
-import kotlin.io.path.absolute
 import kotlin.io.path.absolutePathString
 
 class DiscordLinkNewsArticle(
@@ -14,7 +13,7 @@ class DiscordLinkNewsArticle(
 ) {
 
     companion object {
-        const val ALLOWED_ID_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&'()*+"
+        private const val ALLOWED_ID_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&'()*+"
         private val authorRegex = fun (author: String): Regex {
             return Regex("(?i)(^|[^A-Za-z0-9])${author}([^A-Za-z0-9]|\$)")
         }

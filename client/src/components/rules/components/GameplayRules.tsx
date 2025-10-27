@@ -46,6 +46,7 @@ const GameplayRules = () => {
                     <li>Not replanting crops of farms not owned by you.</li>
                     <li>Any form of damage to another player's builds without permission.</li>
                     <li>Towns in ruin may not be claimed over unless permission is granted by staff.</li>
+                    <li>Resource gathering must be done in the designated resource worlds. Defacing or excessively altering the main worlds in unclaimed areas is not allowed.</li>
                 </ul>
                 <strong>
                     Stealing items, loot, mob drops, etc., from other players is strictly prohibited. Among these are:
