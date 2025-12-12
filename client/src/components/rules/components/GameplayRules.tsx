@@ -71,7 +71,7 @@ const GameplayRules = () => {
                     <li>Obtaining unobtainable blocks.</li>
                     <li>Gaining access to restricted areas.</li>
                     <li>Any action providing you or your town an advantage through a bug or glitch.</li>
-                    <li>Attempting to bypass the anti-AFK system.</li>
+                    <li>Attempting to bypass the anti-AFK system or using in-game mechanics/third-party software to avoid being marked as AFK is prohibited.</li>
                 </ul>
                 <strong>Please report any found bugs to a staff member or in a ticket as quickly as possible. If found
                     exploiting, sharing, or abusing bugs, staff will take action as seen fit.</strong>
