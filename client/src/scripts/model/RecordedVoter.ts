@@ -1,4 +1,3 @@
-import {CRAFATAR_API} from "@/constants.ts";
 
 export class RecordedVoter {
 
@@ -13,10 +12,10 @@ export class RecordedVoter {
     }
 
     getHeadRenderURL(): string {
-        return `${CRAFATAR_API}renders/head/${this.uuid}?overlay=true`;
+        return `https://starlightskins.lunareclipse.studio/render/mojavatar/${this.uuid}/bust`;
     }
 
     getBodyRenderURL(): string {
-        return `${CRAFATAR_API}renders/body/${this.uuid}?overlay=true`;
+        return `https://starlightskins.lunareclipse.studio/render/mojavatar/${this.uuid}/full`;
     }
 }
