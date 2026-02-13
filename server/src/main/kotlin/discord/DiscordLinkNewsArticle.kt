@@ -66,7 +66,7 @@ class DiscordLinkNewsArticle(
 
 
     fun author(): String {
-        return embed().author?.name ?: embed().description?.let { scanForConfigAuthors(it) } ?: "Unknown"
+        return embed().author?.name ?: embed().description?.let { scanForConfigAuthors(it) } ?: "Jsinco"
     }
 
     fun message(): String {
