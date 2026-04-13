@@ -72,6 +72,7 @@ const GameplayRules = () => {
                     <li>Gaining access to restricted areas.</li>
                     <li>Any action providing you or your town an advantage through a bug or glitch.</li>
                     <li>Attempting to bypass the anti-AFK system or using in-game mechanics/third-party software to avoid being marked as AFK is prohibited.</li>
+                    <li>Abusing job systems or exploiting them for unfair advantage (e.g. Using water or torches to break blocks quicker in a job such as Builder).</li>
                 </ul>
                 <strong>Please report any found bugs to a staff member or in a ticket as quickly as possible. If found
                     exploiting, sharing, or abusing bugs, staff will take action as seen fit.</strong>
@@ -100,6 +101,14 @@ const GameplayRules = () => {
                     <li>Avoid spawning a high number of bosses or mobs, such as Withers, Snow Golems, etc.</li>
                 </ul>
                 <strong>Any redstone machine or farm that causes significant lag to the server will be removed without warning.</strong>
+                <h2>Folia Region Guidelines</h2>
+                <strong>We have specific guidelines for specific Folia regions, please read through these carefully if you intend to build farms or grinders.</strong>
+                <ul>
+                    <li>Saturating a region with farms is not allowed (high utilization or MSPT). Any violating farm or grinder will be removed without warning.</li>
+                    <li>Excessive use of tile entities that cause lag to Minecraft clients is not allowed.</li>
+                    <li>Farms or areas that cause a concerning amount of lag to a region, regardless of their location may be asked to have certain portions removed or changed.</li>
+                    <li>We reserve the right to ask players to change their farms for any given reason or remove portions of farms we feel are unfit for gameplay on Luma.</li>
+                </ul>
                 <h2>Unfair Advantages</h2>
                 <strong>Within our community, maintaining a fair and level playing field is important. If found to be cheating, staff will take action.</strong>
                 <ul>
