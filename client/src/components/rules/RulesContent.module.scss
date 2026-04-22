@@ -245,3 +245,58 @@
         }
     }
 }
+
+.anchorHeading {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    scroll-margin-top: 1rem;
+}
+
+.anchorLink {
+    opacity: 0;
+    background: none;
+    border: none;
+    padding: 0 0.25rem;
+    color: $primary-color;
+    cursor: pointer;
+    font-size: 0.75em;
+    font-family: 'Paytone One', sans-serif;
+    transition: opacity 0.2s ease;
+    outline: none;
+
+    &:focus,
+    &:focus-visible {
+        outline: none;
+    }
+
+    .anchorHeading:hover & {
+        opacity: 0.6;
+    }
+
+    &:hover {
+        opacity: 1 !important;
+    }
+    
+    // permanently show on touch devices
+    @media (hover: none) {
+        opacity: 0.5;
+    }
+}
+
+// flash sections after using a deep link
+.highlighted {
+    animation: rulesHighlightFlash 2s ease-out;
+    border-radius: 4px;
+}
+
+@keyframes rulesHighlightFlash {
+    0% {
+        background-color: rgba($primary-color, 0.35);
+        box-shadow: 0 0 0 8px rgba($primary-color, 0.35);
+    }
+    100% {
+        background-color: transparent;
+        box-shadow: 0 0 0 8px transparent;
+    }
+}

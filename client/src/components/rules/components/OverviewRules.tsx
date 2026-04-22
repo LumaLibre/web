@@ -1,11 +1,11 @@
 import styles from "@/components/rules/RulesContent.module.scss";
 import {DISCORD_INV} from "@/constants.ts";
-import {quickLink} from "@/components/rules/RulesContent.tsx";
+import {quickLink, AnchorHeading} from "@/components/rules/RulesContent.tsx";
 
 const OverviewRules = () => {
     return (
         <>
-            <h1 className={styles.rulesTitleText}>
+            <h1 id="overview" className={styles.rulesTitleText}>
                 LumaMC's Rules
             </h1>
             <div className={styles.rulesBodyText}>
@@ -26,7 +26,7 @@ const OverviewRules = () => {
                     Again, players and community members are encouraged to stay informed about any updates or
                     modifications to the rules.
                 </p>
-                <h2>Punishment Policy</h2>
+                <AnchorHeading id="overview-punishment-policy">Punishment Policy</AnchorHeading>
                 <ul>
                     <li>
                         Punishments are handled on a case-by-case basis, and no two instances of rule-breaking will
@@ -41,12 +41,14 @@ const OverviewRules = () => {
                     </li>
                     <li>
                         Staff members reserve the right to administer punishments based on any grounds they deem
-                        necessary. If you feel a punishment is made unfairly, make a ticket on our {quickLink('discord', DISCORD_INV)} to
+                        necessary. If you feel a punishment is made unfairly, make a ticket on
+                        our {quickLink('discord', DISCORD_INV)} to
                         appeal or directly message an admin to report a staff member.
                     </li>
                 </ul>
                 <strong>
-                    Conversations with other players, regardless of the setting related to the server, are subject to the
+                    Conversations with other players, regardless of the setting related to the server, are subject to
+                    the
                     same rules. This includes:
                 </strong>
                 <ul>

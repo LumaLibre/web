@@ -1,15 +1,15 @@
 import styles from "@/components/rules/RulesContent.module.scss";
 import {DISCORD_INV, STORE} from "@/constants.ts";
-import {quickLink} from "@/components/rules/RulesContent.tsx";
+import {quickLink, AnchorHeading} from "@/components/rules/RulesContent.tsx";
 
 const PoliciesRules = () => {
     return (
         <>
-            <h1 className={styles.rulesTitleText}>
+            <h1 id="policies" className={styles.rulesTitleText}>
                 Policies
             </h1>
             <div className={styles.rulesBodyText}>
-                <h2>Policy on IRL/Store Trading</h2>
+                <AnchorHeading id="policies-irl-trading">Policy on IRL/Store Trading</AnchorHeading>
                 <strong>To maintain fairness and integrity within LumaMC, please be aware of the following guidelines
                     regarding real-world trading:</strong>
                 <ul>
@@ -19,7 +19,7 @@ const PoliciesRules = () => {
                         trackable and kept within Luma.
                     </li>
                 </ul>
-                <h2>Policy on Scamming</h2>
+                <AnchorHeading id="policies-scamming">Policy on Scamming</AnchorHeading>
                 <strong>The act of scamming in any form is strictly prohibited. This encompasses, but is not limited
                     to:</strong>
                 <ul>
@@ -36,7 +36,7 @@ const PoliciesRules = () => {
                         worker must be paid the full agreed-upon amount.
                     </li>
                 </ul>
-                <h2>Reporting Procedures</h2>
+                <AnchorHeading id="policies-reporting">Reporting Procedures</AnchorHeading>
                 <ul>
                     <li>Directly report any players breaking rules to staff, providing proof/evidence whenever possible
                         through our discord tickets.
@@ -45,7 +45,7 @@ const PoliciesRules = () => {
                     <li>Multiple false reports lacking evidence may lead to punitive measures.</li>
                     <li>Avoid creating blank tickets; instead, promptly respond with details regarding your issue.</li>
                 </ul>
-                <h2>Mute & Ban Policies</h2>
+                <AnchorHeading id="policies-mute-ban">Mute & Ban Policies</AnchorHeading>
                 <ul>
                     <li>It is strictly prohibited to work around a mute. This includes using signs, books, paper, or any
                         other method to communicate with players in-game.
@@ -57,7 +57,7 @@ const PoliciesRules = () => {
                         directly for this purpose.
                     </li>
                 </ul>
-                <h2>Creativity Policy</h2>
+                <AnchorHeading id="policies-creativity">Creativity Policy</AnchorHeading>
                 <ul>
                     <li>Inappropriate usernames or skins may result in a ban until they are changed.</li>
                     <li>The use of inappropriate or disrespectful names, skins, tags, map art, signs, pixel art, books,
@@ -68,7 +68,7 @@ const PoliciesRules = () => {
                     </li>
                     <li>When in doubt, it is recommended to seek guidance from any staff member.</li>
                 </ul>
-                <h2>Policy on Alternative Accounts</h2>
+                <AnchorHeading id="policies-alts">Policy on Alternative Accounts</AnchorHeading>
                 <strong>Using multiple accounts, also known as alts, is strictly prohibited within our community due to
                     the unfair advantages they provide. Rules against this include:</strong>
                 <ul>
@@ -85,7 +85,7 @@ const PoliciesRules = () => {
                     </li>
                 </ul>
                 <strong>TL;DR, one account per person.</strong>
-                <h2>Punishment Policy</h2>
+                <AnchorHeading id="policies-punishment">Punishment Policy</AnchorHeading>
                 <ul>
                     <li>Punishments are handled on a case-by-case basis, and no two instances of rule-breaking will
                         necessarily receive the same punishment.

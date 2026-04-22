@@ -1,10 +1,11 @@
 import styles from "@/components/rules/RulesContent.module.scss";
+import {AnchorHeading} from "@/components/rules/RulesContent.tsx";
 
 
 const ConductRules = () => {
     return (
         <>
-            <h1 className={styles.rulesTitleText}>
+            <h1 id="conduct" className={styles.rulesTitleText}>
                 Conduct Guidelines
             </h1>
             <div className={styles.rulesBodyText}>
@@ -27,16 +28,22 @@ const ConductRules = () => {
                     <li>Creating offensive content, including skins, usernames, builds, items, messages, etc.</li>
                     <li>Any actions that can be interpreted as a threat.</li>
                 </ul>
-                <h2>Global Chat Guidelines</h2>
+                <AnchorHeading id="conduct-global-chat">Global Chat Guidelines</AnchorHeading>
                 <ul>
-                    <li>Swearing is permitted, provided it is in moderation, without the intent to hurt someone, and not targeted at another player.</li>
+                    <li>Swearing is permitted, provided it is in moderation, without the intent to hurt someone, and
+                        not targeted at another player.
+                    </li>
                     <li>Do not share your own or others' personal information.</li>
-                    <li>Avoid controversial topics in general chat, including harmful substances, triggering experiences, etc.</li>
+                    <li>Avoid controversial topics in general chat, including harmful substances, triggering
+                        experiences, etc.
+                    </li>
                     <li>Any form of staff/player impersonation is strictly prohibited.</li>
                     <li>Keep chat appropriate and respectful at all times.</li>
                     <li>Conversations in global chat should be kept in English.</li>
                     <li>Refrain from engaging in conversation that makes any player uncomfortable.</li>
-                    <li><h2>No spamming, including but not limited to:</h2></li>
+                    <li>
+                        <AnchorHeading id="conduct-spam">No spamming, including but not limited to:</AnchorHeading>
+                    </li>
                     <ul>
                         <li>Character spam.</li>
                         <li>Excessive capitalization or symbols filling chat.</li>
@@ -44,7 +51,7 @@ const ConductRules = () => {
                         <li>Repeating the same message multiple times.</li>
                     </ul>
                 </ul>
-                <h2>Advertising Guidelines</h2>
+                <AnchorHeading id="conduct-advertising">Advertising Guidelines</AnchorHeading>
                 <ul>
                     <li>
                         All in-game advertising should be conducted in the trade chat. Excessive or overly aggressive
@@ -58,7 +65,8 @@ const ConductRules = () => {
                         This includes mentioning any other server in any chat.
                     </li>
                     <li>
-                        While a private Discord channel for your town members is permitted, refrain from sharing it outside your town
+                        While a private Discord channel for your town members is permitted, refrain from sharing it
+                        outside your town
                         or utilizing it for advertising purposes.
                     </li>
                 </ul>
