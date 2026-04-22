@@ -72,7 +72,6 @@ const GameplayRules = () => {
                     <li>Gaining access to restricted areas.</li>
                     <li>Any action providing you or your town an advantage through a bug or glitch.</li>
                     <li>Attempting to bypass the anti-AFK system or using in-game mechanics/third-party software to avoid being marked as AFK is prohibited.</li>
-                    <li>Abusing job systems or exploiting them for unfair advantage (e.g. Using water or torches to break blocks quicker in a job such as Builder).</li>
                 </ul>
                 <strong>Please report any found bugs to a staff member or in a ticket as quickly as possible. If found
                     exploiting, sharing, or abusing bugs, staff will take action as seen fit.</strong>
@@ -101,14 +100,6 @@ const GameplayRules = () => {
                     <li>Avoid spawning a high number of bosses or mobs, such as Withers, Snow Golems, etc.</li>
                 </ul>
                 <strong>Any redstone machine or farm that causes significant lag to the server will be removed without warning.</strong>
-                <h2>Folia Region Guidelines</h2>
-                <strong>We have specific guidelines for specific Folia regions, please read through these carefully if you intend to build farms or grinders.</strong>
-                <ul>
-                    <li>Saturating a region with farms is not allowed (high utilization or MSPT). Any violating farm or grinder will be removed without warning.</li>
-                    <li>Excessive use of tile entities that cause lag to Minecraft clients is not allowed.</li>
-                    <li>Farms or areas that cause a concerning amount of lag to a region, regardless of their location may be asked to have certain portions removed or changed.</li>
-                    <li>We reserve the right to ask players to change their farms for any given reason or remove portions of farms we feel are unfit for gameplay on Luma.</li>
-                </ul>
                 <h2>Unfair Advantages</h2>
                 <strong>Within our community, maintaining a fair and level playing field is important. If found to be cheating, staff will take action.</strong>
                 <ul>
@@ -121,6 +112,23 @@ const GameplayRules = () => {
                     <li>Exploiting bugs or accidental in-game features for personal gain (pertains to our Bugs & Glitches section).</li>
                 </ul>
                 <strong>Before using any mods, especially if uncertain about their permissibility, please consult with staff for approval.</strong>
+                <h2>Folia Region Guidelines</h2>
+                <strong>We have specific guidelines for specific Folia regions, please read through these carefully if you intend to build farms or grinders.</strong>
+                <ul>
+                    <li>Saturating a region with farms is not allowed (high thread utilization or MSPT). Any violating farm or grinder will be removed without warning.</li>
+                    <li>Excessive use of tile entities or other mechanisms that cause lag to Minecraft clients is not allowed.</li>
+                    <li>Farms or areas that cause a concerning amount of lag to a region, regardless of their location may be asked to have certain portions removed or changed.</li>
+                    <li>We reserve the right to ask players to change their farms for any given reason or remove portions of farms we feel are unfit for gameplay on Luma.</li>
+                </ul>
+                <strong>All players ranked Serene/Arcane or higher have access to <code>/tps</code>. You may view the performance of a region at any time.</strong>
+                <h2>Automation</h2>
+                <ul>
+                    <li>Automation of any job action that does not pay out using a job block (e.g. furnace, brewing stand, etc.) is not allowed.</li>
+                    <li>Chunk loaders of any kind are not allowed. Only players are permitted to keep chunks persistently loaded on Luma.</li>
+                    <li>While AFK farms are allowed, mobs will only drop 10% of their normal loot table if not killed by another entity.</li>
+                    <li>Using client mods to automate any action with <strong>Jobs</strong> is not allowed. This explictly includes Litematica.</li>
+                    <li>Bypassing our AFK timer in any form is not allowed (as pertains to our Bugs & Glitches section).</li>
+                </ul>
             </div>
         </>
     );
