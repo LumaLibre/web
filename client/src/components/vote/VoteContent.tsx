@@ -4,9 +4,6 @@ import Label from "@/components/label/Label.tsx";
 import TopVoters from "@/components/vote/components/topvoter/TopVoters.tsx";
 import {DATE} from "@/constants.ts";
 
-// removed:
-//'https://minecraft-server.net/details/LumaMC',
-//'https://minecraft-serverlist.com/server/2063/vote',
 const voteSites: string[] = [
     'https://minecraftservers.org/vote/658337',
     'https://minecraft-server-list.com/server/501583/vote',
@@ -16,7 +13,8 @@ const voteSites: string[] = [
     'https://minecraft-mp.com/server/327658/vote',
     'https://play-minecraft-servers.com/minecraft-servers/lumamc/?tab=vote',
     'https://www.curseforge.com/servers/minecraft/game/lumamc/vote',
-    'https://minecraft.menu/server-lumamc.4697/vote'
+    'https://minecraft.menu/server-lumamc.4697/vote',
+    'https://www.minerank.com/lumamc/vote'
 ];
 
 function VoteContent() {
