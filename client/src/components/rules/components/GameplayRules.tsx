@@ -147,20 +147,17 @@ const GameplayRules = () => {
                     performance of a region at any time.</strong>
                 <AnchorHeading id="gameplay-automation">Automation</AnchorHeading>
                 <ul>
-                    <li>Automation of any job action that does not pay out using a job block (e.g. furnace, brewing
-                        stand, etc.) is not allowed.
+                    <li>Chunk loaders of any kind are not allowed. Only players are permitted to keep chunkspersistently loaded on Luma.</li>
+                    <li>While AFK farms are allowed, mobs will only drop 10% of their normal loot table if not killed by another entity.</li>
+                    <li>Bypassing our AFK timer in any form is not allowed (as pertains to our Bugs & Glitches section).</li>
+                    <li>
+                        <AnchorHeading id="gameplay-automation-jobs">Do not automate job actions that are not explictly intended for automation</AnchorHeading>
                     </li>
-                    <li>Chunk loaders of any kind are not allowed. Only players are permitted to keep chunks
-                        persistently loaded on Luma.
-                    </li>
-                    <li>While AFK farms are allowed, mobs will only drop 10% of their normal loot table if not killed by
-                        another entity.
-                    </li>
-                    <li>Using client mods to automate any action with <strong>Jobs</strong> is not allowed. This
-                        explictly includes Litematica.
-                    </li>
-                    <li>Bypassing our AFK timer in any form is not allowed (as pertains to our Bugs & Glitches section).
-                    </li>
+                    <ul>
+                        <li>Automation of any job action that does not pay out using a job block (e.g. furnace, brewing stand, etc.) is not allowed.</li>
+                        <li>Do not use in-game mechanics to automate on non-job-block actions unless expliclitly permitted (e.g. automating builder with torches).</li>
+                        <li>Do not automate job actions of any kind with client side mods (as pertains to our Unfair Advantages section). This explicitly includes Litematica.</li>
+                    </ul>
                 </ul>
             </div>
         </>
