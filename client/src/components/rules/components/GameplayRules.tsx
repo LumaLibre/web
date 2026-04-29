@@ -127,7 +127,7 @@ const GameplayRules = () => {
                 <strong>Before using any mods, especially if uncertain about their permissibility, please consult with
                     staff for approval.</strong>
                 <AnchorHeading id="gameplay-folia">Folia Region Guidelines</AnchorHeading>
-                <strong>We have specific guidelines for specific Folia regions, please read through these carefully if
+                <strong>We have specific guidelines for Folia regions, please read through these carefully if
                     you intend to build farms or grinders.</strong>
                 <ul>
                     <li>Saturating a region with farms is not allowed (high thread utilization or MSPT). Any violating
@@ -147,7 +147,7 @@ const GameplayRules = () => {
                     performance of a region at any time.</strong>
                 <AnchorHeading id="gameplay-automation">Automation</AnchorHeading>
                 <ul>
-                    <li>Chunk loaders of any kind are not allowed. Only players are permitted to keep chunkspersistently loaded on Luma.</li>
+                    <li>Chunk loaders of any kind are not allowed. Only players are permitted to keep chunks persistently loaded on Luma.</li>
                     <li>While AFK farms are allowed, mobs will only drop 10% of their normal loot table if not killed by another entity.</li>
                     <li>Bypassing our AFK timer in any form is not allowed (as pertains to our Bugs & Glitches section).</li>
                     <li>
