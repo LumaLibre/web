@@ -1,6 +1,14 @@
 import {API_ENDPOINT} from "@/constants.ts";
 
+
 export class RecordedVoter {
+    static poses: Map<string, string> = new Map([
+        ["wave", "?yaw=30&pitch=10&trim=true&padding=0&scale=26"],
+        ["cute", "?yaw=30&pitch=10&trim=true&padding=0&scale=26"],
+        ["praise", "?yaw=-5&pitch=0&trim=true&padding=0&scale=26"],
+        ["sitting", "?yaw=-5&pitch=0&trim=true&padding=0&scale=26"] // pad 20
+    ]);
+
     uuid: string;
     votes: number;
     name?: string;
@@ -13,11 +21,13 @@ export class RecordedVoter {
 
     getHeadRenderURL(): string {
         //return `https://starlightskins.lunareclipse.studio/render/mojavatar/${this.uuid}/bust`;
-        return `${API_ENDPOINT}/render/wave/${this.uuid}?yaw=30&pitch=10&trim=true`;
+        return `${API_ENDPOINT}/render/wave/${this.uuid}?yaw=30&pitch=10&trim=true&scale=2`;
     }
 
-    getBodyRenderURL(): string {
+    getBodyRenderURL(pos: number): string {
         //return `https://starlightskins.lunareclipse.studio/render/mojavatar/${this.uuid}/full`;
-        return `${API_ENDPOINT}/render/cute/${this.uuid}?yaw=30&pitch=10&trim=true&padding=4`
+        const entries = [...RecordedVoter.poses.entries()];
+        const [pose, args] = entries[(pos - 1) % entries.length];
+        return `https://lumamc.net/api/render/${pose}/${this.uuid}${args}`;
     }
 }

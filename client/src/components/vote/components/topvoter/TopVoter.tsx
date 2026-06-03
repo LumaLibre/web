@@ -26,7 +26,8 @@ const TopVoter = ({ recordedVoter, index }: { recordedVoter: RecordedVoter, inde
     const name = recordedVoter.name || "Voter";
     const truncatedName = (name.length > 10 && isMobile()) ? `${name.substring(0, 10)}...` : name;
     const votes = recordedVoter.votes;
-    const imageUrl = smallDisplay ? recordedVoter.getHeadRenderURL() : recordedVoter.getBodyRenderURL();
+    //const imageUrl = smallDisplay ? recordedVoter.getHeadRenderURL() : recordedVoter.getBodyRenderURL(index);
+    const imageUrl = recordedVoter.getBodyRenderURL(index);
 
     return (
         <div className={styles.topVoterContainer}>
