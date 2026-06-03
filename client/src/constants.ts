@@ -23,4 +23,3 @@ export const API_ENDPOINT = `${HOST}api`;
 // TODO: Nest Topvoter's endpoint inside normal API endpoint
 export const LUMA_TOPVOTER_ENDPOINT = `https://topvoter.lumamc.net/`;
 export const MINOTAR_API = "https://minotar.net/";
-export const CRAFATAR_API = "https://crafatar.com/";

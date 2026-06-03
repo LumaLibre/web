@@ -1,6 +1,6 @@
+import {API_ENDPOINT} from "@/constants.ts";
 
 export class RecordedVoter {
-
     uuid: string;
     votes: number;
     name?: string;
@@ -12,10 +12,12 @@ export class RecordedVoter {
     }
 
     getHeadRenderURL(): string {
-        return `https://starlightskins.lunareclipse.studio/render/mojavatar/${this.uuid}/bust`;
+        //return `https://starlightskins.lunareclipse.studio/render/mojavatar/${this.uuid}/bust`;
+        return `${API_ENDPOINT}/render/wave/${this.uuid}?yaw=30&pitch=10&trim=true`;
     }
 
     getBodyRenderURL(): string {
-        return `https://starlightskins.lunareclipse.studio/render/mojavatar/${this.uuid}/full`;
+        //return `https://starlightskins.lunareclipse.studio/render/mojavatar/${this.uuid}/full`;
+        return `${API_ENDPOINT}/render/cute/${this.uuid}?yaw=30&pitch=10&trim=true&padding=4`
     }
 }

@@ -6,6 +6,7 @@ import net.lumamc.web.configuration.ConfigManager
 import net.lumamc.web.configuration.sector.NewsArticle
 import java.time.LocalDate
 import java.time.ZoneOffset
+import kotlin.collections.iterator
 import kotlin.io.path.absolutePathString
 
 class DiscordLinkNewsArticle(
@@ -90,7 +91,7 @@ class DiscordLinkNewsArticle(
 
 
     private fun saveContent(): String {
-        val dataFolder = Util.getDataFolderPath().resolve("news")
+        val dataFolder = Util.getDataFolderPath().resolve("net/lumamc/web/news")
         val asFile = dataFolder.toFile()
         val id = getId()
         if (!asFile.exists()) {
