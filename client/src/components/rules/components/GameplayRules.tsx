@@ -159,6 +159,18 @@ const GameplayRules = () => {
                         <li>Do not automate job actions of any kind with client side mods (as pertains to our Unfair Advantages section). This explicitly includes Litematica.</li>
                     </ul>
                 </ul>
+                <AnchorHeading id={"minigames"}>Minigame Guidelines (Events)</AnchorHeading>
+                <strong>This section of our gameplay rules applies to minigames during seasonal events on Luma.</strong>
+                <ul>
+                    <li>Team sabotaging of any kind is not allowed. This includes but is not limited to:</li>
+                    <ul>
+                        <li>Giving otherwise unknown information to the opposing team.</li>
+                        <li>Intentionally hindering the progress of your own team.</li>
+                        <li>Joining a minigame and immediately going AFK or participating in a minigame simply to earn event currency.</li>
+                    </ul>
+                    <li>Exploiting bugs or unintended mechanics to gain an advantage is prohibited.</li>
+                    <li>Intentionally stalling or refusing to participate in the objective is not allowed.</li>
+                </ul>
             </div>
         </>
     );
