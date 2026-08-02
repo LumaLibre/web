@@ -162,11 +162,11 @@ const GameplayRules = () => {
                 <AnchorHeading id={"minigames"}>Minigame Guidelines (Events)</AnchorHeading>
                 <strong>This section of our gameplay rules applies to minigames during seasonal events on Luma.</strong>
                 <ul>
-                    <li>Team sabotaging of any kind is not allowed. This includes but is not limited to:</li>
+                    <li>Team sabotaging of any kind is not allowed, including but not limited to:</li>
                     <ul>
                         <li>Giving otherwise unknown information to the opposing team.</li>
                         <li>Intentionally hindering the progress of your own team.</li>
-                        <li>Joining a minigame and immediately going AFK or participating in a minigame simply to earn event currency.</li>
+                        <li>Joining a minigame solely to earn event currency while remaining AFK or otherwise not participating.</li>
                     </ul>
                     <li>Exploiting bugs or unintended mechanics to gain an advantage is prohibited.</li>
                     <li>Intentionally stalling or refusing to participate in the objective is not allowed.</li>
