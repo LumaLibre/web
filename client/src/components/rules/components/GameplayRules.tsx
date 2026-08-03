@@ -92,7 +92,7 @@ const GameplayRules = () => {
                     </li>
                 </ul>
                 <AnchorHeading id="gameplay-redstone-farms">Redstone & Farm Regulations</AnchorHeading>
-                <strong>Our up to date redstone and farm limits can be found on
+                <strong>Our up-to-date redstone and farm limits can be found on
                     our {quickLink('wiki', WIKI_LINK('basics/farms-and-limits'))}. Strictly
                     prohibited redstone devices or machines are:</strong>
                 <ul>
@@ -100,6 +100,7 @@ const GameplayRules = () => {
                     <li>Flying machines.</li>
                     <li>Mob farms that spawn an unreasonable number of mobs.</li>
                     <li>Zero tick farms.</li>
+                    <li>Portal farms or portal-based farms used to quickly move entities away from the player (excluding natural ones such as Zombified Piglin portal farms).</li>
                     <li>Auto-brewers and cookers are permitted within redstone limits, as long as they do not cause
                         immense
                         lag.
