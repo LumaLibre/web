@@ -8,11 +8,8 @@ const voteSites: string[] = [
     'https://minecraftservers.org/vote/658337',
     'https://minecraft-server-list.com/server/501583/vote',
     'https://minecraft.buzz/vote/9490',
-    'https://topg.org/minecraft-servers/server-659987',
     'https://topminecraftservers.org/vote/36236',
-    'https://minecraft-mp.com/server/327658/vote',
     'https://play-minecraft-servers.com/minecraft-servers/lumamc/?tab=vote',
-    'https://www.curseforge.com/servers/minecraft/game/lumamc/vote',
     'https://minecraft.menu/server-lumamc.4697/vote',
     'https://www.minerank.com/lumamc/vote#vote-now'
 ];
