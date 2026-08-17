@@ -117,7 +117,7 @@ function StoreContent() {
                                     aria-hidden="true"
                                 />
                                 <div className={styles.identityText}>
-                                    <span className={styles.identityLabel}>Buying for</span>
+                                    <span className={styles.identityLabel}>Shopping for</span>
                                     <span className={styles.identityName}>{username}</span>
                                 </div>
                                 <button onClick={changeUsername}>Change</button>
