@@ -16,7 +16,26 @@ export const WIKI_LINK = (endpoint: string) => {
   return `${WIKI}${endpoint}`;
 };
 
-export const STORE = "https://store.lumamc.net";
+export const STORE = `${HOST}store`
+export const TEBEX_PUBLIC_TOKEN = "thl1-b56d66035505068200ecc30aad8c3e5f417c08e4"; // non-sensitive token
+export const TEBEX_HEADLESS_ENDPOINT = `https://headless.tebex.io/api/accounts/${TEBEX_PUBLIC_TOKEN}`;
+export const TEBEX_BASKETS_ENDPOINT = "https://headless.tebex.io/api/baskets";
+
+export const STORE_PAYMENT_METHODS = [
+    "visa",
+    "mastercard",
+    "amex",
+    "paypal",
+    "applepay",
+    "googlepay"
+] as const;
+
+export type StorePaymentMethod = typeof STORE_PAYMENT_METHODS[number];
+
+export const STORE_PATH = "/store";
+const ORIGIN = typeof window === "undefined" ? HOST.replace(/\/$/, "") : window.location.origin;
+export const STORE_COMPLETE_URL = `${ORIGIN}/store/complete`;
+export const STORE_CANCEL_URL = `${ORIGIN}/store`;
 
 // Apis
 export const API_ENDPOINT = `${HOST}api`;

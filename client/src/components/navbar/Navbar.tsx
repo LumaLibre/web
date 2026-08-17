@@ -3,7 +3,7 @@ import styles from "./Navbar.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faGavel, faCheckCircle, faStore, faMap, faBook, faRocket } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import { STORE, WIKI } from "@/constants.ts";
+import { WIKI } from "@/constants.ts";
 
 interface NavbarProps {
     beforeNavbarList?: React.ReactNode;
@@ -54,10 +54,10 @@ function Navbar({beforeNavbarList, afterNavbarList }: NavbarProps) {
                     </Link>
                 </li>
                 <li className={styles.navItem}>
-                    <a href={STORE} rel="noopener noreferrer" onClick={toggleMenu}>
+                    <Link to="/store" onClick={toggleMenu}>
                         <FontAwesomeIcon icon={faStore} className={styles.navIcon}/>
                         <span className={styles.navText}>Store</span>
-                    </a>
+                    </Link>
                 </li>
                 <li className={styles.navItem}>
                     <a href="https://map.lumamc.net" rel="noopener noreferrer" onClick={toggleMenu}>

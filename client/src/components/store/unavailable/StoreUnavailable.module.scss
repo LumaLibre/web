@@ -1,0 +1,63 @@
+@use "@/App.module.scss" as *;
+
+.background {
+    @include artBackground("@/assets/MainBackground.webp");
+    padding-bottom: 8rem;
+}
+
+.card {
+    @include genericCard;
+    width: min(560px, 92%);
+    margin: 12rem auto 0;
+    padding: 2rem;
+    text-align: center;
+
+    @media (max-width: 1024px) {
+        margin-top: 0;
+    }
+
+    h1 {
+        color: $primary-color;
+        font-family: 'Paytone One', sans-serif;
+        text-transform: uppercase;
+        font-size: 1.8rem;
+        margin: 0 0 1rem;
+    }
+
+    p {
+        color: $secondary-color;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 400;
+        margin: 0 0 0.6rem;
+    }
+}
+
+.detail {
+    font-size: 0.8rem !important;
+    opacity: 0.75;
+    font-family: monospace !important;
+    word-break: break-word;
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+
+    a {
+        background: $primary-color;
+        color: #ffffff;
+        border-radius: 8px;
+        padding: 0.6rem 1.2rem;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: background 0.2s;
+
+        &:hover { background: #b740d5; color: #ffffff; }
+    }
+}

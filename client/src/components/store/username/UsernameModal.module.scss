@@ -1,0 +1,112 @@
+@use "@/App.module.scss" as *;
+
+.scrim {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    z-index: 1005;
+    animation: scrimIn $dur-fast $ease-standard both;
+}
+
+@keyframes scrimIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    to { opacity: 1; transform: none; }
+}
+
+.modal {
+    background: $card-color;
+    border-radius: 15px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+    width: min(420px, 100%);
+    padding: 1.6rem;
+    text-align: left;
+    font-family: 'Poppins', sans-serif;
+    animation: modalIn $dur-base $ease-snappy both;
+
+    h2 {
+        color: $primary-color;
+        font-family: 'Paytone One', sans-serif;
+        font-size: 1.3rem;
+        margin: 0 0 0.6rem;
+    }
+
+    p {
+        color: $secondary-color;
+        font-size: 0.88rem;
+        font-weight: 400;
+        margin: 0 0 1rem;
+    }
+
+    input {
+        width: 100%;
+        box-sizing: border-box;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(205, 184, 208, 0.25);
+        border-radius: 8px;
+        color: #ffffff;
+        padding: 0.6rem 0.75rem;
+        font-family: inherit;
+        font-size: 0.95rem;
+
+        &::placeholder { color: rgba(205, 184, 208, 0.55); }
+        &:focus { outline: none; border-color: $primary-color; }
+        &[aria-invalid="true"] { border-color: #ff8080; }
+    }
+}
+
+.warning {
+    color: #f3c969 !important;
+    font-size: 0.8rem !important;
+    background: rgba(243, 201, 105, 0.1);
+    border: 1px solid rgba(243, 201, 105, 0.25);
+    border-radius: 8px;
+    padding: 0.5rem 0.65rem;
+    margin: 0 0 1rem !important;
+}
+
+.error {
+    color: #ff8080 !important;
+    font-size: 0.82rem !important;
+    margin: 0.6rem 0 0 !important;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    margin-top: 1.2rem;
+
+    button {
+        border-radius: 8px;
+        padding: 0.55rem 1.1rem;
+        font-family: inherit;
+        font-size: 0.85rem;
+        font-weight: 700;
+        cursor: pointer;
+        border: 1px solid transparent;
+    }
+}
+
+.cancel {
+    background: rgba(255, 255, 255, 0.08);
+    color: $secondary-color;
+
+    &:hover { background: rgba(255, 255, 255, 0.16); border-color: transparent; }
+}
+
+.confirm {
+    background: $primary-color;
+    color: #ffffff;
+
+    &:hover:not(:disabled) { background: #b740d5; border-color: transparent; }
+    &:disabled { opacity: 0.6; cursor: default; }
+}

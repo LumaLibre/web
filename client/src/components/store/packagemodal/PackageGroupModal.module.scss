@@ -1,0 +1,145 @@
+@use "@/App.module.scss" as *;
+
+.scrim {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    animation: scrimIn $dur-fast $ease-standard both;
+    z-index: 1003;
+
+    @media (max-width: 768px) {
+        padding: 0.75rem;
+    }
+}
+
+@keyframes scrimIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes scrimOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes modalOut {
+    from { opacity: 1; transform: none; }
+    to { opacity: 0; transform: translateY(8px) scale(0.985); }
+}
+
+.scrim.closing {
+    animation: scrimOut $dur-fast $ease-standard both;
+}
+
+.modal.closing {
+    animation: modalOut $dur-fast $ease-standard both;
+}
+
+.modal {
+    background: $card-color;
+    border-radius: 15px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+    width: min(1000px, 100%);
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    overflow: hidden;
+    animation: modalIn $dur-base $ease-snappy both;
+}
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.4rem 1.5rem 1rem;
+    border-bottom: 1px solid rgba(205, 184, 208, 0.15);
+    flex-shrink: 0;
+
+    h2 {
+        color: $primary-color;
+        font-family: 'Paytone One', sans-serif;
+        font-size: 1.45rem;
+        margin: 0;
+    }
+
+    p {
+        color: $secondary-color;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 400;
+        margin: 0.3rem 0 0;
+    }
+}
+
+.prefix {
+    display: inline-block;
+    background: $primary-color;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.2rem 0.5rem;
+    border-radius: 999px;
+    margin-bottom: 0.4rem;
+}
+
+.closeButton {
+    background: rgba(0, 0, 0, 0.35);
+    border: none;
+    color: $secondary-color;
+    font-size: 1.6rem;
+    line-height: 1;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    padding: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+
+    &:hover { color: #ffffff; border-color: transparent; }
+}
+
+@keyframes optionIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+}
+
+.options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.25rem;
+
+    > * {
+        animation: optionIn $dur-base $ease-snappy both;
+    }
+
+    @for $i from 1 through 6 {
+        > *:nth-child(#{$i}) { animation-delay: #{60 + ($i - 1) * 40}ms; }
+    }
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+
+    &::-webkit-scrollbar { display: none; }
+    scrollbar-width: none;
+
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 0.85rem;
+        padding: 1rem;
+    }
+}

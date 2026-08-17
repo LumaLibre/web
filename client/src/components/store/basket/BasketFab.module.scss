@@ -1,0 +1,74 @@
+@use "@/App.module.scss" as *;
+
+@keyframes fabIn {
+    from { opacity: 0; transform: translateY(14px) scale(0.94); }
+    to { opacity: 1; transform: none; }
+}
+
+.fab {
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    background: $primary-color;
+    color: #ffffff;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    padding: 0.85rem 1.4rem 0.85rem 1.1rem;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    z-index: 1001;
+    transition: transform $dur-base $ease-snappy, background $dur-fast linear,
+                opacity $dur-fast $ease-standard;
+    animation: fabIn $dur-base $ease-snappy both;
+
+    &:hover {
+        background: #b740d5;
+        border-color: transparent;
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        right: 1rem;
+        bottom: 1rem;
+        padding: 0.75rem 1.2rem 0.75rem 0.95rem;
+        font-size: 0.9rem;
+    }
+}
+
+.fabHidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.iconWrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    font-size: 1.1rem;
+}
+
+.count {
+    position: absolute;
+    top: -0.5rem;
+    right: -0.6rem;
+    background: #ffffff;
+    color: $primary-color;
+    border-radius: 999px;
+    min-width: 1.15rem;
+    height: 1.15rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.68rem;
+    padding: 0 0.3rem;
+}
+
+.label {
+    white-space: nowrap;
+}

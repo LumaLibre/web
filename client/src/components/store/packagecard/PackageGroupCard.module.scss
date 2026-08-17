@@ -1,0 +1,230 @@
+@use "@/App.module.scss" as *;
+
+.stack {
+    position: relative;
+    width: 100%;
+    padding: 0 8px 8px 0;
+    box-sizing: border-box; // No global border-box reset in this project
+    z-index: 0;
+
+    &:hover, &:focus-within {
+        z-index: 2;
+    }
+}
+
+.layer {
+    position: absolute;
+    left: 0;
+    right: 8px;
+    top: 0;
+    bottom: 8px;
+    border-radius: 15px;
+    background: $card-color;
+    border: 1px solid rgba(205, 184, 208, 0.14);
+    box-shadow: -6px 6px 14px rgba(0, 0, 0, 0.35);
+    box-sizing: border-box;
+    overflow: hidden;
+    pointer-events: none;
+    transform-origin: 50% 150%;
+    transform: translate(calc(var(--depth) * 4px), calc(var(--depth) * 4px));
+    opacity: calc(0.9 - var(--depth) * 0.08);
+    transition: transform $dur-base $ease-snappy, opacity $dur-base $ease-snappy;
+}
+
+.layerImage {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    aspect-ratio: 1 / 1;
+    background: radial-gradient(circle at 50% 40%, rgba(145, 26, 176, 0.22), rgba(0, 0, 0, 0.25));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.9rem;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transform: translateX(32%);
+    }
+}
+
+.layerBody {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+    height: 22%;
+    background: $card-color;
+}
+
+.stack:hover .layer,
+.stack:focus-within .layer {
+    transform:
+        rotate(calc(var(--depth) * 5deg))
+        translateX(calc(var(--depth) * 44px))
+        translateY(calc(var(--depth) * -4px))
+        scale(calc(1 - var(--depth) * 0.02));
+    opacity: 1;
+}
+
+.card {
+    position: relative;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    background: $card-color;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    text-align: left;
+    cursor: pointer;
+    transition: transform $dur-base $ease-snappy, box-shadow $dur-base $ease-snappy;
+
+    &:hover, &:focus-visible {
+        box-shadow: 0 14px 30px 0 rgba(0, 0, 0, 0.5);
+        transform: translateY(-6px);
+        outline: none;
+    }
+
+    &:focus-visible {
+        box-shadow: 0 0 0 2px $primary-color, 0 10px 24px 0 rgba(0, 0, 0, 0.45);
+    }
+}
+
+.imageWrapper {
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    aspect-ratio: 1 / 1;
+    background: radial-gradient(circle at 50% 40%, rgba(145, 26, 176, 0.22), rgba(0, 0, 0, 0.25));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.9rem;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+    }
+}
+
+.imageFallback {
+    width: 100%;
+    height: 100%;
+}
+
+.optionBadge {
+    position: absolute;
+    bottom: 0.6rem;
+    right: 0.6rem;
+    background: rgba(0, 0, 0, 0.55);
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+}
+
+.prefixBadge {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    background: $primary-color;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.2rem 0.5rem;
+    border-radius: 999px;
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 0.9rem 1rem 1rem;
+    gap: 0.7rem;
+}
+
+.name {
+    color: $primary-color;
+    font-family: 'Paytone One', sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.25;
+    margin: 0;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    margin-top: auto;
+}
+
+.pricing {
+    display: flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+.fromLabel {
+    color: $secondary-color;
+    font-size: 0.72rem;
+}
+
+.price {
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.priceSale {
+    color: #7ee787;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.basePrice {
+    color: $secondary-color;
+    font-size: 0.8rem;
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+.salePrefixBadge {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    background: #7ee787;
+    color: #10301a;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 0.2rem 0.5rem;
+    border-radius: 999px;
+}
+
+.chooseButton {
+    background: $primary-color;
+    color: #ffffff;
+    border-radius: 8px;
+    padding: 0.5em 1em;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    white-space: nowrap;
+}

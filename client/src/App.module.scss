@@ -4,6 +4,11 @@ $primary-color: #911AB0;
 $secondary-color: #cdb8d0;
 $card-color: #200c2c;
 
+$ease-snappy: cubic-bezier(0.16, 1, 0.3, 1);
+$ease-standard: cubic-bezier(0.32, 0.72, 0, 1);
+$dur-fast: 130ms;
+$dur-base: 180ms;
+
 #root {
     max-width: 1280px;
     margin: 0 auto;

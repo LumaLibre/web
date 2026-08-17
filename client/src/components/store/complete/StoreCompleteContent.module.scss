@@ -1,0 +1,83 @@
+@use "@/App.module.scss" as *;
+
+.completeBackground {
+    @include artBackground("@/assets/MainBackground.webp");
+    padding-bottom: 8rem;
+}
+
+.card {
+    @include genericCard;
+    width: min(600px, 92%);
+    margin: 12rem auto 0;
+    padding: 2rem;
+    text-align: center;
+
+    @media (max-width: 1024px) {
+        margin-top: 0;
+    }
+
+    h1 {
+        color: $primary-color;
+        font-family: 'Paytone One', sans-serif;
+        text-transform: uppercase;
+        font-size: 2rem;
+        margin: 0 0 1rem;
+    }
+
+    p {
+        color: $secondary-color;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 400;
+        margin: 0 0 0.8rem;
+    }
+}
+
+.small {
+    font-size: 0.82rem !important;
+    opacity: 0.85;
+}
+
+@keyframes lumaFloat {
+    from { transform: translateY(0); }
+    to { transform: translateY(-8px); }
+}
+
+.celebrationLuma {
+    display: block;
+    width: min(190px, 55%);
+    height: auto;
+    margin: 0 auto 0.5rem;
+    animation: lumaFloat 2.4s $ease-standard infinite alternate;
+
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
+    }
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+
+    a {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        background: $primary-color;
+        color: #ffffff;
+        border-radius: 10px;
+        padding: 0.75rem 1.6rem;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: background $dur-fast linear, transform $dur-base $ease-snappy;
+
+        &:hover {
+            background: #b740d5;
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+    }
+}

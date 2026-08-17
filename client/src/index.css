@@ -26,6 +26,17 @@ html::-webkit-scrollbar {
   display: none;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 body {
   margin: 0;
   display: flex;
@@ -53,9 +64,10 @@ button {
 button:hover {
   border-color: #646cff;
 }
-button:focus,
+/* :focus-visible only — :focus also fired on mouse clicks, leaving a ring on tabs after selecting them. */
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 2px solid #911AB0;
+  outline-offset: 2px;
 }
 
 @media (prefers-color-scheme: light) {
