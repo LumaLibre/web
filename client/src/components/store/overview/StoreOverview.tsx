@@ -37,9 +37,6 @@ function StoreOverview() {
 
                 <div className={styles.description}>
                     <p>
-                        Welcome to our brand new store made with Tebex's headless api — now on our main website!
-                    </p>
-                    <p>
                         We're a friendly-community Minecraft server focused on fun and
                         quality gameplay.
                         <br/>
@@ -55,7 +52,6 @@ function StoreOverview() {
                             Discord
                         </a>{" "}
                         server or <strong>in-game</strong>.
-                        <br/>
                         For other concerns, please contact us at{" "}
                         <a href="mailto:stars@lumamc.net">stars@lumamc.net</a>.
                     </p>

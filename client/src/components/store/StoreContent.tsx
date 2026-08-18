@@ -20,6 +20,7 @@ import {buildStoreEntries, categorySlug, PackageGroup} from "@/scripts/packageGr
 import {storeHtml} from "@/scripts/storeHtml.ts";
 import {faBasketShopping} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {MINOTAR_API} from "@/constants.ts";
 
 function StoreContent() {
     const {basket, itemCount, username, changeUsername, addedCount} = useBasket();
@@ -112,7 +113,7 @@ function StoreContent() {
                         {username ? (
                             <>
                                 <img
-                                    src={`https://minotar.net/avatar/${encodeURIComponent(username)}/32`}
+                                    src={`${MINOTAR_API}helm/${encodeURIComponent(username)}/32`}
                                     alt=""
                                     aria-hidden="true"
                                 />
