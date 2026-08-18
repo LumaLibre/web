@@ -14,7 +14,7 @@ data class NewsPostSummary(
 
         fun fromNewsPost(post: NewsPost): NewsPostSummary {
             val cleaned = post.content
-                .replace(Regex("<a?:[\\w-]+:\\d+>"), "")
+                .replace(Regex("<a?:[\\w-]+:\\d+>"), "✨")
                 .replace(Regex("!\\[([^]]*)]\\([^)]+\\)"), "$1")
                 .replace(Regex("\\[([^]]+)]\\([^)]+\\)"), "$1")
                 .replace(Regex("https?://\\S+"), "")
