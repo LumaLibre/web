@@ -157,90 +157,41 @@
 }
 
 
-.miniLumaLogo {
-    top: 0.4%;
-    width: 10.5%;
-    height: auto;
-    z-index: 4;
-
-    @media (max-width: 768px) {
-        display: none;
-    }
-}
-
-// TODO: Finish mixin
-@mixin buttonParent {
+.heroButtons {
     position: absolute !important;
-    margin-right: 0;
     top: 36%;
     left: 7%;
-
-    height: auto;
-    margin-bottom: 0;
-
-    @media (max-width: 768px) {
-        margin-right: unset;
-        margin-bottom: 38%;
-    }
-}
-
-
-@mixin buttonContentParent {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    z-index: 2;
 
     @media (max-width: 768px) {
-        padding: 6px 4vw;
-        font-size: 3.5vw;
-        white-space: nowrap;
-    }
-}
+        left: 5%;
+        right: 5%;
+        gap: 0.25rem;
 
-.playButton {
-    @include buttonParent;
-
-    @media (max-width: 768px) {
-        margin-left: -1vw;
+        .playButton,
+        .discordButton {
+            min-width: 0;
+            flex: 1 1 0;
+        }
     }
 
     @media (min-width: 769px) and (max-width: 1024px) {
         margin-top: -11%;
     }
+}
 
-    .playButtonContent {
-        @include buttonContentParent;
+.heroButtonContent {
+    @media (max-width: 768px) {
+        padding: 6px 2vw;
+        font-size: 2.85vw;
+        white-space: nowrap;
     }
 }
 
-// Mobile only
-
-.playButtonIcon {
-    @media (max-width: 768px) {
-
-    }
-}
-
-.discordButtonIcon {
-    @media (max-width: 768px) {
-
-    }
-}
-
-
-.navbarDiscordButton {
-    @media (max-width: 768px) {
-        display: none;
-    }
-}
-
-.discordButtonMobile {
-    @include buttonParent;
-    display: none;
-
-    @media (max-width: 768px) {
-        display: unset;
-        margin-left: 45vw;
-    }
-
-    .discordButtonMobileContent {
-        @include buttonContentParent;
-    }
+.playButton,
+.discordButton {
+    flex: 0 0 auto;
 }

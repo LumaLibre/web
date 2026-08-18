@@ -1,7 +1,6 @@
 import styles from "./Header.module.scss";
 import logo from "@/assets/LumaLogoBig.webp";
 import littleLuma from "@/assets/lumas/LumaMainLuma.webp";
-import SmallTextLogo from "@/assets/LumaText.webp";
 import Button from "@/components/ui/Button";
 import Navbar from "@/components/navbar/Navbar.tsx";
 import Carousel from "@/components/homepage/carousel/Carousel.tsx";
@@ -40,16 +39,7 @@ function Header() {
 
     return (
         <section className={styles.headerBackground}>
-            <Navbar
-                beforeNavbarList={<img src={SmallTextLogo} alt="Luma Logo" className={styles.miniLumaLogo} />}
-                afterNavbarList={
-                    <Button
-                        href={DISCORD_INV} newTab
-                        text={<><FontAwesomeIcon icon={faDiscord} /><span> {safeDiscordStatus}</span></>}
-                        className={styles.navbarDiscordButton}
-                    />
-                }
-            />
+            <Navbar/>
             <img src={logo} alt="Luma Logo" className={styles.logo} />
             <div className={styles.titleTextContainer}>
                 <h1 className={styles.welcomeText}>
@@ -61,28 +51,31 @@ function Header() {
                 We're a Towny server focused on high-quality gameplay with a vibrant, welcoming community.
             </div>
 
-            <Button
-                className={styles.playButton}
-                buttonContentClassName={styles.playButtonContent}
-                text={
-                    <>
-                        <FontAwesomeIcon icon={faPlay} className={styles.playButtonIcon} />
-                        <span>{INVIS_CHAR(1)} {playButtonText}</span>
-                    </>
-                }
-                onClick={() => {
-                    navigator.clipboard.writeText(LUMA_IP_ADDRESS);
-                    setPlayButtonText(INVIS_BORDER('Copied!', 20));
-                }}
-                onMouseEnter={() => setPlayButtonText(INVIS_BORDER('Click to Copy!', 13))}
-                onMouseLeave={() => setPlayButtonText(safeMcStatus)}
-            />
-            <Button
-                text={<><FontAwesomeIcon icon={faDiscord} /><span> {safeDiscordStatus}</span></>}
-                href={DISCORD_INV}
-                className={styles.discordButtonMobile}
-                buttonContentClassName={styles.discordButtonMobileContent}
-            />
+            <div className={styles.heroButtons}>
+                <Button
+                    className={styles.playButton}
+                    buttonContentClassName={styles.heroButtonContent}
+                    text={
+                        <>
+                            <FontAwesomeIcon icon={faPlay}/>
+                            <span>{INVIS_CHAR(1)} {playButtonText}</span>
+                        </>
+                    }
+                    onClick={() => {
+                        navigator.clipboard.writeText(LUMA_IP_ADDRESS);
+                        setPlayButtonText(INVIS_BORDER('Copied!', 20));
+                    }}
+                    onMouseEnter={() => setPlayButtonText(INVIS_BORDER('Click to Copy!', 13))}
+                    onMouseLeave={() => setPlayButtonText(safeMcStatus)}
+                />
+                <Button
+                    text={<><FontAwesomeIcon icon={faDiscord}/><span> {safeDiscordStatus}</span></>}
+                    href={DISCORD_INV}
+                    newTab
+                    className={styles.discordButton}
+                    buttonContentClassName={styles.heroButtonContent}
+                />
+            </div>
             <Carousel/>
             <LatestNews/>
         </section>
