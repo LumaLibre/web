@@ -6,9 +6,9 @@ import DiscordCallbackPage from "@/pages/DiscordCallbackPage.tsx";
 import LoadingPage from "@/pages/LoadingPage.tsx";
 import NewsPage from "@/pages/NewsPage.tsx";
 import NewsPostPage from "@/pages/NewsPostPage.tsx";
+import VotePage from "@/pages/VotePage.tsx";
 
 const RulesPage = React.lazy(() => import("@/pages/RulesPage.tsx"));
-const VotePage = React.lazy(() => import("@/pages/VotePage.tsx"));
 const PrivacyPage = React.lazy(() => import("@/pages/PrivacyPage.tsx"));
 const StorePage = React.lazy(() => import("@/pages/StorePage.tsx"));
 const StoreCompletePage = React.lazy(() => import("@/pages/StoreCompletePage.tsx"));
@@ -37,7 +37,7 @@ function App() {
                 <Route path="/loading" element={<LoadingPage />} />
                 <Route path="/" element={<MainPage />}/>
                 <Route path="/rules" element={<Lazy><RulesPage /></Lazy>} />
-                <Route path="/vote" element={<Lazy><VotePage /></Lazy>} />
+                <Route path="/vote" element={<VotePage />} />
                 <Route path="/news" element={<NewsPage />} />
                 <Route path="/news/:id" element={<NewsPostPage />} />
                 <Route path="/privacy" element={<Lazy><PrivacyPage /></Lazy>} />

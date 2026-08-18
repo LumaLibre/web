@@ -23,9 +23,7 @@ interface Envelope<T> {
 
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
     if (!isStoreConfigured()) {
-        throw new Error(
-            "Tebex public token is missing. Set VITE_TEBEX_PUBLIC_TOKEN in client/.env.local"
-        );
+        throw new Error("Tebex public token is missing.");
     }
 
     const response = await fetch(url, {

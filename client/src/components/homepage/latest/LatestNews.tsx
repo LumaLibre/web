@@ -28,6 +28,11 @@ function LatestNews() {
         navigate(`/news/${id}`);
     };
 
+    const viewAllArticles = () => {
+        navigate("/news");
+        window.scrollTo({top: 0, left: 0, behavior: "auto"});
+    };
+
     return (
         <>
             <div className={styles.latestNewsContainer}>
@@ -77,7 +82,7 @@ function LatestNews() {
             <Button
                 text="View all articles"
                 className={styles.viewAllButton}
-                onClick={() => navigate("/news")}
+                onClick={viewAllArticles}
             />
         </>
     );
