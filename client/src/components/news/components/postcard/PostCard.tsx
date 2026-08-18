@@ -3,11 +3,12 @@ import {NewsPostSummary} from "@/scripts/model/NewsPost.ts";
 import {useNavigate} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCalendarDays} from "@fortawesome/free-solid-svg-icons";
+import {newsPostPath} from "@/scripts/newsPosts.ts";
 
 
 function NewsPost({newsPost}: { newsPost: NewsPostSummary}) {
     const navigate = useNavigate();
-    const openPost = () => navigate(`/news/${newsPost.id}`);
+    const openPost = () => navigate(newsPostPath(newsPost.id));
 
     return (
         <div

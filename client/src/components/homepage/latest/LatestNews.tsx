@@ -1,7 +1,7 @@
 import styles from "./LatestNews.module.scss";
 import {useQuery} from "@tanstack/react-query";
 import {NewsPostSummary} from "@/scripts/model/NewsPost.ts";
-import {fetchNewsSummaries} from "@/scripts/newsPosts.ts";
+import {fetchNewsSummaries, newsPostPath} from "@/scripts/newsPosts.ts";
 import Button from "@/components/ui/Button.tsx";
 import {useNavigate} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -25,7 +25,7 @@ function LatestNews() {
     const latestNews = newsPosts.slice(0, 3);
 
     const openPost = (id: string) => {
-        navigate(`/news/${id}`);
+        navigate(newsPostPath(id));
     };
 
     const viewAllArticles = () => {

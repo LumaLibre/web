@@ -2,6 +2,7 @@ import ReactMarkdown from "react-markdown";
 import type {Components} from "react-markdown";
 import {useState} from "react";
 import styles from "./NewsPostBody.module.scss";
+import {formatDiscordTimestamps} from "@/scripts/discordFormatting.ts";
 // @ts-expect-error emoji-dictionary does not ship TypeScript declarations.
 import emoji from "emoji-dictionary";
 
@@ -33,7 +34,7 @@ const MarkdownImage: NonNullable<Components["img"]> = ({node: _node, src, alt, .
 };
 
 function NewsPostBody({content}: { content: string }) {
-    const markdownWithBreaks = content
+    const markdownWithBreaks = formatDiscordTimestamps(content)
         .replace(DISCORD_EMOJI_PATTERN, (_match, animated: string, name: string, id: string) => {
             const animation = animated === "a" ? "&animated=true" : "";
             return `![${name}](${DISCORD_EMOJI_CDN}${id}.webp?size=32${animation})`;

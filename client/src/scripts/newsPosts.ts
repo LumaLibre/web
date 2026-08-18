@@ -3,6 +3,8 @@ import {API_ENDPOINT} from "@/constants.ts";
 
 const endpoint: string = `${API_ENDPOINT}/news/`;
 
+export const newsPostPath = (id: string) => `/news/${encodeURIComponent(id)}`;
+
 export async function fetchNewsSummaries(limit?: number): Promise<NewsPostSummary[]> {
     const query = limit === undefined ? "" : `?limit=${limit}`;
     const response = await fetch(`${endpoint}summaries${query}`);
@@ -45,7 +47,7 @@ export async function fetchNewsSummaries(limit?: number): Promise<NewsPostSummar
  * @param id The ID of the news post to fetch.
  */
 export async function fetchNewsPost(id: string): Promise<NewsPost> {
-    return fetch(endpoint + id)
+    return fetch(endpoint + encodeURIComponent(id))
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Failed to fetch news post: ${response.status} ${response.statusText}`);
