@@ -82,7 +82,7 @@ function StoreOverview() {
                     <section className={styles.panel}>
                         <h3>{supporters?.header ?? "Recent supporters"}</h3>
                         <div className={styles.supporterList}>
-                            {uniqueSupporters.map((payment, index) => (
+                            {uniqueSupporters.slice(0, 5).map((payment, index) => (
                                 <SupporterCard
                                     key={payment.username_id}
                                     payment={payment}
