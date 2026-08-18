@@ -2,144 +2,231 @@
 
 .background {
     @include artBackground("@/assets/MainBackground.webp");
-    padding-bottom: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 100vh;
+    padding-bottom: 8rem;
+}
 
-    @media (max-width: 768px) { // Phone
-        padding-bottom: 100%;
+.content {
+    box-sizing: border-box;
+    width: min(1200px, 92%);
+    margin-top: 12rem;
+}
+
+.pageIntro {
+    max-width: 680px;
+    margin: 0 auto 2rem;
+    text-align: center;
+
+    h1 {
+        margin: 0.45rem 0 0.65rem;
+        color: $primary-color;
+        font-family: 'Paytone One', sans-serif;
+        font-size: clamp(2rem, 5vw, 3.25rem);
+        line-height: 1.1;
+        text-transform: uppercase;
+    }
+
+    p {
+        margin: 0 auto;
+        color: $secondary-color;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 400;
+        line-height: 1.65;
     }
 }
 
-%abstractCard {
-    @include cardParent;
-    margin-top: unset;
-    top: 40vh;
-    overflow: auto;
-    &::-webkit-scrollbar { display: none; }
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.35rem 0.7rem;
+    border: 1px solid rgba(215, 111, 249, 0.3);
+    border-radius: 999px;
+    background: rgba(145, 26, 176, 0.16);
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
 
-    @media (max-width: 1024px) { // Tablet
-        margin-top: unset;
+.panelGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(340px, 0.85fr);
+    gap: 1.5rem;
+    align-items: stretch;
+
+    @media (max-width: 900px) {
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 
-.voteLinksCard {
-    @extend %abstractCard;
-    justify-content: flex-start;
-    width: 50%;
-    height: 40%;
-    margin-left: -35%;
-
-    @media (max-width: 1024px) { // Tablet
-        margin-left: -45%;
-        height: 55%;
-        max-height: 50%;
-    }
-
-    @media (max-width: 768px) { // Phone
-        margin-top: 80%;
-        margin-left: unset;
-        width: 95%;
-        min-height: 28%;
-        height: auto;
-        max-height: 38%;
-    }
-
+.votePanel,
+.topVotersPanel {
+    box-sizing: border-box;
+    min-width: 0;
+    padding: 1.5rem;
+    border-radius: 15px;
+    background: $card-color;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.topVotersCard {
-    @extend %abstractCard;
-    justify-content: center;
-    width: auto;
-    height: auto;
-    min-width: 29%;
-    min-height: 35%; //27%;
-    max-width: 30%;
-    max-height: 45%;
-    margin-left: 55%;
+.votePanel,
+.topVotersPanel {
+    display: flex;
+    flex-direction: column;
+}
 
-    @media (max-width: 768px) { // Phone
-        margin-top: 5%;
-        min-width: 95%;
-        min-height: 10%;
-        max-height: 15% !important;
-        margin-left: unset;
+.panelHeading {
+    min-width: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+
+    > div {
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
     }
+
+    h2 {
+        margin: 0;
+        color: $primary-color;
+        font-family: 'Paytone One', sans-serif;
+        font-size: 1.35rem;
+        line-height: 1.2;
+    }
+
+    p {
+        margin: 0.2rem 0 0;
+        color: $secondary-color;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.75rem;
+        font-weight: 400;
+    }
+}
+
+.panelIcon {
+    width: 2.4rem;
+    height: 2.4rem;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    background: rgba(145, 26, 176, 0.22);
+    color: #d76ff9;
+}
+
+.siteCount {
+    flex: 0 0 auto;
+    padding: 0.3rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    color: $secondary-color;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.voteLinks {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+
+    @media (max-width: 600px) {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.rewardCallout {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: auto;
+    padding: 0.85rem 1rem;
+    border: 1px solid rgba(255, 205, 90, 0.22);
+    border-radius: 12px;
+    background: linear-gradient(100deg, rgba(183, 130, 18, 0.12), rgba(145, 26, 176, 0.08));
+
+    p {
+        margin: 0;
+        color: $secondary-color;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.72rem;
+        font-weight: 400;
+        line-height: 1.5;
+    }
+
+    strong {
+        display: block;
+        margin-bottom: 0.12rem;
+        color: #ffffff;
+        font-size: 0.68rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+}
+
+.rewardIcon {
+    width: 2.25rem;
+    height: 2.25rem;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    background: rgba(183, 130, 18, 0.2);
+    color: #ffd66b;
 }
 
 .topVotersContainer {
+    min-width: 0;
+    flex: 1;
     display: flex;
-    flex-direction: row;
-    gap: 20px;
-    margin-top: 4%;
-    justify-content: center;
     align-items: center;
-    flex-wrap: nowrap;
-
-    @media (max-width: 768px) {
-        gap: 10px;
-        margin-left: -4%;
-    }
+    justify-content: center;
+    padding: 1.25rem 0 0.5rem;
 }
 
-@mixin headerText {
-    color: $primary-color;
-    font-family: 'Paytone One', sans-serif;
-}
-
-@mixin standardText {
+.leaderboardNote {
+    margin: 1rem 0 0;
     color: $secondary-color;
     font-family: 'Poppins', sans-serif;
-    margin-left: 3%;
-}
-
-%cardText {
-    h1 {
-        @include headerText;
-        text-transform: uppercase;
-    }
-    h2 {
-        @include headerText;
-    }
-    h3 {
-        @include standardText;
-    }
-    h4 {
-        @include standardText;
-    }
-    p {
-        @include standardText;
-    }
-}
-
-.voteLinksCardTitle {
-    @extend %cardText;
-    margin-top: -2%;
-    margin-left: 3%;
-}
-
-.topVotersCardTitle {
-    @extend %cardText;
-    text-transform: uppercase;
+    font-size: 0.7rem;
+    font-weight: 400;
+    line-height: 1.5;
     text-align: center;
-    padding-bottom: 0.2%;
+    opacity: 0.75;
 }
 
-.standardCartText {
-    @extend %cardText;
-}
+@media (max-width: 768px) {
+    .background {
+        padding-bottom: 5rem;
+    }
 
-.voteLinksCardButtonsContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    margin-top: 10%;
-    row-gap: 20px;
-    flex-wrap: wrap;
+    .content {
+        width: 90%;
+        margin-top: 10rem;
+    }
 
-    @media (max-width: 468px) {
-        gap: 10px;
-        row-gap: 10px;
+    .votePanel,
+    .topVotersPanel {
+        padding: 1.1rem;
+    }
+
+    .panelHeading {
+        margin-bottom: 1rem;
+    }
+
+    .siteCount {
+        display: none;
     }
 }

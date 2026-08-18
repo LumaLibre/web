@@ -1,46 +1,48 @@
-import { useEffect, useState } from "react";
-import { RecordedVoter } from "@/scripts/model/RecordedVoter.ts";
+import {useState} from "react";
+import {RecordedVoter} from "@/scripts/model/RecordedVoter.ts";
 import styles from "./TopVoter.module.scss";
+import {playerBodyRenderUrl, playerFaceUrl} from "@/scripts/playerRender.ts";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCrown} from "@fortawesome/free-solid-svg-icons";
 
-const isSmallDisplay = () => {
-    return window.innerWidth <= 468;
-};
-const isMobile = () => {
-    return window.innerWidth <= 768;
-}
+const rankClasses = [styles.rankOne, styles.rankTwo, styles.rankThree];
 
-const TopVoter = ({ recordedVoter, index }: { recordedVoter: RecordedVoter, index: number }) => {
-    const [smallDisplay, setSmallDisplay] = useState(isSmallDisplay());
-
-    useEffect(() => {
-        const handleResize = () => {
-            setSmallDisplay(isSmallDisplay());
-        };
-
-        window.addEventListener("resize", handleResize);
-        return () => {
-            window.removeEventListener("resize", handleResize);
-        };
-    }, []);
-
+const TopVoter = ({recordedVoter, index}: { recordedVoter: RecordedVoter, index: number }) => {
+    const [renderState, setRenderState] = useState<"loading" | "loaded" | "failed">("loading");
     const name = recordedVoter.name || "Voter";
-    const truncatedName = (name.length > 10 && isMobile()) ? `${name.substring(0, 10)}...` : name;
-    const votes = recordedVoter.votes;
-    //const imageUrl = smallDisplay ? recordedVoter.getHeadRenderURL() : recordedVoter.getBodyRenderURL(index);
-    const imageUrl = recordedVoter.getBodyRenderURL(index);
 
     return (
-        <div className={styles.topVoterContainer}>
-            <div className={styles.bodyRenderContainer}>
-                <img src={imageUrl} alt={name} className={styles.bodyRenderImage} />
+        <article className={`${styles.topVoterContainer} ${rankClasses[index - 1]}`}>
+            <span className={styles.rankBadge}>
+                {index === 1 && <FontAwesomeIcon icon={faCrown}/>}#{index}
+            </span>
+
+            <div className={styles.renderSlot}>
+                <img
+                    className={`${styles.face} ${renderState === "loaded" ? styles.faceHidden : ""}`}
+                    src={playerFaceUrl(recordedVoter.uuid)}
+                    alt=""
+                    aria-hidden="true"
+                />
+
+                {renderState !== "failed" && (
+                    <img
+                        className={`${styles.render} ${renderState === "loaded" ? styles.renderVisible : ""}`}
+                        src={playerBodyRenderUrl(recordedVoter.uuid, index - 1)}
+                        alt=""
+                        aria-hidden="true"
+                        loading="lazy"
+                        onLoad={() => setRenderState("loaded")}
+                        onError={() => setRenderState("failed")}
+                    />
+                )}
             </div>
-            <div className={styles.textContainer}>
-                <div className={styles.textStyling}>
-                    <h5>#{index}<br/>{truncatedName}</h5>
-                    <h4>{votes} Votes</h4>
-                </div>
+
+            <div className={styles.details}>
+                <h3 title={name}>{name}</h3>
+                <span>{recordedVoter.votes} votes</span>
             </div>
-        </div>
+        </article>
     );
 };
 

@@ -15,8 +15,7 @@ function StoreCompleteContent() {
     useEffect(() => {
         try {
             window.localStorage.removeItem(BASKET_IDENT_KEY);
-        } catch {
-        }
+        } catch { /* empty */ }
     }, []);
 
     return (
