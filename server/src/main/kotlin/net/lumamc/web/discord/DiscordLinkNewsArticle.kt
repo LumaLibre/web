@@ -91,7 +91,7 @@ class DiscordLinkNewsArticle(
 
 
     private fun saveContent(): String {
-        val dataFolder = Util.getDataFolderPath().resolve("net/lumamc/web/news")
+        val dataFolder = Util.getDataFolderPath().resolve("news")
         val asFile = dataFolder.toFile()
         val id = getId()
         if (!asFile.exists()) {
