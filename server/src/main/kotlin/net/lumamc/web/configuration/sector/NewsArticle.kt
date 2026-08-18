@@ -7,6 +7,7 @@ class NewsArticle : OkaeriConfig() {
     var title: String = "Article Title"
     var thumbnail: String = "https://raw.githubusercontent.com/LumaLibre/artwork/refs/heads/master/backgrounds/playground-d3.png"
     var author: String = "Fielle"
+    var unlisted: Boolean = false
     var timestamp: Long? = System.currentTimeMillis()
         get() {
             // If the key is left empty, set the value to the current time and save it

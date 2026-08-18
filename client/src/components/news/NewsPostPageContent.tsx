@@ -7,7 +7,7 @@ import Label from "@/components/label/Label.tsx";
 import NotFoundPageContent from "@/components/etc/404/404PageContent.tsx";
 import LoadingPageContent from "@/components/loading/LoadingPageContent.tsx";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCalendarDays} from "@fortawesome/free-solid-svg-icons";
+import {faCalendarDays, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
 
 
 const newsPostPageSection = (element: JSX.Element)=> {
@@ -49,13 +49,21 @@ function NewsPostPageContent({ id }: { id: string }) {
             <div className={styles.articleCard}>
                 <div className={styles.articleImageWrapper}>
                     <img src={newsPost.thumbnail} alt="" className={styles.articleImage}/>
-                    <time
-                        className={styles.articleDate}
-                        dateTime={new Date(newsPost.timestamp).toISOString()}
-                    >
-                        <FontAwesomeIcon icon={faCalendarDays}/>
-                        {newsPost.formatTimestampCard()}
-                    </time>
+                    <div className={styles.articleBadges}>
+                        <time
+                            className={styles.articleDate}
+                            dateTime={new Date(newsPost.timestamp).toISOString()}
+                        >
+                            <FontAwesomeIcon icon={faCalendarDays}/>
+                            {newsPost.formatTimestampCard()}
+                        </time>
+                        {newsPost.unlisted && (
+                            <span className={styles.unlistedBadge} title="This article is only available by direct link">
+                                <FontAwesomeIcon icon={faEyeSlash}/>
+                                Unlisted
+                            </span>
+                        )}
+                    </div>
                 </div>
                 <div className={styles.articleCardText}>
                     <h1>{newsPost.getDisplayTitle()}</h1>

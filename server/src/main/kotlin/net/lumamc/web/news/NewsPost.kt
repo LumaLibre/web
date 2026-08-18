@@ -13,7 +13,8 @@ class NewsPost(
     val thumbnail: String,
     val author: String,
     val timestamp: Long,
-    val content: String
+    val content: String,
+    val unlisted: Boolean
 ) {
 
     companion object {
@@ -33,7 +34,8 @@ class NewsPost(
                 newsArticle.thumbnail,
                 newsArticle.author,
                 newsArticle.timestamp!!,
-                content.readText()
+                content.readText(),
+                newsArticle.unlisted
             )
         }
     }
@@ -57,6 +59,7 @@ class NewsPost(
             out.name("author").value(value.author)
             out.name("timestamp").value(value.timestamp)
             out.name("content").value(value.content)
+            out.name("unlisted").value(value.unlisted)
             out.endObject()
         }
 
@@ -67,6 +70,7 @@ class NewsPost(
             var author = "NULL"
             var timestamp = 0L
             var content = "NULL"
+            var unlisted = false
 
             comingIn.beginObject()
             while (comingIn.hasNext()) {
@@ -77,11 +81,13 @@ class NewsPost(
                     "author" -> author = comingIn.nextString()
                     "timestamp" -> timestamp = comingIn.nextLong()
                     "content" -> content = comingIn.nextString()
+                    "unlisted" -> unlisted = comingIn.nextBoolean()
+                    else -> comingIn.skipValue()
                 }
             }
             comingIn.endObject()
 
-            return NewsPost(id, title, thumbnail, author, timestamp, content)
+            return NewsPost(id, title, thumbnail, author, timestamp, content, unlisted)
         }
 
     }

@@ -24,18 +24,22 @@ export async function fetchAllNewsPosts(): Promise<NewsPostContainer[]> {
         author: string;
         timestamp: number;
         content: string;
+        unlisted?: boolean;
     }>;
 
-    return newsPostsArray.map((newsPost) =>
-        new NewsPostContainer(
-            newsPost.id,
-            newsPost.title,
-            newsPost.thumbnail,
-            newsPost.author,
-            newsPost.timestamp,
-            newsPost.content
-        )
-    );
+    return newsPostsArray
+        .filter((newsPost) => !newsPost.unlisted)
+        .map((newsPost) =>
+            new NewsPostContainer(
+                newsPost.id,
+                newsPost.title,
+                newsPost.thumbnail,
+                newsPost.author,
+                newsPost.timestamp,
+                newsPost.content,
+                newsPost.unlisted ?? false
+            )
+        );
 }
 
 
@@ -46,5 +50,13 @@ export async function fetchAllNewsPosts(): Promise<NewsPostContainer[]> {
 export async function fetchNewsPost(id: string): Promise<NewsPostContainer> {
     return fetch(endpoint + id)
         .then(response => response.json())
-        .then(newsPost => new NewsPostContainer(newsPost.id, newsPost.title, newsPost.thumbnail, newsPost.author, newsPost.timestamp, newsPost.content));
+        .then(newsPost => new NewsPostContainer(
+            newsPost.id,
+            newsPost.title,
+            newsPost.thumbnail,
+            newsPost.author,
+            newsPost.timestamp,
+            newsPost.content,
+            newsPost.unlisted ?? false
+        ));
 }

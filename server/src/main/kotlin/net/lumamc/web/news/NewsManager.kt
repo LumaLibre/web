@@ -27,6 +27,7 @@ object NewsManager {
         return newsConfig.news
             .entries
             .reversed()
+            .filterNot { (_, article) -> article.unlisted }
             .associate { (key, value) -> key to NewsPost.fromNewsArticle(key, value) }
     }
 

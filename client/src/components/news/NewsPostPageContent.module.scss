@@ -25,10 +25,17 @@
     width: 100%;
 }
 
-.articleDate {
+.articleBadges {
     position: absolute;
     top: 0.8rem;
     left: 0.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.articleDate,
+.unlistedBadge {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
@@ -41,6 +48,11 @@
     font-weight: 700;
     line-height: 1;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.unlistedBadge {
+    background: $card-color;
+    color: $secondary-color;
 }
 
 .articleAuthorContainer {

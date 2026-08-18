@@ -15,14 +15,16 @@ export class NewsPostContainer {
     author: string;
     timestamp: number;
     content: string;
+    unlisted: boolean;
 
-    constructor(id: string, title: string, thumbnail: string, author: string, timestamp: number, content: string) {
+    constructor(id: string, title: string, thumbnail: string, author: string, timestamp: number, content: string, unlisted = false) {
         this.id = id;
         this.title = title;
         this.thumbnail = thumbnail;
         this.author = author;
         this.timestamp = timestamp;
         this.content = content;
+        this.unlisted = unlisted;
     }
 
     getAuthorAvatarURL(): string {
