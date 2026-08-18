@@ -177,14 +177,15 @@
 
 .viewAllButton {
     position: absolute;
-    bottom: 2.5%;
+    bottom: 2%;
 
     @media (max-width: 768px) {
         left: 25%;
+        bottom: 3%;
     }
 
     @media (min-width: 769px) and (max-width: 1024px) {
         left: 39%;
-        bottom: 4%;
+        bottom: 2.5%;
     }
 }

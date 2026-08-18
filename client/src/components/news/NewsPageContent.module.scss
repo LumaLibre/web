@@ -5,6 +5,10 @@
     padding-bottom: 12rem;
 }
 
+@keyframes articleIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+}
 
 .postList {
     position: relative;
@@ -19,6 +23,16 @@
     justify-items: center;
     align-items: stretch;
 
+    > [role="button"] {
+        animation: articleIn $dur-base $ease-snappy both;
+    }
+
+    @for $i from 1 through 9 {
+        > [role="button"]:nth-child(#{$i}) {
+            animation-delay: #{($i - 1) * 25}ms;
+        }
+    }
+
     @media (max-width: 1024px) { // Tablet
         box-sizing: border-box;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -30,6 +44,12 @@
         grid-template-columns: 1fr;
         width: 90%;
         justify-items: center;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .postList > [role="button"] {
+        animation: none;
     }
 }
 
