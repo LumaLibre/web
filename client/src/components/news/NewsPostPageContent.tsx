@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import {useQuery, useQueryClient} from "@tanstack/react-query";
 import { fetchNewsPost } from "@/scripts/newsPosts.ts";
 import {NewsPostContainer} from "@/scripts/model/NewsPostContainer.tsx";
 import styles from "./NewsPostPageContent.module.scss";
@@ -6,6 +6,8 @@ import {JSX} from "react";
 import Label from "@/components/label/Label.tsx";
 import NotFoundPageContent from "@/components/etc/404/404PageContent.tsx";
 import LoadingPageContent from "@/components/loading/LoadingPageContent.tsx";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCalendarDays} from "@fortawesome/free-solid-svg-icons";
 
 
 const newsPostPageSection = (element: JSX.Element)=> {
@@ -23,17 +25,18 @@ const newsPostPageSection = (element: JSX.Element)=> {
  * @constructor NewsPostPageContent
  */
 function NewsPostPageContent({ id }: { id: string }) {
+    const queryClient = useQueryClient();
 
     const {
         data: newsPost,
         isLoading,
         error,
     } = useQuery<NewsPostContainer>({
-        queryKey: [id, id],
-        queryFn: ({ queryKey }) => {
-            const [, postId] = queryKey as [string, string];
-            return fetchNewsPost(postId);
-        },
+        queryKey: ["newsPost", id],
+        queryFn: () => fetchNewsPost(id),
+        initialData: () => queryClient
+            .getQueryData<NewsPostContainer[]>(["allNewsPosts"])
+            ?.find(post => post.id === id),
     });
 
 
@@ -44,13 +47,22 @@ function NewsPostPageContent({ id }: { id: string }) {
     return (
         newsPostPageSection(
             <div className={styles.articleCard}>
-                <img src={newsPost.thumbnail} alt={newsPost.title} className={styles.articleImage}/>
+                <div className={styles.articleImageWrapper}>
+                    <img src={newsPost.thumbnail} alt="" className={styles.articleImage}/>
+                    <time
+                        className={styles.articleDate}
+                        dateTime={new Date(newsPost.timestamp).toISOString()}
+                    >
+                        <FontAwesomeIcon icon={faCalendarDays}/>
+                        {newsPost.formatTimestampCard()}
+                    </time>
+                </div>
                 <div className={styles.articleCardText}>
-                    <h1>{newsPost.title}</h1>
+                    <h1>{newsPost.getDisplayTitle()}</h1>
                     <div className={styles.articleAuthorContainer}>
                         <img src={newsPost.getAuthorAvatarURL()} alt={newsPost.author}
                              className={styles.articleAuthorImageContainer}/>
-                        By {newsPost.author} • On {newsPost.formatTimestampWithOrdinal()}
+                        By {newsPost.author}
                     </div>
                     {newsPost.renderContent()}
                 </div>

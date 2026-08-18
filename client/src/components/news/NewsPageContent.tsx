@@ -7,6 +7,7 @@ import {JSX, useEffect, useState} from "react";
 import Label from "@/components/label/Label.tsx";
 import NotFoundPageContent from "@/components/etc/404/404PageContent.tsx";
 import LoadingPageContent from "@/components/loading/LoadingPageContent.tsx";
+import {Link} from "react-router-dom";
 
 
 const newsStyleSection = (element: JSX.Element) => {
@@ -27,9 +28,9 @@ function NewsPageContent({ page }: { page: number }) {
     useEffect(() => {
         const updatePostsPerPage = () => {
             if (window.innerWidth <= 768) {
-                setPostsPerPage(4); // Phone
+                setPostsPerPage(8); // Phone
             } else {
-                setPostsPerPage(8); // Default
+                setPostsPerPage(9); // Default
             }
         };
 
@@ -58,59 +59,40 @@ function NewsPageContent({ page }: { page: number }) {
     const numOfPages = Math.ceil(newsPosts.length / postsPerPage);
 
     if (paginatedPosts.length === 0) {
-        window.scrollTo(0, 0);
         return <NotFoundPageContent error="No news posts found." />
     }
 
-    const handleArrowClick = (direction: "forward" | "backward") => {
-        if ((direction === "backward" && page === 1) || (direction === "forward" && page === numOfPages)) {
-            // If we are on the first or last page, just scroll to the top instead of navigating
-            window.scrollTo(0, 0);
-        }
-    };
-
     return newsStyleSection(
         <div className={styles.postList}>
-            {paginatedPosts.map((post: NewsPostContainer, index: number) => {
-                const isFirstPage = page === 1;
-                const biggerContainer = isFirstPage && index < 4;
-
-                return (
-                    <PostCard
-                        newsPost={post}
-                        biggerContainer={!biggerContainer}
-                        key={post.id}
-                    />
-                );
-            })}
+            {paginatedPosts.map((post: NewsPostContainer) => (
+                <PostCard newsPost={post} key={post.id}/>
+            ))}
             <div className={styles.carouselNav}>
-                <a
+                <Link
                     className={styles.carouselNavBack}
-                    href={`${pageRef}${page - 1}`}
+                    to={`${pageRef}${Math.max(1, page - 1)}`}
                     onClick={(e) => {
                         if (page === 1) {
                             e.preventDefault();
-                            handleArrowClick("backward");
                         }
                     }}
                 >
                     <div className={styles.carouselArrow} />
-                </a>
+                </Link>
                 {Array.from({ length: numOfPages }, (_, i) => (
-                    <a key={i} className={styles.carouselNavDot} href={`${pageRef}${i + 1}`} />
+                    <Link key={i} className={styles.carouselNavDot} to={`${pageRef}${i + 1}`}/>
                 ))}
-                <a
+                <Link
                     className={styles.carouselNavForward}
-                    href={`${pageRef}${page + 1}`}
+                    to={`${pageRef}${Math.min(numOfPages, page + 1)}`}
                     onClick={(e) => {
                         if (page === numOfPages) {
                             e.preventDefault();
-                            handleArrowClick("forward");
                         }
                     }}
                 >
                     <div className={styles.carouselArrow} />
-                </a>
+                </Link>
             </div>
         </div>
     );

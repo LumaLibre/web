@@ -5,18 +5,42 @@
 }
 
 .articleCard {
+    box-sizing: border-box;
     width: 80%;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    transition: 0.3s;
-    border-radius: 10px; // Rounded corners
+    border-radius: 15px;
     background: $card-color;
     margin-top: 25vh;
     padding-bottom: 30px;
+    overflow: hidden;
 
     @media (max-width: 768px) {
         width: 97%;
         //margin-top: 20vh;
     }
+}
+
+.articleImageWrapper {
+    position: relative;
+    width: 100%;
+}
+
+.articleDate {
+    position: absolute;
+    top: 0.8rem;
+    left: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: 999px;
+    background: $primary-color;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 
 .articleAuthorContainer {
@@ -29,14 +53,15 @@
 }
 
 .articleCardText {
+    box-sizing: border-box;
     font-size: 1.1rem;
-    padding-left: 12.5%;
-    width: 60vw;
+    width: 100%;
+    padding: 2rem 12.5% 0;
     color: $secondary-color;
+    overflow-wrap: anywhere;
 
     @media (max-width: 768px) {
-        padding-left: 5%;
-        width: 90vw;
+        padding: 1.25rem 5% 0;
     }
 
     h1 {
@@ -58,11 +83,11 @@
 
 
 .articleImage {
+    display: block;
     width: 100%;
     height: 400px;
     object-fit: cover; // image fills the height while maintaining aspect ratio
     object-position: center; // center the image
-    border-radius: 10px 10px 0 0; // Rounded corners on top
 
     @media (max-width: 768px) {
         // zoom out of the image more on smaller screens
@@ -75,4 +100,3 @@
     height: 28px;
     margin-right: 10px;
 }
-

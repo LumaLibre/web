@@ -4,10 +4,10 @@ import {NewsPostContainer} from "@/scripts/model/NewsPostContainer.tsx";
 import {fetchAllNewsPosts} from "@/scripts/newsPosts.ts";
 import Button from "@/components/ui/Button.tsx";
 import {useNavigate} from "react-router-dom";
-import useIsMobile from "@/components/ui/UseIsMobile.tsx";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCalendarDays} from "@fortawesome/free-solid-svg-icons";
 
 function LatestNews() {
-    const isMobile = useIsMobile();
     const navigate = useNavigate();
     const {
         data: newsPosts,
@@ -23,28 +23,62 @@ function LatestNews() {
     if (!newsPosts?.length) return <h2>No news posts found.</h2>;
 
     const latestNews = newsPosts.slice(0, 3);
-    const cardClasses = ["leftSideCard", "middleCard", "rightSideCard"];
+
+    const openPost = (id: string) => {
+        navigate(`/news/${id}`);
+    };
 
     return (
         <>
             <div className={styles.latestNewsContainer}>
-                {latestNews.map((news, index) => (
+                {latestNews.map((news) => (
                     <div
-                        key={index}
-                        className={styles[cardClasses[index]]}
-                        onClick={() => {
-                            navigate(`/news/${news.id}`);
-                            window.scrollTo(0, 0);
-                        }}>
-                        <img src={news.thumbnail} alt="News post thumbnail" className={styles.cardImage} />
-                        <div className={styles.cardContent}>
-                            <h3>{news.getAuthorAvatar()} • <span>{news.title}</span></h3>
-                            {!isMobile ? news.renderContentSmall() : news.renderContentTiny(15, 6)}
+                        key={news.id}
+                        className={styles.newsCard}
+                        onClick={() => openPost(news.id)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(event) => {
+                            if (event.key === "Enter" || event.key === " ") openPost(news.id);
+                        }}
+                    >
+                        <div className={styles.imageWrapper}>
+                            <img
+                                src={news.thumbnail}
+                                alt=""
+                                className={styles.cardImage}
+                            />
+                            <time
+                                className={styles.dateBadge}
+                                dateTime={new Date(news.timestamp).toISOString()}
+                            >
+                                <FontAwesomeIcon icon={faCalendarDays}/>
+                                {news.formatTimestampCard()}
+                            </time>
+                        </div>
+
+                        <div className={styles.cardBody}>
+                            <h3 className={styles.cardTitle} title={news.getDisplayTitle()}>
+                                {news.getDisplayTitle()}
+                            </h3>
+                            <p className={styles.excerpt}>{news.getExcerpt()}</p>
+
+                            <div className={styles.cardFooter}>
+                                <div className={styles.author}>
+                                    <img src={news.getAuthorAvatarURLWithSize(32)} alt=""/>
+                                    <span>{news.author}</span>
+                                </div>
+                                <span className={styles.readMore}>Read article</span>
+                            </div>
                         </div>
                     </div>
                 ))}
             </div>
-            <Button text="View all articles" className={styles.viewAllButton} href="/news" />
+            <Button
+                text="View all articles"
+                className={styles.viewAllButton}
+                onClick={() => navigate("/news")}
+            />
         </>
     );
 }

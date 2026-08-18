@@ -1,7 +1,7 @@
 import {MINOTAR_API} from "@/constants.ts";
 import {JSX} from "react";
 import ReactMarkdown from "react-markdown";
-// @ts-ignore
+// @ts-expect-error emoji-dictionary does not ship TypeScript declarations.
 import emoji from "emoji-dictionary";
 
 export class NewsPostContainer {
@@ -69,6 +69,31 @@ export class NewsPostContainer {
         return `${month}/${day}`;
     }
 
+    getDisplayTitle(): string {
+        return this.title
+            .replace(/\s*[-–—]\s*\d{1,2}\/\d{1,2}(?:\/\d{2,4})?\s*$/, '')
+            .trim();
+    }
+
+    formatTimestampCard(): string {
+        return new Date(this.timestamp).toLocaleDateString(undefined, {
+            month: 'short',
+            day: 'numeric',
+        });
+    }
+
+    getExcerpt(): string {
+        return this.content
+            .replace(/<a?:[\w-]+:\d+>/g, '')
+            .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
+            .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+            .replace(/https?:\/\/\S+/g, '')
+            .replace(/[`*_>#~]/g, '')
+            .replace(/:\w+:/g, (match) => emoji.getUnicode(match) || '')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
     renderContent(): JSX.Element {
         const markdownWithBreaks = this.content
             .replace(/\n/g, '  \n')
@@ -81,7 +106,7 @@ export class NewsPostContainer {
     }
 
     renderContentTiny(maxCharactersPerLine: number, maxLines: number): JSX.Element {
-        let newContent = this.content
+        const newContent = this.content
             .replace(/\n+/g, ' ')
             .replace(/\*/g, '')
             .replace(/#/g, '')

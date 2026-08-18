@@ -2,126 +2,177 @@
 
 .latestNewsContainer {
     position: absolute;
-    display: flex;
-    flex-direction: row;
-    //justify-content: space-between;
-
-    gap: 3%;
-    align-items: center;
-    align-content: center;
-    bottom: 4%;
-    width: 90%;
-    height: 38%;
+    bottom: 7rem;
+    width: min(94%, 1380px);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+    align-items: stretch;
 
     @media (max-width: 768px) {
-        width: 90%;
-        bottom: 18%;
+        bottom: 7.5rem;
         left: 5%;
-        height: 20%;
-        gap: 5%;
+        width: 90%;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.8rem;
+
+        .newsCard:last-child {
+            display: none;
+        }
     }
 
     @media (min-width: 769px) and (max-width: 1024px) {
-        bottom: 3%;
+        bottom: 6.5rem;
         left: 5%;
-        height: 55%;
-    }
-}
-
-
-
-@mixin latestNewsCard {
-    @include cardParent;
-    position: relative;
-    justify-self: flex-end;
-    width: 60%;
-    overflow: hidden;
-    //max-width: 60%;
-    //height: 60%;
-
-    @media (max-width: 768px) {
-        //gap: 30px;
         width: 90%;
-        height: 100%;
-    }
-
-    &:hover {
-        will-change: filter;
-        filter: drop-shadow(0 0 1em rgb(114, 0, 159));
-        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-        transform: scale(1.1) rotate(2deg);
-        cursor: pointer;
-    }
-
-    &:nth-child(even):hover {
-        transform: scale(1.1) rotate(-2deg);
+        gap: 1rem;
     }
 }
 
-.leftSideCard {
-    @include latestNewsCard;
-}
+.newsCard {
+    box-sizing: border-box;
+    min-width: 0;
+    min-height: 28rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    text-align: left;
+    background: $card-color;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform $dur-base $ease-snappy, box-shadow $dur-base $ease-snappy;
 
-.middleCard {
-    @include latestNewsCard;
-}
+    &:hover,
+    &:focus-visible {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 26px 0 rgba(0, 0, 0, 0.45);
+        outline: none;
+    }
 
-.rightSideCard {
-    @include latestNewsCard;
+    &:focus-visible {
+        box-shadow: 0 0 0 2px $primary-color, 0 10px 24px 0 rgba(0, 0, 0, 0.45);
+    }
+
     @media (max-width: 768px) {
-        display: none;
+        min-height: 20rem;
     }
 }
 
+.imageWrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 40%, rgba(145, 26, 176, 0.22), rgba(0, 0, 0, 0.25));
+}
 
 .cardImage {
+    display: block;
     width: 100%;
-    //height: 400px;
-    height: 50%;
-    //margin-left: 5%;
-    //margin-top: 5%;
-    object-fit: cover; // image fills the height while maintaining aspect ratio
-    object-position: center; // center the image
-    border-radius: 10px 10px 10px 10px; // Rounded corners on top
-    transition: transform 0.3s ease;
-
-    @media (max-width: 768px) {
-        // zoom out of the image more on smaller screens
-        //height: 200px;
-    }
-
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
 }
 
-.cardContent {
-    align-content: center;
+.dateBadge {
+    position: absolute;
+    top: 0.65rem;
+    left: 0.65rem;
+    display: inline-flex;
     align-items: center;
-    text-align: center;
-    //margin-left: 4%;
-    margin-top: 5%;
+    gap: 0.35rem;
+    padding: 0.28rem 0.55rem;
+    border-radius: 999px;
+    background: $primary-color;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.cardBody {
+    box-sizing: border-box;
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 1rem 1.1rem 1.1rem;
+}
+
+.cardTitle {
+    min-width: 0;
+    margin: 0;
+    color: $primary-color;
+    font-family: 'Paytone One', sans-serif;
+    font-size: 1.15rem;
+    line-height: 1.25;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.excerpt {
+    min-width: 0;
+    margin: 0;
+    color: $secondary-color;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.84rem;
+    font-weight: 400;
+    line-height: 1.55;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+}
+
+.cardFooter {
+    min-width: 0;
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-top: 0.25rem;
+}
+
+.author {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: $secondary-color;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+
     img {
-        border-radius: 5px;
-        width: 22px;
-        height: 22px;
+        width: 1.5rem;
+        height: 1.5rem;
+        flex: 0 0 auto;
+        border-radius: 6px;
+        image-rendering: pixelated;
     }
 
-    h3 {
-        color: $primary-color;
-        font-family: 'Paytone One', sans-serif;
-        margin-top: -0.5%;
-    }
-
-    p {
-        font-family: 'Poppins', sans-serif;
-        font-size: 100%;
-        color: $secondary-color;
-        // limit the amount of content
+    span {
         overflow: hidden;
-        display: -webkit-box;
-        margin-top: -0.5%;
-        width: 90%;
-        justify-self: center;
-        //text-align: left;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
+}
+
+.readMore {
+    flex: 0 0 auto;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
 }
 
 .viewAllButton {

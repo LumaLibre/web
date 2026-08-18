@@ -1,72 +1,144 @@
 @use "@/App.module.scss" as *;
 
 .postCard {
-    /* Add shadows to create the "card" effect */
-    width: 311px;
-    height: 440px;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    transition: 0.3s;
-    border-radius: 10px; /* 5px rounded corners */
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    height: 28.5rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    text-align: left;
     background: $card-color;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform $dur-base $ease-snappy, box-shadow $dur-base $ease-snappy;
 
-    img {
+    &:hover,
+    &:focus-visible {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 26px 0 rgba(0, 0, 0, 0.45);
+        outline: none;
+    }
+
+    &:focus-visible {
+        box-shadow: 0 0 0 2px $primary-color, 0 10px 24px 0 rgba(0, 0, 0, 0.45);
+    }
+}
+
+.imageWrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 40%, rgba(145, 26, 176, 0.22), rgba(0, 0, 0, 0.25));
+
+    > img {
+        display: block;
         width: 100%;
-        height: 175px;
+        height: 100%;
         object-fit: cover;
         object-position: center;
-        border-radius: 10px 10px 0 0;
-    }
-
-    &:nth-child(n+9) {
-        display: none; /* Hide cards beyond the 8th */
-    }
-
-    &:nth-child(even):hover {
-        transform: scale(1.1) rotate(-2deg);
-    }
-
-    &:hover {
-        will-change: filter;
-        filter: drop-shadow(0 0 2em rgb(96, 0, 159));
-        /*box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);*/
-        transform: scale(1.1) rotate(2deg);
-        cursor: pointer;
     }
 }
 
+.dateBadge {
+    position: absolute;
+    top: 0.65rem;
+    left: 0.65rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.28rem 0.55rem;
+    border-radius: 999px;
+    background: $primary-color;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
 
-@mixin containerStyles($padding-bottom) {
-    padding-left: 16px;
-    padding-right: 16px;
-    padding-bottom: $padding-bottom;
-    color: white;
-    display: block;
+.body {
+    box-sizing: border-box;
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 1rem 1.1rem 1.1rem;
+}
+
+.title {
+    min-width: 0;
+    margin: 0;
+    color: $primary-color;
+    font-family: 'Paytone One', sans-serif;
+    font-size: 1.15rem;
+    line-height: 1.25;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.excerpt {
+    min-width: 0;
+    margin: 0;
+    color: $secondary-color;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.84rem;
+    font-weight: 400;
+    line-height: 1.55;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+}
+
+.footer {
+    min-width: 0;
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-top: 0.25rem;
+}
+
+.author {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: $secondary-color;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
 
     img {
-        border-radius: 5px;
-        width: 22px;
-        height: 22px;
+        width: 1.5rem;
+        height: 1.5rem;
+        flex: 0 0 auto;
+        border-radius: 6px;
+        image-rendering: pixelated;
     }
 
-    h3 {
-        color: $primary-color;
-    }
-
-    p {
-        font-family: 'Poppins', sans-serif;
-        font-size: 100%;
-        color: $secondary-color;
+    span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 }
 
-.container {
-    @include containerStyles(12px);
+.readMore {
+    flex: 0 0 auto;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
 }
-
-.titleFont {
-    font-family: 'Paytone One', sans-serif;
-}
-
-//.biggerContainer {
-//    @include containerStyles(14px);
-//}

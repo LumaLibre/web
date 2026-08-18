@@ -9,24 +9,27 @@
 .postList {
     position: relative;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    max-width: 1280px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: 1200px;
     width: 100%;
     gap: 1.5rem;
     top: 12rem;
     padding-bottom: 7rem;
     margin: 0 auto;
     justify-items: center;
-    align-items: start;
+    align-items: stretch;
 
     @media (max-width: 1024px) { // Tablet
-        grid-template-columns: repeat(2, minmax(300px, 1fr));
+        box-sizing: border-box;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 92%;
     }
 
     @media (max-width: 768px) { // Phone
+        box-sizing: border-box;
         grid-template-columns: 1fr;
+        width: 90%;
         justify-items: center;
-        align-items: start;
     }
 }
 
