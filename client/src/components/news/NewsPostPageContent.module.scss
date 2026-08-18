@@ -112,3 +112,61 @@
     height: 28px;
     margin-right: 10px;
 }
+
+@keyframes skeletonPulse {
+    0%, 100% { opacity: 0.45; }
+    50% { opacity: 0.8; }
+}
+
+.articleImageSkeleton,
+.titleSkeleton,
+.authorSkeleton,
+.bodySkeleton span {
+    background: rgba(255, 255, 255, 0.14);
+    animation: skeletonPulse 1.4s ease-in-out infinite;
+}
+
+.articleImageSkeleton {
+    width: 100%;
+    height: 400px;
+
+    @media (max-width: 768px) {
+        height: 200px;
+    }
+}
+
+.titleSkeleton {
+    width: min(32rem, 70%);
+    height: 2.5rem;
+    margin: 0 auto;
+    border-radius: 8px;
+}
+
+.authorSkeleton {
+    width: 10rem;
+    height: 1.75rem;
+    margin-top: 70px;
+    margin-bottom: 20px;
+    border-radius: 7px;
+}
+
+.bodySkeleton {
+    display: grid;
+    gap: 0.8rem;
+    padding: 0.5rem 0 2rem;
+
+    span {
+        display: block;
+        width: 100%;
+        height: 1rem;
+        border-radius: 5px;
+
+        &:nth-child(3) {
+            width: 88%;
+        }
+
+        &:last-child {
+            width: 62%;
+        }
+    }
+}
