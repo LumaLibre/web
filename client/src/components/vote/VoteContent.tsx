@@ -5,6 +5,7 @@ import TopVoters from "@/components/vote/components/topvoter/TopVoters.tsx";
 import {DATE} from "@/constants.ts";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowUpRightFromSquare, faGift, faRankingStar, faTrophy} from "@fortawesome/free-solid-svg-icons";
+import {useEffect, useState} from "react";
 
 const voteSites = [
     {label: 'MinecraftServers.org', href: 'https://minecraftservers.org/vote/658337'},
@@ -15,8 +16,103 @@ const voteSites = [
     {label: 'MineRank', href: 'https://www.minerank.com/lumamc/vote#vote-now'},
 ];
 
+const VOTE_PROGRESS_STORAGE_KEY = 'luma-vote-progress';
+const VOTE_PROGRESS_RESET_MS = 16 * 60 * 60 * 1000;
+
+interface VoteProgress {
+    openedSites: string[];
+    resetAt: number | null;
+}
+
+const emptyVoteProgress = (): VoteProgress => ({openedSites: [], resetAt: null});
+
+const loadVoteProgress = (): VoteProgress => {
+    if (typeof window === 'undefined') return emptyVoteProgress();
+
+    try {
+        const savedProgress = window.localStorage.getItem(VOTE_PROGRESS_STORAGE_KEY);
+        if (!savedProgress) return emptyVoteProgress();
+
+        const parsedProgress = JSON.parse(savedProgress) as Partial<VoteProgress>;
+        if (!Array.isArray(parsedProgress.openedSites) || typeof parsedProgress.resetAt !== 'number') {
+            window.localStorage.removeItem(VOTE_PROGRESS_STORAGE_KEY);
+            return emptyVoteProgress();
+        }
+
+        if (parsedProgress.resetAt <= Date.now()) {
+            window.localStorage.removeItem(VOTE_PROGRESS_STORAGE_KEY);
+            return emptyVoteProgress();
+        }
+
+        const validSiteUrls = new Set(voteSites.map(site => site.href));
+        return {
+            openedSites: [...new Set(parsedProgress.openedSites.filter(
+                (siteUrl): siteUrl is string => typeof siteUrl === 'string' && validSiteUrls.has(siteUrl)
+            ))],
+            resetAt: parsedProgress.resetAt,
+        };
+    } catch {
+        return emptyVoteProgress();
+    }
+};
+
+const saveVoteProgress = (progress: VoteProgress) => {
+    if (typeof window === 'undefined') return;
+
+    try {
+        if (progress.resetAt === null) {
+            window.localStorage.removeItem(VOTE_PROGRESS_STORAGE_KEY);
+        } else {
+            window.localStorage.setItem(VOTE_PROGRESS_STORAGE_KEY, JSON.stringify(progress));
+        }
+    } catch {
+        // Voting still works when local storage is unavailable; only persistence is skipped.
+    }
+};
+
 function VoteContent() {
     const month = DATE.toLocaleString('en-US', { month: 'long' });
+    const [voteProgress, setVoteProgress] = useState<VoteProgress>(loadVoteProgress);
+    const openedSites = new Set(voteProgress.openedSites);
+    const remainingSites = voteSites.length - openedSites.size;
+
+    useEffect(() => {
+        if (voteProgress.resetAt === null) return;
+
+        const timeUntilReset = voteProgress.resetAt - Date.now();
+        if (timeUntilReset <= 0) {
+            const emptyProgress = emptyVoteProgress();
+            saveVoteProgress(emptyProgress);
+            setVoteProgress(emptyProgress);
+            return;
+        }
+
+        const resetTimer = window.setTimeout(() => {
+            const emptyProgress = emptyVoteProgress();
+            saveVoteProgress(emptyProgress);
+            setVoteProgress(emptyProgress);
+        }, timeUntilReset);
+
+        return () => window.clearTimeout(resetTimer);
+    }, [voteProgress.resetAt]);
+
+    const handleVoteSiteOpen = (siteUrl: string) => {
+        setVoteProgress(currentProgress => {
+            const now = Date.now();
+            const activeProgress = currentProgress.resetAt !== null && currentProgress.resetAt > now
+                ? currentProgress
+                : emptyVoteProgress();
+
+            if (activeProgress.openedSites.includes(siteUrl)) return activeProgress;
+
+            const nextProgress: VoteProgress = {
+                openedSites: [...activeProgress.openedSites, siteUrl],
+                resetAt: activeProgress.resetAt ?? now + VOTE_PROGRESS_RESET_MS,
+            };
+            saveVoteProgress(nextProgress);
+            return nextProgress;
+        });
+    };
 
     return (
         <main className={styles.background}>
@@ -47,7 +143,9 @@ function VoteContent() {
                                     <p>Each site counts as a separate vote.</p>
                                 </div>
                             </div>
-                            {/* <span className={styles.siteCount}>{voteSites.length}</span> */}
+                            <span className={styles.siteCount} aria-live="polite">
+                                {remainingSites} vote {remainingSites === 1 ? 'site' : 'sites'} left
+                            </span>
                         </div>
 
                         <div className={styles.voteLinks}>
@@ -57,6 +155,8 @@ function VoteContent() {
                                     href={site.href}
                                     label={site.label}
                                     index={index + 1}
+                                    opened={openedSites.has(site.href)}
+                                    onOpen={() => handleVoteSiteOpen(site.href)}
                                 />
                             ))}
                         </div>

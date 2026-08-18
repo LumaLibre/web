@@ -27,6 +27,27 @@
     }
 }
 
+.opened {
+    border-color: rgba(101, 220, 151, 0.42);
+    background: rgba(46, 156, 98, 0.11);
+
+    .index {
+        background: rgba(46, 156, 98, 0.24);
+        color: #78e5a8;
+    }
+
+    .action {
+        background: #2e9c62;
+    }
+
+    &:hover,
+    &:focus-visible {
+        border-color: rgba(120, 229, 168, 0.7);
+        background: rgba(46, 156, 98, 0.18);
+        box-shadow: 0 8px 20px rgba(17, 91, 53, 0.24);
+    }
+}
+
 .index {
     width: 2rem;
     height: 2rem;
