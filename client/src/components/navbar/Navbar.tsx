@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./Navbar.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse, faGavel, faCheckCircle, faStore, faMap, faBook, faRocket } from "@fortawesome/free-solid-svg-icons";
+import { faHouse, faGavel, faCheckCircle, faMap, faBook, faNewspaper, faGift } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { WIKI } from "@/constants.ts";
 
@@ -49,13 +49,13 @@ function Navbar({beforeNavbarList, afterNavbarList }: NavbarProps) {
                 </li>
                 <li className={styles.navItem}>
                     <Link to="/news" onClick={toggleMenu}>
-                        <FontAwesomeIcon icon={faRocket} className={styles.navIcon}/>
+                        <FontAwesomeIcon icon={faNewspaper} className={styles.navIcon}/>
                         <span className={styles.navText}>News</span>
                     </Link>
                 </li>
                 <li className={styles.navItem}>
                     <Link to="/store" onClick={toggleMenu}>
-                        <FontAwesomeIcon icon={faStore} className={styles.navIcon}/>
+                        <FontAwesomeIcon icon={faGift} className={styles.navIcon}/>
                         <span className={styles.navText}>Store</span>
                     </Link>
                 </li>
