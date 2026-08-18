@@ -1,6 +1,6 @@
 import styles from "./BasketDrawer.module.scss";
 import {useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useBasket} from "@/components/store/BasketContext.tsx";
 import {formatPrice} from "@/scripts/tebex.ts";
 import {beginAuth, getAuthOptions, isBasketAuthorized, launchCheckout} from "@/scripts/checkout.ts";
@@ -83,7 +83,14 @@ function BasketDrawer({open, onClose}: { open: boolean, onClose: () => void }) {
                 </header>
 
                 <div className={styles.items}>
-                    {isEmpty && <p className={styles.empty}>Your basket is empty.</p>}
+                    {isEmpty && (
+                        <p className={styles.empty}>
+                            Your basket is empty.
+                            <p className={styles.authedAs}>
+                                See the <Link to="/news/supporting-luma">breakdown</Link>
+                            </p>
+                        </p>
+                    )}
 
                     {basket?.packages.map(item => (
                         <div className={styles.item} key={item.id}>
@@ -173,7 +180,9 @@ function BasketDrawer({open, onClose}: { open: boolean, onClose: () => void }) {
                         )}
 
                         {basket?.username && (
-                            <p className={styles.authedAs}>Purchasing as {basket.username}</p>
+                            <p className={styles.authedAs}>
+                                Purchasing as {basket.username} — <Link to="/news/supporting-luma">Breakdown</Link>
+                            </p>
                         )}
 
                         <button
