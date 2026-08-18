@@ -31,6 +31,18 @@ object NewsManager {
             .associate { (key, value) -> key to NewsPost.fromNewsArticle(key, value) }
     }
 
+    fun getNewsPostSummaries(limit: Int? = null): Map<String, NewsPostSummary> {
+        val articles = newsConfig.news
+            .entries
+            .reversed()
+            .filterNot { (_, article) -> article.unlisted }
+        val selectedArticles = limit?.let { articles.take(it.coerceAtLeast(0)) } ?: articles
+
+        return selectedArticles.associate { (key, value) ->
+            key to NewsPostSummary.fromNewsPost(NewsPost.fromNewsArticle(key, value))
+        }
+    }
+
 
     // Adding news articles programmatically
 

@@ -4,11 +4,11 @@ import {Routes, Route} from "react-router-dom";
 import MainPage from "@/pages/MainPage.tsx"; // We're not going to lazy this page since it's the first one we see.
 import DiscordCallbackPage from "@/pages/DiscordCallbackPage.tsx";
 import LoadingPage from "@/pages/LoadingPage.tsx";
-import NewsPage from "@/pages/NewsPage.tsx";
-import NewsPostPage from "@/pages/NewsPostPage.tsx";
 import VotePage from "@/pages/VotePage.tsx";
+import RulesPage from "@/pages/RulesPage.tsx";
+import NewsPostPage from "@/pages/NewsPostPage.tsx";
 
-const RulesPage = React.lazy(() => import("@/pages/RulesPage.tsx"));
+const NewsPage = React.lazy(() => import("@/pages/NewsPage.tsx"));
 const PrivacyPage = React.lazy(() => import("@/pages/PrivacyPage.tsx"));
 const StorePage = React.lazy(() => import("@/pages/StorePage.tsx"));
 const StoreCompletePage = React.lazy(() => import("@/pages/StoreCompletePage.tsx"));
@@ -38,7 +38,7 @@ function App() {
                 <Route path="/" element={<MainPage />}/>
                 <Route path="/rules" element={<Lazy><RulesPage /></Lazy>} />
                 <Route path="/vote" element={<VotePage />} />
-                <Route path="/news" element={<NewsPage />} />
+                <Route path="/news" element={<Lazy><NewsPage /></Lazy>} />
                 <Route path="/news/:id" element={<NewsPostPage />} />
                 <Route path="/privacy" element={<Lazy><PrivacyPage /></Lazy>} />
                 <Route path="/store/complete" element={<Lazy><StoreCompletePage /></Lazy>} />

@@ -50,6 +50,10 @@ class Server {
             // Handle discord redirects here instead of in the frontend
             .get("/chat") { ctx -> ctx.redirect(DISCORD_INVITE) }
             .get("/discord") { ctx -> ctx.redirect(DISCORD_INVITE) }
+            .get("/api/news/summaries") { ctx ->
+                val limit = ctx.queryParam("limit")?.toIntOrNull()
+                ctx.json(NewsManager.getNewsPostSummaries(limit))
+            }
             .get("/api/news/{id}") { ctx ->
                 val id = ctx.pathParam("id")
                 val newsPost = NewsManager.getNewsPost(id)

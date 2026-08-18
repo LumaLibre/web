@@ -1,13 +1,16 @@
-import {useQuery, useQueryClient} from "@tanstack/react-query";
+import {useQuery} from "@tanstack/react-query";
 import { fetchNewsPost } from "@/scripts/newsPosts.ts";
-import {NewsPostContainer} from "@/scripts/model/NewsPostContainer.tsx";
+import {NewsPost} from "@/scripts/model/NewsPost.ts";
 import styles from "./NewsPostPageContent.module.scss";
-import {JSX} from "react";
+import React, {JSX} from "react";
 import Label from "@/components/label/Label.tsx";
 import NotFoundPageContent from "@/components/etc/404/404PageContent.tsx";
 import LoadingPageContent from "@/components/loading/LoadingPageContent.tsx";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCalendarDays, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
+import {loadNewsPostBody} from "@/components/news/newsPostBodyLoader.ts";
+
+const NewsPostBody = React.lazy(loadNewsPostBody);
 
 
 const newsPostPageSection = (element: JSX.Element)=> {
@@ -25,18 +28,13 @@ const newsPostPageSection = (element: JSX.Element)=> {
  * @constructor NewsPostPageContent
  */
 function NewsPostPageContent({ id }: { id: string }) {
-    const queryClient = useQueryClient();
-
     const {
         data: newsPost,
         isLoading,
         error,
-    } = useQuery<NewsPostContainer>({
+    } = useQuery<NewsPost>({
         queryKey: ["newsPost", id],
-        queryFn: () => fetchNewsPost(id),
-        initialData: () => queryClient
-            .getQueryData<NewsPostContainer[]>(["allNewsPosts"])
-            ?.find(post => post.id === id),
+        queryFn: () => fetchNewsPost(id)
     });
 
 
@@ -72,7 +70,9 @@ function NewsPostPageContent({ id }: { id: string }) {
                              className={styles.articleAuthorImageContainer}/>
                         By {newsPost.author}
                     </div>
-                    {newsPost.renderContent()}
+                    <React.Suspense fallback={<p>Loading article…</p>}>
+                        <NewsPostBody content={newsPost.content}/>
+                    </React.Suspense>
                 </div>
             </div>
         )

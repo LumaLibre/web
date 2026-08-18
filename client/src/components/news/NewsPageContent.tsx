@@ -1,8 +1,8 @@
 import {useQuery} from "@tanstack/react-query";
 import styles from "./NewsPageContent.module.scss";
 import PostCard from "@/components/news/components/postcard/PostCard.tsx";
-import {NewsPostContainer} from "@/scripts/model/NewsPostContainer.tsx";
-import {fetchAllNewsPosts} from "@/scripts/newsPosts.ts";
+import {NewsPostSummary} from "@/scripts/model/NewsPost.ts";
+import {fetchNewsSummaries} from "@/scripts/newsPosts.ts";
 import {JSX, useEffect, useState} from "react";
 import Label from "@/components/label/Label.tsx";
 import NotFoundPageContent from "@/components/etc/404/404PageContent.tsx";
@@ -43,9 +43,9 @@ function NewsPageContent({ page }: { page: number }) {
         data: newsPosts,
         isLoading,
         error,
-    } = useQuery<NewsPostContainer[]>({
-        queryKey: ["allNewsPosts"],
-        queryFn: fetchAllNewsPosts,
+    } = useQuery<NewsPostSummary[]>({
+        queryKey: ["newsSummaries"],
+        queryFn: () => fetchNewsSummaries(),
     });
 
     if (isLoading) return <LoadingPageContent />;
@@ -64,7 +64,7 @@ function NewsPageContent({ page }: { page: number }) {
 
     return newsStyleSection(
         <div className={styles.postList}>
-            {paginatedPosts.map((post: NewsPostContainer) => (
+            {paginatedPosts.map((post: NewsPostSummary) => (
                 <PostCard newsPost={post} key={post.id}/>
             ))}
             <div className={styles.carouselNav}>

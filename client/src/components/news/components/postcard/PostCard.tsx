@@ -1,11 +1,11 @@
 import styles from "./PostCard.module.scss";
-import {NewsPostContainer} from "@/scripts/model/NewsPostContainer.tsx";
+import {NewsPostSummary} from "@/scripts/model/NewsPost.ts";
 import {useNavigate} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCalendarDays} from "@fortawesome/free-solid-svg-icons";
 
 
-function NewsPost({newsPost}: { newsPost: NewsPostContainer}) {
+function NewsPost({newsPost}: { newsPost: NewsPostSummary}) {
     const navigate = useNavigate();
     const openPost = () => navigate(`/news/${newsPost.id}`);
 
@@ -34,11 +34,11 @@ function NewsPost({newsPost}: { newsPost: NewsPostContainer}) {
                 <h3 className={styles.title} title={newsPost.getDisplayTitle()}>
                     {newsPost.getDisplayTitle()}
                 </h3>
-                <p className={styles.excerpt}>{newsPost.getExcerpt()}</p>
+                <p className={styles.excerpt}>{newsPost.excerpt}</p>
 
                 <div className={styles.footer}>
                     <div className={styles.author}>
-                        <img src={newsPost.getAuthorAvatarURLWithSize(32)} alt=""/>
+                        <img src={newsPost.getAuthorAvatarURL(32)} alt=""/>
                         <span>{newsPost.author}</span>
                     </div>
                     <span className={styles.readMore}>Read article</span>

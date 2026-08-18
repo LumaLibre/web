@@ -1,14 +1,11 @@
-import {NewsPostContainer} from "./model/NewsPostContainer.tsx";
+import {NewsPost, NewsPostSummary} from "./model/NewsPost.ts";
 import {API_ENDPOINT} from "@/constants.ts";
 
 const endpoint: string = `${API_ENDPOINT}/news/`;
 
-/**
- * Fetches all news posts from the webserver API.
- * @returns An array of NewsPostContainer objects.
- */
-export async function fetchAllNewsPosts(): Promise<NewsPostContainer[]> {
-    const response = await fetch(endpoint);
+export async function fetchNewsSummaries(limit?: number): Promise<NewsPostSummary[]> {
+    const query = limit === undefined ? "" : `?limit=${limit}`;
+    const response = await fetch(`${endpoint}summaries${query}`);
 
     if (!response.ok) {
         throw new Error(`Failed to fetch news posts: ${response.status} ${response.statusText}`);
@@ -17,27 +14,27 @@ export async function fetchAllNewsPosts(): Promise<NewsPostContainer[]> {
     const jsonData = await response.json();
 
     // Explicitly assert the type of the values returned from the API.
-    const newsPostsArray = Object.values(jsonData) as Array<{
+    const summaries = Object.values(jsonData) as Array<{
         id: string;
         title: string;
         thumbnail: string;
         author: string;
         timestamp: number;
-        content: string;
+        excerpt: string;
         unlisted?: boolean;
     }>;
 
-    return newsPostsArray
-        .filter((newsPost) => !newsPost.unlisted)
-        .map((newsPost) =>
-            new NewsPostContainer(
-                newsPost.id,
-                newsPost.title,
-                newsPost.thumbnail,
-                newsPost.author,
-                newsPost.timestamp,
-                newsPost.content,
-                newsPost.unlisted ?? false
+    return summaries
+        .filter(summary => !summary.unlisted)
+        .map(summary =>
+            new NewsPostSummary(
+                summary.id,
+                summary.title,
+                summary.thumbnail,
+                summary.author,
+                summary.timestamp,
+                summary.excerpt,
+                summary.unlisted ?? false
             )
         );
 }
@@ -47,10 +44,15 @@ export async function fetchAllNewsPosts(): Promise<NewsPostContainer[]> {
  * Fetches a specific news post by its ID from the webserver API.
  * @param id The ID of the news post to fetch.
  */
-export async function fetchNewsPost(id: string): Promise<NewsPostContainer> {
+export async function fetchNewsPost(id: string): Promise<NewsPost> {
     return fetch(endpoint + id)
-        .then(response => response.json())
-        .then(newsPost => new NewsPostContainer(
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Failed to fetch news post: ${response.status} ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(newsPost => new NewsPost(
             newsPost.id,
             newsPost.title,
             newsPost.thumbnail,

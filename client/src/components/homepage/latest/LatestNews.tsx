@@ -1,7 +1,7 @@
 import styles from "./LatestNews.module.scss";
 import {useQuery} from "@tanstack/react-query";
-import {NewsPostContainer} from "@/scripts/model/NewsPostContainer.tsx";
-import {fetchAllNewsPosts} from "@/scripts/newsPosts.ts";
+import {NewsPostSummary} from "@/scripts/model/NewsPost.ts";
+import {fetchNewsSummaries} from "@/scripts/newsPosts.ts";
 import Button from "@/components/ui/Button.tsx";
 import {useNavigate} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -13,9 +13,9 @@ function LatestNews() {
         data: newsPosts,
         isLoading,
         error,
-    } = useQuery<NewsPostContainer[]>({
-        queryKey: ["allNewsPosts"],
-        queryFn: fetchAllNewsPosts,
+    } = useQuery<NewsPostSummary[]>({
+        queryKey: ["newsSummaries", 3],
+        queryFn: () => fetchNewsSummaries(3),
     });
 
     if (isLoading) return <div></div>;
@@ -66,11 +66,11 @@ function LatestNews() {
                             <h3 className={styles.cardTitle} title={news.getDisplayTitle()}>
                                 {news.getDisplayTitle()}
                             </h3>
-                            <p className={styles.excerpt}>{news.getExcerpt()}</p>
+                            <p className={styles.excerpt}>{news.excerpt}</p>
 
                             <div className={styles.cardFooter}>
                                 <div className={styles.author}>
-                                    <img src={news.getAuthorAvatarURLWithSize(32)} alt=""/>
+                                    <img src={news.getAuthorAvatarURL(32)} alt=""/>
                                     <span>{news.author}</span>
                                 </div>
                                 <span className={styles.readMore}>Read article</span>
