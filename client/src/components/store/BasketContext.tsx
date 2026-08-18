@@ -18,6 +18,7 @@ interface PendingAdd {
     packageId: number;
     quantity: number;
     targetUsername?: string;
+    variableData?: Record<string, string>;
 }
 
 interface BasketContextValue {
@@ -34,7 +35,8 @@ interface BasketContextValue {
     addPackage: (
         packageId: number,
         quantity?: number,
-        targetUsername?: string
+        targetUsername?: string,
+        variableData?: Record<string, string>
     ) => Promise<"added" | "queued" | "failed">;
     addedCount: number;
     removePackage: (packageId: number) => Promise<void>;
@@ -132,7 +134,8 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
                     created.ident,
                     pendingAdd.packageId,
                     pendingAdd.quantity,
-                    pendingAdd.targetUsername
+                    pendingAdd.targetUsername,
+                    pendingAdd.variableData
                 ));
                 setAddedCount(count => count + 1);
             } catch (e) {
@@ -181,13 +184,14 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
     const addPackage = useCallback(async (
         packageId: number,
         quantity = 1,
-        targetUsername?: string
+        targetUsername?: string,
+        variableData?: Record<string, string>
     ): Promise<"added" | "queued" | "failed"> => {
         let ident = basket?.ident ?? null;
 
         if (!ident) {
             if (!username) {
-                setPendingAdd({packageId, quantity, targetUsername});
+                setPendingAdd({packageId, quantity, targetUsername, variableData});
                 return "queued";
             }
 
@@ -201,7 +205,7 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
                 if (/invalid username/i.test(message)) {
                     writeStored(USERNAME_KEY, null);
                     setUsernameState(null);
-                    setPendingAdd({packageId, quantity, targetUsername});
+                    setPendingAdd({packageId, quantity, targetUsername, variableData});
                     return "queued";
                 }
                 setError(message || "Could not open a basket.");
@@ -211,7 +215,7 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
 
         setError(null);
         try {
-            adopt(await addPackageToBasket(ident, packageId, quantity, targetUsername));
+            adopt(await addPackageToBasket(ident, packageId, quantity, targetUsername, variableData));
         } catch (e) {
             setError(e instanceof Error ? e.message : "Something went wrong.");
             return "failed";

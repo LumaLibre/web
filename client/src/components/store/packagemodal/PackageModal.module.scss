@@ -316,3 +316,109 @@
     font-size: 0.8rem;
     margin: 0;
 }
+
+.optionFields {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    flex: 1 0 100%;
+}
+
+.optionField {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+
+    input {
+        box-sizing: border-box;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(205, 184, 208, 0.22);
+        border-radius: 8px;
+        color: #ffffff;
+        padding: 0.6rem 0.75rem;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.88rem;
+        margin-top: 0.2rem;
+
+        &::placeholder { color: rgba(205, 184, 208, 0.55); }
+        &:focus { outline: none; border-color: $primary-color; }
+        &[aria-invalid="true"] { border-color: #ff8080; }
+    }
+}
+
+.optionLabel {
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.optionHint {
+    color: $secondary-color;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 400;
+}
+
+.optionError {
+    color: #ff8080;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.75rem;
+    margin-top: 0.15rem;
+}
+
+.discordLogin {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: #5865F2;
+    color: #ffffff;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 0.7rem 1.1rem;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background $dur-fast linear;
+
+    &:hover { background: #4752c4; border-color: transparent; }
+}
+
+.discordLinked {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(88, 101, 242, 0.18);
+    border: 1px solid rgba(88, 101, 242, 0.5);
+    border-radius: 8px;
+    padding: 0.6rem 0.85rem;
+    color: $secondary-color;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.82rem;
+
+    strong { color: #ffffff; }
+
+    button {
+        background: rgba(255, 255, 255, 0.1);
+        color: $secondary-color;
+        border: none;
+        border-radius: 6px;
+        padding: 0.25rem 0.55rem;
+        font-family: inherit;
+        font-size: 0.72rem;
+        font-weight: 700;
+        cursor: pointer;
+
+        &:hover { background: rgba(255, 255, 255, 0.2); border-color: transparent; }
+    }
+}
+
+.actionHint {
+    flex: 1 0 100%;
+    color: $secondary-color;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8rem;
+    margin: 0;
+}

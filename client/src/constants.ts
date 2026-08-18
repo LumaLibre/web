@@ -32,7 +32,7 @@ export const STORE_PAYMENT_METHODS = [
 
 export type StorePaymentMethod = typeof STORE_PAYMENT_METHODS[number];
 
-export const STORE_PATH = "/store";
+export const DISCORD_PUBLIC_CLIENT_ID: string = "1187474945815621762"; // non-sensitive
 const ORIGIN = typeof window === "undefined" ? HOST.replace(/\/$/, "") : window.location.origin;
 export const STORE_COMPLETE_URL = `${ORIGIN}/store/complete`;
 export const STORE_CANCEL_URL = `${ORIGIN}/store`;

@@ -15,6 +15,12 @@ function BasketDrawer({open, onClose}: { open: boolean, onClose: () => void }) {
     const [busy, setBusy] = useState(false);
     const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
+    // TODO: Change this
+    // Swallow errors for packages that need discord integration
+    const basketError = error && /adding the package to your basket|options provided is invalid/i.test(error)
+        ? null
+        : error;
+
     const currency = basket?.currency ?? "USD";
     const isEmpty = !basket || basket.packages.length === 0;
 
@@ -180,8 +186,8 @@ function BasketDrawer({open, onClose}: { open: boolean, onClose: () => void }) {
                     </div>
                 )}
 
-                {(error || checkoutError) && (
-                    <p className={styles.error}>{checkoutError ?? error}</p>
+                {(basketError || checkoutError) && (
+                    <p className={styles.error}>{checkoutError ?? basketError}</p>
                 )}
             </aside>
         </>

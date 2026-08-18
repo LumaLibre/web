@@ -1,5 +1,5 @@
 import styles from "./StoreContent.module.scss";
-import {useQuery} from "@tanstack/react-query";
+import {keepPreviousData, useQuery} from "@tanstack/react-query";
 import {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import Label from "@/components/label/Label.tsx";
@@ -18,6 +18,7 @@ import {fetchCategories, isStoreConfigured} from "@/scripts/tebex.ts";
 import {StoreCategory, StorePackage} from "@/scripts/model/Tebex.ts";
 import {buildStoreEntries, categorySlug, PackageGroup} from "@/scripts/packageGroups.ts";
 import {storeHtml} from "@/scripts/storeHtml.ts";
+import {consumePendingPackage, storedDiscordIdentity} from "@/scripts/discordAuth.ts";
 import {faBasketShopping} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {MINOTAR_API} from "@/constants.ts";
@@ -33,7 +34,8 @@ function StoreContent() {
     const {data: categories, isLoading, error} = useQuery<StoreCategory[]>({
         queryKey: ["storeCategories", basket?.ident],
         queryFn: () => fetchCategories(basket?.ident),
-        enabled: isStoreConfigured()
+        enabled: isStoreConfigured(),
+        placeholderData: keepPreviousData
     });
 
     useEffect(() => {
@@ -43,6 +45,32 @@ function StoreContent() {
         setSelectedPackage(null);
         setSelectedGroup(null);
     }, [addedCount]);
+
+    // Returning from Discord: put the player back in the modal they left, with
+    // the account now linked. Adding stays their decision.
+    useEffect(() => {
+        if (!categories || !storedDiscordIdentity()) {
+            return;
+        }
+        const packageId = consumePendingPackage();
+        if (packageId === null) {
+            return;
+        }
+
+        for (const category of categories) {
+            const match = (category.packages ?? []).find(p => p.id === packageId);
+            if (!match) {
+                continue;
+            }
+            const entry = buildStoreEntries(category.packages ?? [])
+                .find(e => e.type === "group" && e.group.packages.some(p => p.id === packageId));
+            if (entry?.type === "group") {
+                setSelectedGroup(entry.group);
+            }
+            setSelectedPackage(match);
+            return;
+        }
+    }, [categories]);
 
     if (!isStoreConfigured()) {
         return (

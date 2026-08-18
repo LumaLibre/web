@@ -2,6 +2,7 @@ import styles from "./PackageCard.module.scss";
 import {StorePackage} from "@/scripts/model/Tebex.ts";
 import {formatPrice} from "@/scripts/tebex.ts";
 import {pricingOf} from "@/scripts/pricing.ts";
+import {storedDiscordIdentity} from "@/scripts/discordAuth.ts";
 import {useBasket} from "@/components/store/BasketContext.tsx";
 import React, {useState} from "react";
 
@@ -20,7 +21,20 @@ function PackageCard(
         event.stopPropagation();
         setAdding(true);
         try {
-            await addPackage(storePackage.id);
+            let result = await addPackage(storePackage.id);
+
+            if (result === "failed") {
+                const identity = storedDiscordIdentity();
+                if (identity) {
+                    result = await addPackage(storePackage.id, 1, undefined, {
+                        discord_id: identity.id
+                    });
+                }
+            }
+
+            if (result === "failed") {
+                onSelect();
+            }
         } finally {
             setAdding(false);
         }

@@ -152,19 +152,22 @@ export async function fetchBasketAuthOptions(
 /**
  * Adds a package to the basket.
  * @param targetUsername Gifts the package to this player instead of the buyer.
+ * @param variableData Values for the package's required options; without them Tebex 400s.
  */
 export async function addPackageToBasket(
     ident: string,
     packageId: number,
     quantity = 1,
-    targetUsername?: string
+    targetUsername?: string,
+    variableData?: Record<string, string>
 ): Promise<Basket> {
     return request<Basket>(`${TEBEX_BASKETS_ENDPOINT}/${ident}/packages`, {
         method: "POST",
         body: JSON.stringify({
             package_id: packageId,
             quantity,
-            ...(targetUsername ? {target_username: targetUsername} : {})
+            ...(targetUsername ? {target_username: targetUsername} : {}),
+            ...(variableData && Object.keys(variableData).length ? {variable_data: variableData} : {})
         })
     });
 }

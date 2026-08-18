@@ -32,6 +32,13 @@ export interface SidebarModule {
     };
 }
 
+export interface PackageOption {
+    name: string;
+    description: string;
+    type: string;
+    required: boolean;
+}
+
 export interface PackageMedia {
     type: "video" | "image";
     name: string | null;
@@ -56,6 +63,7 @@ export interface StorePackage {
     disable_gifting: boolean;
     expiration_date: string | null;
     media?: PackageMedia[];
+    options?: PackageOption[];
     order: number;
     slug: string;
     user_limit: number;

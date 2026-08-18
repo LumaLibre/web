@@ -2,6 +2,7 @@ import React, {useEffect} from "react";
 import styles from "./App.module.scss";
 import {Routes, Route} from "react-router-dom";
 import MainPage from "@/pages/MainPage.tsx"; // We're not going to lazy this page since it's the first one we see.
+import DiscordCallbackPage from "@/pages/DiscordCallbackPage.tsx";
 import LoadingPage from "@/pages/LoadingPage.tsx";
 import NewsPage from "@/pages/NewsPage.tsx";
 import NewsPostPage from "@/pages/NewsPostPage.tsx";
@@ -41,6 +42,7 @@ function App() {
                 <Route path="/news/:id" element={<NewsPostPage />} />
                 <Route path="/privacy" element={<Lazy><PrivacyPage /></Lazy>} />
                 <Route path="/store/complete" element={<Lazy><StoreCompletePage /></Lazy>} />
+                <Route path="/store/discord" element={<Lazy><DiscordCallbackPage /></Lazy>} />
                 <Route path="/store" element={<Lazy><StorePage /></Lazy>} />
                 <Route path="/store/:categorySlug" element={<Lazy><StorePage /></Lazy>} />
                 <Route path="*" element={<Lazy><NotFoundPage /></Lazy>} />
