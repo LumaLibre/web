@@ -1,15 +1,18 @@
 import styles from "./PackageCard.module.scss";
 import {StorePackage} from "@/scripts/model/Tebex.ts";
-import {formatPrice} from "@/scripts/tebex.ts";
+import {fetchPackage, formatPrice} from "@/scripts/tebex.ts";
 import {pricingOf} from "@/scripts/pricing.ts";
 import {storedDiscordIdentity} from "@/scripts/discordAuth.ts";
 import {useBasket} from "@/components/store/BasketContext.tsx";
 import React, {useState} from "react";
+import {useQueryClient} from "@tanstack/react-query";
+import {requiredOptions} from "@/scripts/packageOptions.ts";
 
 function PackageCard(
     {storePackage, onSelect}: { storePackage: StorePackage, onSelect: () => void }
 ) {
     const {addPackage} = useBasket();
+    const queryClient = useQueryClient();
     const [adding, setAdding] = useState(false);
 
     const pricing = pricingOf(storePackage);
@@ -21,20 +24,39 @@ function PackageCard(
         event.stopPropagation();
         setAdding(true);
         try {
-            let result = await addPackage(storePackage.id);
+            // Category responses omit package options. Resolve the full package
+            // before using this shortcut so required fields cannot be bypassed.
+            const packageDetail = await queryClient.fetchQuery<StorePackage>({
+                queryKey: ["storePackage", storePackage.id],
+                queryFn: () => fetchPackage(storePackage.id),
+                staleTime: 5 * 60 * 1000
+            });
+            const options = requiredOptions(packageDetail);
+            const discordOptions = options.filter(option => option.type === "discord_id");
 
-            if (result === "failed") {
-                const identity = storedDiscordIdentity();
-                if (identity) {
-                    result = await addPackage(storePackage.id, 1, undefined, {
-                        discord_id: identity.id
-                    });
-                }
+            if (options.length !== discordOptions.length) {
+                onSelect();
+                return;
             }
+
+            const identity = storedDiscordIdentity();
+            if (discordOptions.length > 0 && !identity) {
+                onSelect();
+                return;
+            }
+
+            const variableData = identity && discordOptions.length > 0
+                ? Object.fromEntries(discordOptions.map(option => [option.name, identity.id]))
+                : undefined;
+            const result = await addPackage(storePackage.id, 1, undefined, variableData);
 
             if (result === "failed") {
                 onSelect();
             }
+        } catch {
+            // The modal has its own loading and error states, so it is the safe
+            // fallback if package details could not be checked here.
+            onSelect();
         } finally {
             setAdding(false);
         }

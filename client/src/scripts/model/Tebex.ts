@@ -21,6 +21,12 @@ export interface RecentPayment {
     avatar_url: string;
 }
 
+export interface TopCustomer {
+    username: string;
+    username_id: string;
+    avatar_url: string;
+}
+
 export interface SidebarModule {
     id: number;
     type: string;
@@ -29,7 +35,7 @@ export interface SidebarModule {
     data: {
         header?: string;
         payments?: RecentPayment[];
-    };
+    } & Partial<TopCustomer>;
 }
 
 export interface PackageOption {

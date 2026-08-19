@@ -2,7 +2,7 @@ import styles from "./StoreOverview.module.scss";
 import {useQuery} from "@tanstack/react-query";
 import {fetchSidebar, fetchWebstore} from "@/scripts/tebex.ts";
 import {SidebarModule, Webstore} from "@/scripts/model/Tebex.ts";
-import {DISCORD_INV, LUMA_IP_ADDRESS} from "@/constants.ts";
+import {DISCORD_INV} from "@/constants.ts";
 import SupporterCard from "@/components/store/overview/SupporterCard.tsx";
 import PaymentMethods from "@/components/store/overview/PaymentMethods.tsx";
 

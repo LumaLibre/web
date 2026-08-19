@@ -6,6 +6,7 @@ import Label from "@/components/label/Label.tsx";
 import LoadingPageContent from "@/components/loading/LoadingPageContent.tsx";
 import StoreUnavailable from "@/components/store/unavailable/StoreUnavailable.tsx";
 import StoreOverview from "@/components/store/overview/StoreOverview.tsx";
+import TopSupporter from "@/components/store/overview/TopSupporter.tsx";
 import PackageCard from "@/components/store/packagecard/PackageCard.tsx";
 import PackageGroupCard from "@/components/store/packagecard/PackageGroupCard.tsx";
 import PackageModal from "@/components/store/packagemodal/PackageModal.tsx";
@@ -14,8 +15,8 @@ import BasketDrawer from "@/components/store/basket/BasketDrawer.tsx";
 import BasketFab from "@/components/store/basket/BasketFab.tsx";
 import UsernameModal from "@/components/store/username/UsernameModal.tsx";
 import {useBasket} from "@/components/store/BasketContext.tsx";
-import {fetchCategories, isStoreConfigured} from "@/scripts/tebex.ts";
-import {StoreCategory, StorePackage} from "@/scripts/model/Tebex.ts";
+import {fetchCategories, fetchSidebar, isStoreConfigured} from "@/scripts/tebex.ts";
+import {SidebarModule, StoreCategory, StorePackage} from "@/scripts/model/Tebex.ts";
 import {buildStoreEntries, categorySlug, PackageGroup} from "@/scripts/packageGroups.ts";
 import {storeHtml} from "@/scripts/storeHtml.ts";
 import {consumePendingPackage, storedDiscordIdentity} from "@/scripts/discordAuth.ts";
@@ -37,6 +38,16 @@ function StoreContent() {
         enabled: isStoreConfigured(),
         placeholderData: keepPreviousData
     });
+
+    const {data: sidebar} = useQuery<SidebarModule[]>({
+        queryKey: ["storeSidebar"],
+        queryFn: fetchSidebar,
+        enabled: isStoreConfigured()
+    });
+
+    const topCustomer = sidebar
+        ?.find(module => module.type === "top_customer")
+        ?.data;
 
     useEffect(() => {
         if (addedCount === 0) {
@@ -164,6 +175,18 @@ function StoreContent() {
                         View basket
                         {itemCount > 0 && <span className={styles.badge}>{itemCount}</span>}
                     </button>
+
+                    {topCustomer?.username_id && topCustomer.username && (
+                        <TopSupporter
+                            className={styles.topCustomerCard}
+                            customer={{
+                                username: topCustomer.username,
+                                username_id: topCustomer.username_id,
+                                avatar_url: topCustomer.avatar_url ?? ""
+                            }}
+                            header={topCustomer.header}
+                        />
+                    )}
                 </aside>
 
                 <div className={styles.main}>

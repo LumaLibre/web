@@ -77,6 +77,11 @@ function PackageModal(
         && /adding the package to your basket|options provided is invalid/i.test(error);
 
     const handleAdd = async (targetUsername?: string) => {
+        if (discordOption && DISCORD_PUBLIC_CLIENT_ID && !discord) {
+            setGiftOpen(false);
+            return;
+        }
+
         const valueFor = (name: string, type: string) =>
             type === "discord_id" && discord ? discord.id : (optionValues[name] ?? "");
 
