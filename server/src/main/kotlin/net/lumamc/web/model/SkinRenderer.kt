@@ -21,20 +21,15 @@ class SkinRenderer(private val model: BlockbenchModel) {
         val pixels = IntArray(width * height) { options.background.rgb }
         val camera = Camera(model, options, width, height)
 
-        val textureWidth = skin.width
-        val textureHeight = skin.height
-        val horizontalTextureScale = textureWidth / model.uvWidth()
-        val verticalTextureScale = textureHeight / model.uvHeight()
+        val samplers = samplers(skin)
+        val fallbackSampler = TextureSampler(skin, model.uvWidth(), model.uvHeight())
 
         for (triangle in model.triangles()) {
+            val sampler = samplers.getOrNull(triangle.texture) ?: fallbackSampler
             shadeAndRasterize(
                 triangle,
                 camera,
-                skin,
-                textureWidth,
-                textureHeight,
-                horizontalTextureScale,
-                verticalTextureScale,
+                sampler,
                 pixels,
                 depthBuffer,
                 width,
@@ -57,14 +52,17 @@ class SkinRenderer(private val model: BlockbenchModel) {
         return output
     }
 
+    private fun samplers(skin: BufferedImage): List<TextureSampler> {
+        return model.textures().mapIndexed { index, texture ->
+            val image = if (index == model.skinTexture() || texture.image == null) skin else texture.image
+            TextureSampler(image, texture.uvWidth, texture.uvHeight)
+        }
+    }
+
     private fun shadeAndRasterize(
         triangle: BlockbenchModel.Triangle,
         camera: Camera,
-        skin: BufferedImage,
-        textureWidth: Int,
-        textureHeight: Int,
-        horizontalTextureScale: Double,
-        verticalTextureScale: Double,
+        sampler: TextureSampler,
         pixels: IntArray,
         depthBuffer: FloatArray,
         width: Int,
@@ -83,7 +81,7 @@ class SkinRenderer(private val model: BlockbenchModel) {
         val x2 = projectedC[0]
         val y2 = projectedC[1]
         val denominator = (y1 - y2) * (x0 - x2) + (x2 - x1) * (y0 - y2)
-        if (abs(denominator) < 1e-9) {
+        if (denominator < 1e-9) {
             return
         }
 
@@ -111,9 +109,7 @@ class SkinRenderer(private val model: BlockbenchModel) {
 
                 val u = weight0 * triangle.uvA[0] + weight1 * triangle.uvB[0] + weight2 * triangle.uvC[0]
                 val v = weight0 * triangle.uvA[1] + weight1 * triangle.uvB[1] + weight2 * triangle.uvC[1]
-                val textureX = clamp(floor(u * horizontalTextureScale).toInt(), 0, textureWidth - 1)
-                val textureY = clamp(floor(v * verticalTextureScale).toInt(), 0, textureHeight - 1)
-                val color = skin.getRGB(textureX, textureY)
+                val color = sampler.sample(u, v)
                 val alpha = color ushr 24 and 0xFF
                 if (alpha < alphaCutoff) {
                     continue
@@ -126,6 +122,25 @@ class SkinRenderer(private val model: BlockbenchModel) {
                 depthBuffer[pixelIndex] = depth
                 pixels[pixelIndex] = (0xFF shl 24) or (red shl 16) or (green shl 8) or blue
             }
+        }
+    }
+
+    private class TextureSampler(
+        private val image: BufferedImage,
+        private val uvWidth: Double,
+        private val uvHeight: Double
+    ) {
+
+        private val horizontalScale = image.width / uvWidth
+        private val frameHeight = ((uvHeight * horizontalScale).roundToInt()).let {
+            if (it in 1..image.height) it else image.height
+        }
+        private val verticalScale = frameHeight / uvHeight
+
+        fun sample(u: Double, v: Double): Int {
+            val textureX = clamp(floor(u * horizontalScale).toInt(), 0, image.width - 1)
+            val textureY = clamp(floor(v * verticalScale).toInt(), 0, frameHeight - 1)
+            return image.getRGB(textureX, textureY)
         }
     }
 
@@ -280,7 +295,8 @@ class SkinRenderer(private val model: BlockbenchModel) {
             val absoluteY = abs(normalY)
             val absoluteZ = abs(normalZ)
             if (absoluteY >= absoluteX && absoluteY >= absoluteZ) {
-                return if (normalY > 0) 1.0 else 0.5
+                // Corners are wound so the cross product points into the cube, hence the flipped test.
+                return if (normalY < 0) 1.0 else 0.5
             }
             return if (absoluteZ >= absoluteX) 0.8 else 0.6
         }
