@@ -20,7 +20,7 @@ const TopVoter = ({recordedVoter, index}: { recordedVoter: RecordedVoter, index:
             <div className={styles.renderSlot}>
                 <img
                     className={`${styles.face} ${renderState === "loaded" ? styles.faceHidden : ""}`}
-                    src={playerFaceUrl(recordedVoter.uuid)}
+                    src={recordedVoter.getHeadRenderURL()}
                     alt=""
                     aria-hidden="true"
                 />
@@ -28,7 +28,7 @@ const TopVoter = ({recordedVoter, index}: { recordedVoter: RecordedVoter, index:
                 {renderState !== "failed" && (
                     <img
                         className={`${styles.render} ${renderState === "loaded" ? styles.renderVisible : ""}`}
-                        src={playerBodyRenderUrl(recordedVoter.uuid, index - 1)}
+                        src={recordedVoter.getBodyRenderURL(index)}
                         alt=""
                         aria-hidden="true"
                         loading="lazy"
