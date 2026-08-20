@@ -6,7 +6,7 @@ import discordIcon from "@/assets/icons/DiscordIcon.webp";
 import {fetchCategories} from "@/scripts/tebex.ts";
 import {completeDiscordLogin, consumePendingPackage, consumeReturnPath} from "@/scripts/discordAuth.ts";
 
-const LUMA_LOGO = "/luma_logo_min.webp";
+const LUMA_LOGO = "/LumaLogoMin.webp";
 
 function DiscordCallback() {
     const navigate = useNavigate();

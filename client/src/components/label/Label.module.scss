@@ -142,7 +142,12 @@
   }
 
   img {
-    max-width: 80px;
+    width: 26.4vw;
+    max-width: 70px;
+
+    @media (max-width: 768px) {
+      width: 86%;
+    }
   }
 }
 
@@ -151,15 +156,13 @@
 
   h2, h3 {
     left: 140%;
-    @media (max-width: 768px) { // Phone
-
-    }
   }
-  //h3 {
-  //  left: 70.1%;
-  //}
+
   img {
-    max-width: 75px;
+    max-width: 77.5px;
+    @media (max-width: 768px) { // Phone
+      width: 105%;
+    }
   }
 }
 

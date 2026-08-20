@@ -3,17 +3,20 @@ import {DISCORD_INV, DISCORD_INV_SHORT, LUMA_IP_ADDRESS} from "@/constants.ts";
 import {useState} from "react";
 import logo from "@/assets/LumaText.webp";
 import styles from "./Label.module.scss";
-import playBtn from "@/assets/PlayBtn.webp";
-import discordBtn from "@/assets/DiscordBtn.webp";
 import {useQuery} from "@tanstack/react-query";
 import {Link} from "react-router-dom";
 
+const PLAY_BUTTON = "/PlayButtonHeading.webp"
+const DISCORD_BUTTON = "/DiscordButtonHeading.webp"
+
 const Label = () => {
     // querying
+    // eslint-disable-next-line prefer-const
     let {data: mcStatus, isLoading: mcStatusIsLoading, isError: mcStatusError} = useQuery<string>({
         queryKey: ["mcServerStatus"],
         queryFn: fetchServerStatus
     });
+    // eslint-disable-next-line prefer-const
     let {data: discordStatus, isLoading: discordStatusIsLoading, isError: discordStatusError} = useQuery<string>({
         queryKey: ["discordServerStatus"],
         queryFn: fetchDiscordStatus
@@ -39,7 +42,7 @@ const Label = () => {
                          mcSetHoverText("Copied, see you there!");
                      }}
                 >
-                    <img src={playBtn} alt="Play Button"/>
+                    <img src={PLAY_BUTTON} alt="Play Button"/>
                     <h2>{mcStatus}</h2>
                     <h3>{mcHoverText}</h3>
                 </div>
@@ -56,7 +59,7 @@ const Label = () => {
                          discordSetHoverText("Woo, see you there!");
                      }}
                 >
-                    <img src={discordBtn} alt="Discord Button"/>
+                    <img src={DISCORD_BUTTON} alt="Discord Button"/>
                     <h2>{discordStatus}</h2>
                     <h3>{discordHoverText}</h3>
                 </div>

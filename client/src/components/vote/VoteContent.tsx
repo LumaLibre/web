@@ -13,7 +13,7 @@ const voteSites = [
     {label: 'Minecraft.Buzz', href: 'https://minecraft.buzz/vote/9490'},
     {label: 'Play Minecraft Servers', href: 'https://play-minecraft-servers.com/minecraft-servers/lumamc/?tab=vote'},
     {label: 'Minecraft Menu', href: 'https://minecraft.menu/server-lumamc.4697/vote'},
-    {label: 'MineRank', href: 'https://www.minerank.com/lumamc/vote#vote-now'},
+    {label: 'MineRank', href: 'https://www.minerank.com/lumamc/vote'},
 ];
 
 const VOTE_PROGRESS_STORAGE_KEY = 'luma-vote-progress';
