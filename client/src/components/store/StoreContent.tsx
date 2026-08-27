@@ -190,7 +190,7 @@ function StoreContent() {
                 </aside>
 
                 <div className={styles.main}>
-                    {!activeCategory && <StoreOverview/>}
+                    {!activeCategory && <StoreOverview topCustomer={topCustomer}/>}
 
                     {activeCategory && (
                         <div className={styles.category}>

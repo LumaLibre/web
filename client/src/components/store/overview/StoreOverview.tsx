@@ -1,12 +1,13 @@
 import styles from "./StoreOverview.module.scss";
 import {useQuery} from "@tanstack/react-query";
 import {fetchSidebar, fetchWebstore} from "@/scripts/tebex.ts";
-import {SidebarModule, Webstore} from "@/scripts/model/Tebex.ts";
+import {SidebarModule, TopCustomer, Webstore} from "@/scripts/model/Tebex.ts";
 import {DISCORD_INV} from "@/constants.ts";
 import SupporterCard from "@/components/store/overview/SupporterCard.tsx";
 import PaymentMethods from "@/components/store/overview/PaymentMethods.tsx";
+import TopSupporter from "@/components/store/overview/TopSupporter.tsx";
 
-function StoreOverview() {
+function StoreOverview({topCustomer}: { topCustomer?: Partial<TopCustomer> & { header?: string } }) {
     const {data: webstore} = useQuery<Webstore>({
         queryKey: ["storeWebstore"],
         queryFn: fetchWebstore
@@ -65,6 +66,18 @@ function StoreOverview() {
 
                 <PaymentMethods/>
             </div>
+
+            {topCustomer?.username_id && topCustomer.username && (
+                <TopSupporter
+                    className={styles.mobileTopSupporter}
+                    customer={{
+                        username: topCustomer.username,
+                        username_id: topCustomer.username_id,
+                        avatar_url: topCustomer.avatar_url ?? ""
+                    }}
+                    header={topCustomer.header}
+                />
+            )}
 
             <div className={styles.panels}>
                 <section className={styles.panel}>
