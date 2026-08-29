@@ -16,7 +16,7 @@ import BasketFab from "@/components/store/basket/BasketFab.tsx";
 import UsernameModal from "@/components/store/username/UsernameModal.tsx";
 import {useBasket} from "@/components/store/BasketContext.tsx";
 import {fetchCategories, fetchSidebar, isStoreConfigured} from "@/scripts/tebex.ts";
-import {SidebarModule, StoreCategory, StorePackage, Webstore} from "@/scripts/model/Tebex.ts";
+import {SidebarModule, StoreCategory, StorePackage} from "@/scripts/model/Tebex.ts";
 import {buildStoreEntries, categorySlug, PackageGroup} from "@/scripts/packageGroups.ts";
 import {storeHtml} from "@/scripts/storeHtml.ts";
 import {consumePendingPackage, storedDiscordIdentity} from "@/scripts/discordAuth.ts";
@@ -24,13 +24,7 @@ import {faBasketShopping} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {MINOTAR_API} from "@/constants.ts";
 
-type StoreContentProps = {
-    initialCategories?: StoreCategory[];
-    initialSidebar?: SidebarModule[];
-    initialWebstore?: Webstore;
-};
-
-function StoreContent({initialCategories, initialSidebar, initialWebstore}: StoreContentProps) {
+function StoreContent() {
     const {basket, itemCount, username, changeUsername, addedCount} = useBasket();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const {categorySlug: activeSlug} = useParams<{ categorySlug: string }>();
@@ -42,15 +36,13 @@ function StoreContent({initialCategories, initialSidebar, initialWebstore}: Stor
         queryKey: ["storeCategories", basket?.ident],
         queryFn: () => fetchCategories(basket?.ident),
         enabled: isStoreConfigured(),
-        placeholderData: keepPreviousData,
-        initialData: initialCategories
+        placeholderData: keepPreviousData
     });
 
     const {data: sidebar} = useQuery<SidebarModule[]>({
         queryKey: ["storeSidebar"],
         queryFn: fetchSidebar,
-        enabled: isStoreConfigured(),
-        initialData: initialSidebar
+        enabled: isStoreConfigured()
     });
 
     const topCustomer = sidebar
@@ -198,13 +190,7 @@ function StoreContent({initialCategories, initialSidebar, initialWebstore}: Stor
                 </aside>
 
                 <div className={styles.main}>
-                    {!activeCategory && (
-                        <StoreOverview
-                            initialSidebar={initialSidebar}
-                            initialWebstore={initialWebstore}
-                            topCustomer={topCustomer}
-                        />
-                    )}
+                    {!activeCategory && <StoreOverview topCustomer={topCustomer}/>}
 
                     {activeCategory && (
                         <div className={styles.category}>

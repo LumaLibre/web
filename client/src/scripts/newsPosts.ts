@@ -1,26 +1,16 @@
 import {NewsPost, NewsPostSummary} from "./model/NewsPost.ts";
 import {API_ENDPOINT} from "@/constants.ts";
 
-const newsEndpoint = (apiEndpoint = API_ENDPOINT): string =>
-    `${apiEndpoint.replace(/\/$/, "")}/news/`;
-
-export class NewsFetchError extends Error {
-    constructor(public status: number, message: string) {
-        super(message);
-    }
-}
+const endpoint: string = `${API_ENDPOINT}/news/`;
 
 export const newsPostPath = (id: string) => `/news/${encodeURIComponent(id)}`;
 
-export async function fetchNewsSummaries(limit?: number, apiEndpoint?: string): Promise<NewsPostSummary[]> {
+export async function fetchNewsSummaries(limit?: number): Promise<NewsPostSummary[]> {
     const query = limit === undefined ? "" : `?limit=${limit}`;
-    const response = await fetch(`${newsEndpoint(apiEndpoint)}summaries${query}`);
+    const response = await fetch(`${endpoint}summaries${query}`);
 
     if (!response.ok) {
-        throw new NewsFetchError(
-            response.status,
-            `Failed to fetch news posts: ${response.status} ${response.statusText}`,
-        );
+        throw new Error(`Failed to fetch news posts: ${response.status} ${response.statusText}`);
     }
 
     const jsonData = await response.json();
@@ -56,14 +46,11 @@ export async function fetchNewsSummaries(limit?: number, apiEndpoint?: string): 
  * Fetches a specific news post by its ID from the webserver API.
  * @param id The ID of the news post to fetch.
  */
-export async function fetchNewsPost(id: string, apiEndpoint?: string): Promise<NewsPost> {
-    return fetch(newsEndpoint(apiEndpoint) + encodeURIComponent(id))
+export async function fetchNewsPost(id: string): Promise<NewsPost> {
+    return fetch(endpoint + encodeURIComponent(id))
         .then(response => {
             if (!response.ok) {
-                throw new NewsFetchError(
-                    response.status,
-                    `Failed to fetch news post: ${response.status} ${response.statusText}`,
-                );
+                throw new Error(`Failed to fetch news post: ${response.status} ${response.statusText}`);
             }
             return response.json();
         })

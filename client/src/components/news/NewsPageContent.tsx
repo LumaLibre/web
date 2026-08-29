@@ -22,13 +22,7 @@ const newsStyleSection = (element: JSX.Element) => {
 const pageRef: string = "/news?page=";
 
 
-function NewsPageContent({
-    page,
-    initialNewsPosts,
-}: {
-    page: number;
-    initialNewsPosts?: NewsPostSummary[];
-}) {
+function NewsPageContent({ page }: { page: number }) {
     const [postsPerPage, setPostsPerPage] = useState(8);
 
     useEffect(() => {
@@ -52,7 +46,6 @@ function NewsPageContent({
     } = useQuery<NewsPostSummary[]>({
         queryKey: ["newsSummaries"],
         queryFn: () => fetchNewsSummaries(),
-        initialData: initialNewsPosts,
     });
 
     if (isLoading) return <LoadingPageContent />;

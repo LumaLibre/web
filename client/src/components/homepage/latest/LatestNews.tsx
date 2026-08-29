@@ -3,11 +3,11 @@ import {useQuery} from "@tanstack/react-query";
 import {NewsPostSummary} from "@/scripts/model/NewsPost.ts";
 import {fetchNewsSummaries, newsPostPath} from "@/scripts/newsPosts.ts";
 import Button from "@/components/ui/Button.tsx";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCalendarDays} from "@fortawesome/free-solid-svg-icons";
 
-function LatestNews({initialNewsPosts}: {initialNewsPosts?: NewsPostSummary[]}) {
+function LatestNews() {
     const navigate = useNavigate();
     const {
         data: newsPosts,
@@ -16,7 +16,6 @@ function LatestNews({initialNewsPosts}: {initialNewsPosts?: NewsPostSummary[]}) 
     } = useQuery<NewsPostSummary[]>({
         queryKey: ["newsSummaries", 3],
         queryFn: () => fetchNewsSummaries(3),
-        initialData: initialNewsPosts,
     });
 
     if (isLoading) return <div></div>;
@@ -24,6 +23,10 @@ function LatestNews({initialNewsPosts}: {initialNewsPosts?: NewsPostSummary[]}) 
     if (!newsPosts?.length) return <h2>No news posts found.</h2>;
 
     const latestNews = newsPosts.slice(0, 3);
+
+    const openPost = (id: string) => {
+        navigate(newsPostPath(id));
+    };
 
     const viewAllArticles = () => {
         navigate("/news");
@@ -34,10 +37,15 @@ function LatestNews({initialNewsPosts}: {initialNewsPosts?: NewsPostSummary[]}) 
         <>
             <div className={styles.latestNewsContainer}>
                 {latestNews.map((news) => (
-                    <Link
+                    <div
                         key={news.id}
                         className={styles.newsCard}
-                        to={newsPostPath(news.id)}
+                        onClick={() => openPost(news.id)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(event) => {
+                            if (event.key === "Enter" || event.key === " ") openPost(news.id);
+                        }}
                     >
                         <div className={styles.imageWrapper}>
                             <img
@@ -68,7 +76,7 @@ function LatestNews({initialNewsPosts}: {initialNewsPosts?: NewsPostSummary[]}) 
                                 <span className={styles.readMore}>Read article</span>
                             </div>
                         </div>
-                    </Link>
+                    </div>
                 ))}
             </div>
             <Button

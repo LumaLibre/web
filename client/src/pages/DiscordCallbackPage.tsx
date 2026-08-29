@@ -1,9 +1,9 @@
 import DiscordCallback from "@/components/store/discord/DiscordCallback.tsx";
-import {seoMeta} from "@/seo.ts";
-
-export const meta = () => seoMeta({title: "Discord", path: "/store/discord", noIndex: true});
+import {setTitle} from "@/App.tsx";
 
 function DiscordCallbackPage() {
+    setTitle('Discord')
+
     return <DiscordCallback />;
 }
 

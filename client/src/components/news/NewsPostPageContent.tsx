@@ -67,13 +67,7 @@ const newsPostPageSection = (element: JSX.Element)=> {
  * @param id The id of the news post to display.
  * @constructor NewsPostPageContent
  */
-function NewsPostPageContent({
-    id,
-    initialNewsPost,
-}: {
-    id: string;
-    initialNewsPost?: NewsPost;
-}) {
+function NewsPostPageContent({ id }: { id: string }) {
     const queryClient = useQueryClient();
     const cachedSummary = queryClient
         .getQueryData<NewsPostSummary[]>(["newsSummaries", 3])
@@ -88,8 +82,7 @@ function NewsPostPageContent({
         error,
     } = useQuery<NewsPost>({
         queryKey: ["newsPost", id],
-        queryFn: () => fetchNewsPost(id),
-        initialData: initialNewsPost,
+        queryFn: () => fetchNewsPost(id)
     });
 
 

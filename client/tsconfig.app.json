@@ -13,7 +13,6 @@
 
     /* Bundler mode */
     "moduleResolution": "bundler",
-    "rootDirs": [".", "./.react-router/types"],
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
@@ -27,5 +26,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", ".react-router/types/**/*"]
+  "include": ["src"]
 }

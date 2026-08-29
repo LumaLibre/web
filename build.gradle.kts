@@ -37,30 +37,21 @@ tasks {
         dependsOn(":server:build")
 
         val sharedOutputDir = file("${projectDir}/output")
-        doFirst {
-            sharedOutputDir.deleteRecursively()
-            sharedOutputDir.mkdirs()
-        }
+        sharedOutputDir.mkdirs()
         doLast {
-            val clientOutputDir = file("client/build/client")
+            val clientOutputDir = file("client/dist")
             copy {
                 from(clientOutputDir)
-                into("$sharedOutputDir/client/client")
-            }
-            copy {
-                from("client/build/start.mjs")
                 into("$sharedOutputDir/client")
             }
+            val serverOutputDir = file("server/build/libs")
             copy {
-                from("server/build/libs/server.jar")
+                from(serverOutputDir)
                 into("$sharedOutputDir/server")
             }
         }
 
-        if (
-            providers.gradleProperty("deploy").orNull == "true"
-            && System.getenv("PTERO_URL") != null
-        ) {
+        if (System.getenv("PTERO_URL") != null) { // todo: need to fix this on pterodeploy
             finalizedBy(pterodactylDeploy)
         }
     }
