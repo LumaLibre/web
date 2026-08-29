@@ -39,6 +39,6 @@ jobs:
           context: ./pterodactyl-image
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/lumalibre/web
+          tags: ghcr.io/lumalibre/luma-java-node:21-22
           cache-from: type=gha
           cache-to: type=gha,mode=max

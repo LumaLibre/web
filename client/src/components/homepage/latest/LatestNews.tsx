@@ -38,15 +38,12 @@ function LatestNews({initialNewsPosts}: {initialNewsPosts?: NewsPostSummary[]}) 
                         key={news.id}
                         className={styles.newsCard}
                         to={newsPostPath(news.id)}
-                        prefetch="intent"
                     >
                         <div className={styles.imageWrapper}>
                             <img
                                 src={news.thumbnail}
                                 alt=""
                                 className={styles.cardImage}
-                                loading="lazy"
-                                decoding="async"
                             />
                             <time
                                 className={styles.dateBadge}

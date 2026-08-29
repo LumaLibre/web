@@ -14,14 +14,9 @@ import fullLuma from "@/assets/lumas/FullLuma.webp";
 //     fishingLuma
 // ];
 
-function LoadingPageContent({overlay = false}: {overlay?: boolean}) {
+function LoadingPageContent() {
     return (
-        <div
-            className={`${styles.background} ${overlay ? styles.overlay : ""}`}
-            role="status"
-            aria-live="polite"
-            aria-label="Loading page"
-        >
+        <div className={styles.background}>
             <div className={styles.loadingLumaImageContainer}>
                 <img src={fullLuma} alt="Loading..." className={styles.loadingLumaImage} />
             </div>

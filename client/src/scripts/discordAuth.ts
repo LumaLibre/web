@@ -27,9 +27,6 @@ const write = (key: string, value: string | null, store: Storage) => {
 };
 
 export function storedDiscordIdentity(): DiscordIdentity | null {
-    if (typeof window === "undefined") {
-        return null;
-    }
     const id = read(DISCORD_ID_KEY, window.localStorage);
     if (!id) {
         return null;
