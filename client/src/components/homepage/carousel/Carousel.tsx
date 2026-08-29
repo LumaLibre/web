@@ -61,7 +61,8 @@ function Carousel() {
     }, []);
 
 
-    const [currentIndex, setCurrentIndex] = useState(Math.floor(Math.random() * carouselBaggage.length));
+    // Deterministic initial content prevents a server/client hydration mismatch.
+    const [currentIndex, setCurrentIndex] = useState(0);
     const [animClass, setAnimClass] = useState("");
     const currentItem = carouselBaggage[currentIndex];
 

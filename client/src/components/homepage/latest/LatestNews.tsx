@@ -3,11 +3,11 @@ import {useQuery} from "@tanstack/react-query";
 import {NewsPostSummary} from "@/scripts/model/NewsPost.ts";
 import {fetchNewsSummaries, newsPostPath} from "@/scripts/newsPosts.ts";
 import Button from "@/components/ui/Button.tsx";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCalendarDays} from "@fortawesome/free-solid-svg-icons";
 
-function LatestNews() {
+function LatestNews({initialNewsPosts}: {initialNewsPosts?: NewsPostSummary[]}) {
     const navigate = useNavigate();
     const {
         data: newsPosts,
@@ -16,6 +16,7 @@ function LatestNews() {
     } = useQuery<NewsPostSummary[]>({
         queryKey: ["newsSummaries", 3],
         queryFn: () => fetchNewsSummaries(3),
+        initialData: initialNewsPosts,
     });
 
     if (isLoading) return <div></div>;
@@ -23,10 +24,6 @@ function LatestNews() {
     if (!newsPosts?.length) return <h2>No news posts found.</h2>;
 
     const latestNews = newsPosts.slice(0, 3);
-
-    const openPost = (id: string) => {
-        navigate(newsPostPath(id));
-    };
 
     const viewAllArticles = () => {
         navigate("/news");
@@ -37,15 +34,10 @@ function LatestNews() {
         <>
             <div className={styles.latestNewsContainer}>
                 {latestNews.map((news) => (
-                    <div
+                    <Link
                         key={news.id}
                         className={styles.newsCard}
-                        onClick={() => openPost(news.id)}
-                        role="button"
-                        tabIndex={0}
-                        onKeyDown={(event) => {
-                            if (event.key === "Enter" || event.key === " ") openPost(news.id);
-                        }}
+                        to={newsPostPath(news.id)}
                     >
                         <div className={styles.imageWrapper}>
                             <img
@@ -76,7 +68,7 @@ function LatestNews() {
                                 <span className={styles.readMore}>Read article</span>
                             </div>
                         </div>
-                    </div>
+                    </Link>
                 ))}
             </div>
             <Button

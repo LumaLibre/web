@@ -2,7 +2,7 @@ import styles from "./404PageContent.module.scss";
 import softInterroBangLuma from "@/assets/lumas/SoftInterrobangLuma.webp";
 import {useLocation} from "react-router-dom";
 
-function NotFoundPageContent({ error } : { error?: String }) {
+function NotFoundPageContent({ error } : { error?: string }) {
     const location = useLocation();
     const fullSlug = location.pathname;
 

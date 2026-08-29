@@ -4,12 +4,35 @@ import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.ChunkingFilter
 import net.dv8tion.jda.api.utils.MemberCachePolicy
+import net.lumamc.web.configuration.ConfigManager
 import net.lumamc.web.console.ConsoleCommandManager
 import net.lumamc.web.discord.MessageListener
 
 
 fun main() {
-    Server.INSTANCE.initServer()
+    val ssrProcess = SsrProcess.findPackagedLauncher()
+    val configuredPort = ConfigManager.config.port
+    val publicPort = System.getenv("PORT")?.toIntOrNull()
+        ?: System.getenv("SERVER_PORT")?.toIntOrNull()
+        ?: configuredPort
+
+    if (ssrProcess != null) {
+        Server.INSTANCE.initServer("127.0.0.1", ssrProcess.backendPort)
+        try {
+            ssrProcess.start(publicPort)
+        } catch (exception: Exception) {
+            Server.INSTANCE.stopServer()
+            throw exception
+        }
+    } else {
+        Server.INSTANCE.initServer()
+    }
+
+    Runtime.getRuntime().addShutdownHook(Thread {
+        ssrProcess?.stop()
+        Server.INSTANCE.stopServer()
+    })
+
     ConsoleCommandManager.INSTANCE.start()
 
 

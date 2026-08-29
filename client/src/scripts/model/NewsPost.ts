@@ -22,9 +22,10 @@ export class NewsPostSummary {
     }
 
     formatTimestampCard(): string {
-        return new Date(this.timestamp).toLocaleDateString(undefined, {
+        return new Date(this.timestamp).toLocaleDateString("en-US", {
             month: "short",
-            day: "numeric"
+            day: "numeric",
+            timeZone: "EST",
         });
     }
 }
@@ -42,3 +43,38 @@ export class NewsPost extends NewsPostSummary {
         super(id, title, thumbnail, author, timestamp, "", unlisted);
     }
 }
+
+export type NewsPostSummaryData = Pick<
+    NewsPostSummary,
+    "id" | "title" | "thumbnail" | "author" | "timestamp" | "excerpt" | "unlisted"
+>;
+
+export type NewsPostData = Pick<
+    NewsPost,
+    "id" | "title" | "thumbnail" | "author" | "timestamp" | "content" | "unlisted"
+>;
+
+export const reviveNewsPostSummary = (post: NewsPostSummaryData): NewsPostSummary =>
+    new NewsPostSummary(
+        post.id,
+        post.title,
+        post.thumbnail,
+        post.author,
+        post.timestamp,
+        post.excerpt,
+        post.unlisted,
+    );
+
+export const reviveNewsPost = (post: NewsPostData): NewsPost =>
+    new NewsPost(
+        post.id,
+        post.title,
+        post.thumbnail,
+        post.author,
+        post.timestamp,
+        post.content,
+        post.unlisted,
+    );
+
+export const displayNewsTitle = (title: string): string =>
+    title.replace(/\s*[-–—]\s*\d{1,2}\/\d{1,2}(?:\/\d{2,4})?\s*$/, "").trim();

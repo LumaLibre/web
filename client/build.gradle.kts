@@ -1,4 +1,4 @@
-import com.github.gradle.node.npm.task.NpmTask
+import com.github.gradle.node.yarn.task.YarnTask
 
 plugins {
     id("com.github.node-gradle.node") version "7.1.0"
@@ -17,23 +17,20 @@ tasks {
     //    "lint": "eslint .",
     //    "preview": "vite preview"
 
-    register<NpmTask>("yarnInstall") {
-        args.set(arrayListOf("install"))
+    register<YarnTask>("yarnInstall") {
+        args.set(arrayListOf("install", "--frozen-lockfile"))
     }
 
-    register<NpmTask>("yarnBuild") {
+    register<YarnTask>("yarnBuild") {
         args.set(arrayListOf("run", "build"))
     }
 
-    register<NpmTask>("yarnDev") {
+    register<YarnTask>("yarnDev") {
         args.set(arrayListOf("run", "dev"))
     }
 
-    register<NpmTask>("yarnLint") {
+    register<YarnTask>("yarnLint") {
         args.set(arrayListOf("run", "lint"))
     }
 
-    register<NpmTask>("yarnPreview") {
-        args.set(arrayListOf("run", "preview"))
-    }
 }

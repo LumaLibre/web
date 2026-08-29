@@ -1,7 +1,6 @@
 package net.lumamc.web
 
 import io.javalin.Javalin
-import io.javalin.http.staticfiles.Location
 import io.javalin.json.JsonMapper
 import net.lumamc.web.configuration.ConfigManager
 import net.lumamc.web.model.ModelManager
@@ -11,7 +10,6 @@ import net.lumamc.web.model.SkinRenderer
 import net.lumamc.web.news.NewsManager
 import java.awt.Color
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.lang.reflect.Type
 import javax.imageio.ImageIO
 
@@ -24,6 +22,8 @@ class Server {
     }
 
     private lateinit var internalServer: Javalin
+    private var hostOverride: String? = null
+    private var portOverride: Int? = null
 
     private val gsonMapper = object : JsonMapper {
         private val gson = Util.GSON
@@ -36,8 +36,17 @@ class Server {
 
     }
 
-    fun initServer() {
+    fun initServer(hostOverride: String? = null, portOverride: Int? = null) {
+        if (hostOverride != null) {
+            this.hostOverride = hostOverride
+        }
+        if (portOverride != null) {
+            this.portOverride = portOverride
+        }
+
         val cfg = ConfigManager.config
+        val host = this.hostOverride ?: System.getenv("LUMA_BACKEND_HOST") ?: cfg.host
+        val port = this.portOverride ?: System.getenv("LUMA_BACKEND_PORT")?.toIntOrNull() ?: cfg.port
         internalServer = Javalin.create { config ->
             config.bundledPlugins.enableCors { cors ->
                 cors.addRule {
@@ -45,11 +54,11 @@ class Server {
                 }
             }
             config.jsonMapper(gsonMapper)
-            config.staticFiles.add(cfg.staticFilesDirectory, Location.EXTERNAL)
         }
             // Handle discord redirects here instead of in the frontend
             .get("/chat") { ctx -> ctx.redirect(DISCORD_INVITE) }
             .get("/discord") { ctx -> ctx.redirect(DISCORD_INVITE) }
+            .get("/api/health") { ctx -> ctx.json(mapOf("status" to "ok")) }
             .get("/api/news/summaries") { ctx ->
                 val limit = ctx.queryParam("limit")?.toIntOrNull()
                 ctx.json(NewsManager.getNewsPostSummaries(limit))
@@ -100,20 +109,7 @@ class Server {
                 ctx.contentType("image/png")
                 ctx.result(output.toByteArray())
             }
-            // Fallback: if no static file is found and it's not an API call, serve index.html
-            .error(404) { ctx ->
-                // Only handle non-API requests
-                if (!ctx.path().startsWith("/api")) {
-                    val indexFile = File(cfg.staticFilesDirectory, "index.html")
-                    if (indexFile.exists()) {
-                        ctx.contentType("text/html")
-                        ctx.result(indexFile.readText())
-                    } else {
-                        ctx.result("index.html not found")
-                    }
-                }
-            }
-            .start(cfg.host, cfg.port)
+            .start(host, port)
 
     }
 

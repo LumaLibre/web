@@ -41,6 +41,7 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
             const body = await response.json();
             detail = body?.title ?? body?.detail ?? body?.message ?? "";
         } catch {
+            // Some Tebex errors do not include a JSON response body.
         }
         const status = [response.status, response.statusText].filter(Boolean).join(" ");
         throw new Error(

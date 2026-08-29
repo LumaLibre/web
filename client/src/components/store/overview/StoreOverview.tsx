@@ -7,15 +7,23 @@ import SupporterCard from "@/components/store/overview/SupporterCard.tsx";
 import PaymentMethods from "@/components/store/overview/PaymentMethods.tsx";
 import TopSupporter from "@/components/store/overview/TopSupporter.tsx";
 
-function StoreOverview({topCustomer}: { topCustomer?: Partial<TopCustomer> & { header?: string } }) {
+type StoreOverviewProps = {
+    initialSidebar?: SidebarModule[];
+    initialWebstore?: Webstore;
+    topCustomer?: Partial<TopCustomer> & { header?: string };
+};
+
+function StoreOverview({initialSidebar, initialWebstore, topCustomer}: StoreOverviewProps) {
     const {data: webstore} = useQuery<Webstore>({
         queryKey: ["storeWebstore"],
-        queryFn: fetchWebstore
+        queryFn: fetchWebstore,
+        initialData: initialWebstore
     });
 
     const {data: sidebar} = useQuery<SidebarModule[]>({
         queryKey: ["storeSidebar"],
-        queryFn: fetchSidebar
+        queryFn: fetchSidebar,
+        initialData: initialSidebar
     });
 
     const supporters = sidebar

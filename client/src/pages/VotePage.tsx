@@ -1,12 +1,16 @@
 import Navbar from "@/components/navbar/Navbar.tsx";
 import Footer from "@/components/footer/Footer.tsx";
 import VoteContent from "@/components/vote/VoteContent.tsx";
-import {setTitle} from "@/App.tsx";
+import {seoMeta} from "@/seo.ts";
+
+export const meta = () => seoMeta({
+    title: "Vote",
+    description: "Vote for LumaMC, help the community grow, and earn in-game rewards.",
+    path: "/vote",
+});
 
 
 function VotePage() {
-    setTitle('Vote')
-
     return (
         <div>
             <Navbar />

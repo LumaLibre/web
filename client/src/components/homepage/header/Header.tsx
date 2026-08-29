@@ -14,8 +14,9 @@ import {useQuery} from "@tanstack/react-query";
 import {fetchDiscordStatus, fetchServerStatus} from "@/scripts/serverStatuses.ts";
 import {INVIS_BORDER, INVIS_CHAR} from "@/utils.ts";
 import useIsMobile from "@/components/ui/UseIsMobile.tsx";
+import type {NewsPostSummary} from "@/scripts/model/NewsPost.ts";
 
-function Header() {
+function Header({initialNewsPosts}: {initialNewsPosts?: NewsPostSummary[]}) {
     const isMobile = useIsMobile();
     const { data: mcStatus, isLoading: mcStatusIsLoading, isError: mcStatusError } = useQuery<string>({
         queryKey: ["mcServerStatus"],
@@ -77,7 +78,7 @@ function Header() {
                 />
             </div>
             <Carousel/>
-            <LatestNews/>
+            <LatestNews initialNewsPosts={initialNewsPosts}/>
         </section>
     );
 }

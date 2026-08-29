@@ -52,6 +52,7 @@ const readStored = (key: string): string | null => {
     try {
         return window.localStorage.getItem(key);
     } catch {
+        // Storage can be disabled or unavailable; basket persistence is optional.
         return null;
     }
 };
@@ -64,12 +65,14 @@ const writeStored = (key: string, value: string | null) => {
             window.localStorage.removeItem(key);
         }
     } catch {
+        // Storage can be disabled or unavailable; basket persistence is optional.
     }
 };
 
 export function BasketProvider({children}: { children: React.ReactNode }) {
     const [basket, setBasket] = useState<Basket | null>(null);
-    const [username, setUsernameState] = useState<string | null>(() => readStored(USERNAME_KEY));
+    const [username, setUsernameState] = useState<string | null>(null);
+    const [storageReady, setStorageReady] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [pendingAdd, setPendingAdd] = useState<PendingAdd | null>(null);
@@ -82,6 +85,14 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
     }, []);
 
     useEffect(() => {
+        setUsernameState(readStored(USERNAME_KEY));
+        setStorageReady(true);
+    }, []);
+
+    useEffect(() => {
+        if (!storageReady) {
+            return;
+        }
         if (!isStoreConfigured()) {
             setError("Store is not configured.");
             setLoading(false);
@@ -100,6 +111,7 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
                         return;
                     }
                 } catch {
+                    // A stale remote basket is discarded below.
                 }
                 writeStored(BASKET_IDENT_KEY, null);
             }
@@ -112,7 +124,7 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
         return () => {
             cancelled = true;
         };
-    }, []);
+    }, [storageReady, username, adopt]);
 
     const setUsername = useCallback(async (name: string) => {
         const trimmed = name.trim();
