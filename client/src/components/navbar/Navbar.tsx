@@ -30,31 +30,31 @@ function Navbar({beforeNavbarList, afterNavbarList }: NavbarProps) {
             <ul className={`${styles.navList} ${isMenuOpen ? styles.open : ""}`}>
                 <li className={styles.navItem}>
 
-                    <Link to="/" onClick={toggleMenu}>
+                    <Link to="/" prefetch="intent" onClick={toggleMenu}>
                         <FontAwesomeIcon icon={faHouse} className={styles.navIcon}/>
                         <span className={styles.navText}>Home</span>
                     </Link>
                 </li>
                 <li className={styles.navItem}>
-                    <Link to="/rules" onClick={toggleMenu}>
+                    <Link to="/rules" prefetch="intent" onClick={toggleMenu}>
                         <FontAwesomeIcon icon={faGavel} className={styles.navIcon}/>
                         <span className={styles.navText}>Rules</span>
                     </Link>
                 </li>
                 <li className={styles.navItem}>
-                    <Link to="/vote" onClick={toggleMenu}>
+                    <Link to="/vote" prefetch="intent" onClick={toggleMenu}>
                         <FontAwesomeIcon icon={faCheckCircle} className={styles.navIcon}/>
                         <span className={styles.navText}>Vote</span>
                     </Link>
                 </li>
                 <li className={styles.navItem}>
-                    <Link to="/news" onClick={toggleMenu}>
+                    <Link to="/news" prefetch="intent" onClick={toggleMenu}>
                         <FontAwesomeIcon icon={faNewspaper} className={styles.navIcon}/>
                         <span className={styles.navText}>News</span>
                     </Link>
                 </li>
                 <li className={styles.navItem}>
-                    <Link to="/store" onClick={toggleMenu}>
+                    <Link to="/store" prefetch="intent" onClick={toggleMenu}>
                         <FontAwesomeIcon icon={faGift} className={styles.navIcon}/>
                         <span className={styles.navText}>Store</span>
                     </Link>

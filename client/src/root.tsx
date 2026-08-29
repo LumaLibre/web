@@ -6,19 +6,16 @@ import {
     Scripts,
     ScrollRestoration,
     isRouteErrorResponse,
+    useNavigation,
     useRouteError,
 } from "react-router";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import LoadingPageContent from "@/components/loading/LoadingPageContent.tsx";
 import styles from "./App.module.scss";
 import "./index.css";
 
 export const links = () => [
     {rel: "icon", type: "image/webp", href: "/LumaLogoMin.webp"},
-    {rel: "preconnect", href: "https://cdnjs.cloudflare.com"},
-    {
-        rel: "stylesheet",
-        href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css",
-    },
 ];
 
 export function Layout({children}: {children: ReactNode}) {
@@ -41,6 +38,8 @@ export function Layout({children}: {children: ReactNode}) {
 }
 
 export default function Root() {
+    const navigation = useNavigation();
+    const navigating = navigation.state !== "idle";
     const [queryClient] = useState(() => new QueryClient({
         defaultOptions: {
             queries: {
@@ -52,9 +51,10 @@ export default function Root() {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <div className={styles.appContainer}>
+            <div className={styles.appContainer} aria-busy={navigating}>
                 <Outlet/>
             </div>
+            {navigating && <LoadingPageContent overlay/>}
         </QueryClientProvider>
     );
 }
