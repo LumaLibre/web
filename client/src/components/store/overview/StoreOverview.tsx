@@ -7,6 +7,8 @@ import SupporterCard from "@/components/store/overview/SupporterCard.tsx";
 import PaymentMethods from "@/components/store/overview/PaymentMethods.tsx";
 import TopSupporter from "@/components/store/overview/TopSupporter.tsx";
 
+const SUPPORTER_LIMIT = 5;
+
 function StoreOverview({topCustomer}: { topCustomer?: Partial<TopCustomer> & { header?: string } }) {
     const {data: webstore} = useQuery<Webstore>({
         queryKey: ["storeWebstore"],
@@ -22,10 +24,15 @@ function StoreOverview({topCustomer}: { topCustomer?: Partial<TopCustomer> & { h
         ?.find(module => module.type === "recent_payments")
         ?.data;
 
-    const uniqueSupporters = supporters?.payments
-        ?.filter((payment, index, all) =>
-            all.findIndex(other => other.username_id === payment.username_id) === index)
-        .slice(0, 12) ?? [];
+    const seenSupporters = new Set<string>();
+    const uniqueSupporters = (supporters?.payments ?? [])
+        .filter((payment, index) => {
+            const key = payment.username_id ?? payment.username ?? `anon-${index}`;
+            if (seenSupporters.has(key)) return false;
+            seenSupporters.add(key);
+            return true;
+        })
+        .slice(0, SUPPORTER_LIMIT);
 
     return (
         <div className={styles.overview}>
@@ -95,9 +102,9 @@ function StoreOverview({topCustomer}: { topCustomer?: Partial<TopCustomer> & { h
                     <section className={styles.panel}>
                         <h3>{supporters?.header ?? "Recent supporters"}</h3>
                         <div className={styles.supporterList}>
-                            {uniqueSupporters.slice(0, 5).map((payment, index) => (
+                            {uniqueSupporters.map((payment, index) => (
                                 <SupporterCard
-                                    key={payment.username_id}
+                                    key={payment.username_id ?? `${payment.username}-${index}`}
                                     payment={payment}
                                     index={index}
                                 />

@@ -37,7 +37,7 @@ export function launchCheckout(basket: Basket, options: LaunchOptions = {}): voi
             {name: "secondary", color: "#cdb8d0"}
         ],
         closeOnEsc: true,
-        closeOnClickOutside: false
+        closeOnClickOutside: true
     });
 
     if (options.onComplete) {
