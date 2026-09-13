@@ -20,19 +20,11 @@ function StoreOverview({topCustomer}: { topCustomer?: Partial<TopCustomer> & { h
         queryFn: fetchSidebar
     });
 
-    const supporters = sidebar
+    const supportersRaw = sidebar
         ?.find(module => module.type === "recent_payments")
         ?.data;
 
-    const seenSupporters = new Set<string>();
-    const uniqueSupporters = (supporters?.payments ?? [])
-        .filter((payment, index) => {
-            const key = payment.username_id ?? payment.username ?? `anon-${index}`;
-            if (seenSupporters.has(key)) return false;
-            seenSupporters.add(key);
-            return true;
-        })
-        .slice(0, SUPPORTER_LIMIT);
+    const supporters = (supportersRaw?.payments ?? []).slice(0, SUPPORTER_LIMIT);
 
     return (
         <div className={styles.overview}>
@@ -98,11 +90,11 @@ function StoreOverview({topCustomer}: { topCustomer?: Partial<TopCustomer> & { h
                     </ol>
                 </section>
 
-                {uniqueSupporters.length > 0 && (
+                {supporters.length > 0 && (
                     <section className={styles.panel}>
-                        <h3>{supporters?.header ?? "Recent supporters"}</h3>
+                        <h3>{supportersRaw?.header ?? "Recent supporters"}</h3>
                         <div className={styles.supporterList}>
-                            {uniqueSupporters.map((payment, index) => (
+                            {supporters.map((payment, index) => (
                                 <SupporterCard
                                     key={payment.username_id ?? `${payment.username}-${index}`}
                                     payment={payment}
