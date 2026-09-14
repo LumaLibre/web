@@ -1,0 +1,364 @@
+@use "@/App.module.scss" as *;
+
+.formsPage {
+    width: 100%;
+    background: rgb(30, 29, 29);
+}
+
+.page {
+    @include artBackground("@/assets/MainBackground.webp");
+    box-sizing: border-box;
+    width: 100%;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: clamp(7.5rem, 12vw, 10rem) clamp(1rem, 5vw, 5rem) 7rem;
+    color: #fff;
+    font-family: "Poppins", sans-serif;
+}
+
+.hero {
+    position: relative;
+    z-index: 1;
+    width: min(1200px, 100%);
+    margin: 0 auto clamp(2.5rem, 5vw, 4rem);
+    text-align: left;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+
+    p {
+        margin: 0;
+        color: #f2ca79;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+    }
+
+    h1 {
+        margin: 0.35rem 0 0.8rem;
+        color: #fff;
+        font-family: "Paytone One", sans-serif;
+        font-size: clamp(3.4rem, 8vw, 6.4rem);
+        font-weight: 400;
+        letter-spacing: -0.045em;
+        line-height: 0.95;
+    }
+
+    span {
+        color: #efe0f2;
+        font-size: clamp(0.76rem, 1.4vw, 0.9rem);
+    }
+}
+
+.syncWarning {
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    width: min(1200px, 100%);
+    margin: -1.5rem auto 1.5rem;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid rgba(254, 238, 208, 0.35);
+    border-radius: 15px;
+    background: rgba(32, 12, 44, 0.92);
+    color: #feeed0;
+    font-size: 0.66rem;
+    text-align: left;
+}
+
+.carousel {
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    width: min(1200px, 100%);
+    margin: 0 auto;
+    padding-bottom: 5.5rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+    animation: carouselIn 320ms $ease-snappy both;
+}
+
+.formCard {
+    position: relative;
+    display: flex;
+    box-sizing: border-box;
+    min-width: 0;
+    min-height: 22.5rem;
+    flex-direction: column;
+    padding: 1.45rem;
+    overflow: hidden;
+    border-radius: 15px;
+    background:
+        radial-gradient(circle at 92% 12%, rgba(182, 67, 208, 0.16), transparent 10rem),
+        $card-color;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: #fff;
+    text-align: left;
+    text-decoration: none;
+    transition: transform $dur-base $ease-snappy, box-shadow $dur-base $ease-snappy;
+
+    &::before,
+    &::after {
+        position: absolute;
+        color: rgba(242, 202, 121, 0.12);
+        content: "✦";
+        font-family: Georgia, serif;
+        line-height: 1;
+        pointer-events: none;
+    }
+
+    &::before {
+        top: 1.2rem;
+        right: 1.35rem;
+        font-size: 4.8rem;
+        transform: rotate(12deg);
+    }
+
+    &::after {
+        right: 2.2rem;
+        bottom: 5rem;
+        content: "✧  ✦  ✧";
+        font-size: 1.15rem;
+        letter-spacing: 0.45rem;
+    }
+
+    > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    &:hover,
+    &:focus-visible {
+        color: #fff;
+        outline: none;
+        transform: translateY(-5px);
+        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.45);
+    }
+
+    &:focus-visible {
+        box-shadow: 0 0 0 2px $primary-color, 0 10px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    > p {
+        margin: 0 0 0.55rem;
+        color: #f2ca79;
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+    }
+
+    h2 {
+        display: -webkit-box;
+        margin: 0 0 0.85rem;
+        overflow: hidden;
+        color: $primary-color;
+        font-family: "Paytone One", sans-serif;
+        font-size: clamp(1.45rem, 2.4vw, 1.9rem);
+        font-weight: 400;
+        line-height: 1.15;
+        overflow-wrap: anywhere;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+    }
+
+    > span:not(.closedStamp) {
+        display: -webkit-box;
+        overflow: hidden;
+        color: $secondary-color;
+        font-size: 0.78rem;
+        font-weight: 400;
+        line-height: 1.65;
+        overflow-wrap: anywhere;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 6;
+    }
+
+    footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.8rem;
+        margin-top: auto;
+        padding-top: 1.4rem;
+        color: $secondary-color;
+
+        small,
+        strong {
+            font-size: 0.66rem;
+        }
+
+        strong {
+            flex: 0 0 auto;
+            color: #fff;
+        }
+    }
+}
+
+.loadingCard {
+    min-height: 22.5rem;
+    border-radius: 15px;
+    background: linear-gradient(100deg, rgba(32, 12, 44, 0.9) 20%, rgba(75, 34, 91, 0.95) 40%, rgba(32, 12, 44, 0.9) 60%);
+    background-size: 200% 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: shimmer 1.25s linear infinite;
+}
+
+.emptyState {
+    grid-column: 1 / -1;
+    padding: 4rem 1rem;
+    border-radius: 15px;
+    background: $card-color;
+    color: $secondary-color;
+    font-size: 0.78rem;
+}
+
+.closed {
+    filter: saturate(0.55);
+    opacity: 0.82;
+}
+
+.closedStamp {
+    position: absolute;
+    z-index: 2;
+    top: 2.2rem;
+    right: -2.4rem;
+    width: 10rem;
+    padding: 0.45rem 0;
+    border: 2px solid rgba(255, 147, 167, 0.82);
+    color: #ff9aae;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-align: center;
+    text-transform: uppercase;
+    transform: rotate(35deg);
+}
+
+// Matches the carousel controls used on the news page.
+.carouselNav {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    transform: translateX(-50%);
+}
+
+%carouselButton {
+    position: relative;
+    width: 1.75rem;
+    height: 1.75rem;
+    flex-shrink: 0;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    filter: drop-shadow(-3px 4px rgba(0, 0, 0, 0.15));
+
+    &:disabled {
+        cursor: default;
+        opacity: 0.35;
+    }
+}
+
+.carouselNavBack {
+    @extend %carouselButton;
+}
+
+.carouselNavForward {
+    @extend %carouselButton;
+    transform: scaleX(-1);
+}
+
+.carouselArrow {
+    position: absolute;
+    bottom: 0.25rem;
+    left: 0;
+    box-sizing: border-box;
+    width: 1.75rem;
+    height: 1.75rem;
+    background-color: rgb(254, 238, 208);
+    mask: url("@/assets/CarouselArrow.svg") no-repeat center / cover;
+    transition: transform 0.15s ease;
+}
+
+.carouselNavBack:not(:disabled):hover .carouselArrow,
+.carouselNavForward:not(:disabled):hover .carouselArrow {
+    transform: scale(1.1);
+}
+
+.carouselNavDot {
+    box-sizing: border-box;
+    width: 0.75rem;
+    height: 0.75rem;
+    padding: 0;
+    border: none;
+    border-radius: 9999px;
+    background-color: rgb(254, 238, 208);
+    cursor: pointer;
+    filter: drop-shadow(-3px 4px rgba(0, 0, 0, 0.15));
+    opacity: 0.55;
+    transform: translateY(-0.25rem);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+
+    &:hover,
+    &.activeDot {
+        opacity: 1;
+        transform: translateY(-0.25rem) scale(1.1);
+    }
+
+    &:disabled {
+        cursor: default;
+    }
+}
+
+@keyframes carouselIn {
+    from {
+        opacity: 0;
+        transform: translateX(1rem);
+    }
+}
+
+@keyframes shimmer {
+    to { background-position: -200% 0; }
+}
+
+@media (max-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .page {
+        padding-right: 5%;
+        padding-left: 5%;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .formCard,
+    .loadingCard {
+        min-height: 20rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .grid,
+    .loadingCard {
+        animation: none;
+    }
+
+    .formCard,
+    .carouselArrow,
+    .carouselNavDot {
+        transition: none;
+    }
+}

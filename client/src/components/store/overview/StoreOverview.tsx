@@ -1,20 +1,16 @@
 import styles from "./StoreOverview.module.scss";
 import {useQuery} from "@tanstack/react-query";
-import {fetchSidebar, fetchWebstore} from "@/scripts/tebex.ts";
-import {SidebarModule, TopCustomer, Webstore} from "@/scripts/model/Tebex.ts";
+import {fetchSidebar} from "@/scripts/tebex.ts";
+import {SidebarModule, TopCustomer} from "@/scripts/model/Tebex.ts";
 import {DISCORD_INV} from "@/constants.ts";
 import SupporterCard from "@/components/store/overview/SupporterCard.tsx";
 import PaymentMethods from "@/components/store/overview/PaymentMethods.tsx";
 import TopSupporter from "@/components/store/overview/TopSupporter.tsx";
 
+const STORE_COVER = "/StoreCover.webp";
 const SUPPORTER_LIMIT = 5;
 
 function StoreOverview({topCustomer}: { topCustomer?: Partial<TopCustomer> & { header?: string } }) {
-    const {data: webstore} = useQuery<Webstore>({
-        queryKey: ["storeWebstore"],
-        queryFn: fetchWebstore
-    });
-
     const {data: sidebar} = useQuery<SidebarModule[]>({
         queryKey: ["storeSidebar"],
         queryFn: fetchSidebar
@@ -29,9 +25,9 @@ function StoreOverview({topCustomer}: { topCustomer?: Partial<TopCustomer> & { h
     return (
         <div className={styles.overview}>
             <div className={styles.intro}>
-                {webstore?.logo && (
-                    <img className={styles.logo} src={webstore.logo} alt="" aria-hidden="true"/>
-                )}
+                <div className={styles.cover}>
+                    <img className={styles.logo} src={STORE_COVER} alt="" aria-hidden="true"/>
+                </div>
 
                 <h2>LumaMC's Store</h2>
 

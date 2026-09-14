@@ -12,6 +12,8 @@ const NewsPage = React.lazy(() => import("@/pages/NewsPage.tsx"));
 const PrivacyPage = React.lazy(() => import("@/pages/PrivacyPage.tsx"));
 const StorePage = React.lazy(() => import("@/pages/StorePage.tsx"));
 const StoreCompletePage = React.lazy(() => import("@/pages/StoreCompletePage.tsx"));
+const FormsPage = React.lazy(() => import("@/pages/FormsPage.tsx"));
+const SurveyPage = React.lazy(() => import("@/pages/SurveyPage.tsx"));
 const NotFoundPage = React.lazy(() => import("@/pages/404Page.tsx"));
 
 
@@ -45,6 +47,8 @@ function App() {
                 <Route path="/store/discord" element={<Lazy><DiscordCallbackPage /></Lazy>} />
                 <Route path="/store" element={<Lazy><StorePage /></Lazy>} />
                 <Route path="/store/:categorySlug" element={<Lazy><StorePage /></Lazy>} />
+                <Route path="/forms" element={<Lazy><FormsPage /></Lazy>} />
+                <Route path="/forms/:surveyId" element={<Lazy><SurveyPage /></Lazy>} />
                 <Route path="*" element={<Lazy><NotFoundPage /></Lazy>} />
             </Routes>
         </div>

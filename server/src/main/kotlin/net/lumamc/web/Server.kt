@@ -47,6 +47,7 @@ class Server {
             config.jsonMapper(gsonMapper)
             config.staticFiles.add(cfg.staticFilesDirectory, Location.EXTERNAL)
         }
+        internalServer
             // Handle discord redirects here instead of in the frontend
             .get("/chat") { ctx -> ctx.redirect(DISCORD_INVITE) }
             .get("/discord") { ctx -> ctx.redirect(DISCORD_INVITE) }
