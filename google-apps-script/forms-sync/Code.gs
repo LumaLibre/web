@@ -3,8 +3,8 @@ const CATALOG_MAX_AGE_MS = 3 * 60 * 1000;
 const CATALOG_CACHE_KEY = "forms-list-v6";
 const CATALOG_PROPERTY_KEY = "forms-list-v6-snapshot";
 const FORM_MAX_AGE_MS = 3 * 60 * 1000;
-const FORM_CACHE_KEY_PREFIX = "form-v6-";
-const FORM_PROPERTY_KEY_PREFIX = "form-v6-snapshot-";
+const FORM_CACHE_KEY_PREFIX = "form-v7-";
+const FORM_PROPERTY_KEY_PREFIX = "form-v7-snapshot-";
 
 function doGet(event) {
   try {
@@ -335,9 +335,19 @@ function serializeQuestion_(form, item, knownEntryId) {
     case FormApp.ItemType.PARAGRAPH_TEXT:
       return Object.assign(base, {type: "long_text", placeholder: "Your answer"});
     case FormApp.ItemType.MULTIPLE_CHOICE:
-      return Object.assign(base, {type: "single_choice", options: choices_(item.asMultipleChoiceItem())});
+      const multipleChoice = item.asMultipleChoiceItem();
+      return Object.assign(base, {
+        type: "single_choice",
+        options: choices_(multipleChoice),
+        allowOther: multipleChoice.hasOtherOption(),
+      });
     case FormApp.ItemType.CHECKBOX:
-      return Object.assign(base, {type: "multi_choice", options: choices_(item.asCheckboxItem())});
+      const checkbox = item.asCheckboxItem();
+      return Object.assign(base, {
+        type: "multi_choice",
+        options: choices_(checkbox),
+        allowOther: checkbox.hasOtherOption(),
+      });
     case FormApp.ItemType.LIST:
       return Object.assign(base, {type: "select", placeholder: "Choose an option", options: choices_(item.asListItem())});
     case FormApp.ItemType.SCALE:

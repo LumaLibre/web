@@ -11,6 +11,7 @@ import {FaArrowLeft, FaArrowRight, FaArrowUpRightFromSquare, FaCheck, FaCircleCh
 import {setTitle} from "@/App.tsx";
 import {
     createGoogleFormPayload,
+    GOOGLE_FORMS_OTHER_OPTION,
     GoogleFormQuestion,
     inferGoogleFormKind,
     ResolvedGoogleFormSurvey,
@@ -33,8 +34,12 @@ const hasAnswer = (answer: Answer | undefined) => {
     return typeof answer === "number" && Number.isFinite(answer);
 };
 
-const validateAnswer = (question: GoogleFormQuestion, answer: Answer | undefined): string | null => {
+const validateAnswer = (question: GoogleFormQuestion, answer: Answer | undefined, otherAnswer = ""): string | null => {
     if (!hasAnswer(answer)) return question.required ? "Choose or enter an answer to continue." : null;
+
+    const choseOther = answer === GOOGLE_FORMS_OTHER_OPTION
+        || (Array.isArray(answer) && answer.includes(GOOGLE_FORMS_OTHER_OPTION));
+    if (choseOther && !otherAnswer.trim()) return "Enter your answer for Other to continue.";
 
     if (typeof answer === "string" && (question.type === "short_text" || question.type === "long_text")) {
         const length = answer.trim().length;
@@ -52,11 +57,15 @@ const isInteractiveTarget = (target: EventTarget | null) =>
 function QuestionInput({
     question,
     answer,
+    otherAnswer,
     onChange,
+    onOtherChange,
 }: {
     question: GoogleFormQuestion;
     answer: Answer | undefined;
+    otherAnswer: string;
     onChange: (answer: Answer) => void;
+    onOtherChange: (answer: string) => void;
 }) {
     if (question.type === "unsupported") {
         return <p className={styles.unsupported}>This question type needs to be completed in Google Forms.</p>;
@@ -111,6 +120,16 @@ function QuestionInput({
 
     const selectedValues = Array.isArray(answer) ? answer : [];
     const isMulti = question.type === "multi_choice";
+    const otherSelected = isMulti
+        ? selectedValues.includes(GOOGLE_FORMS_OTHER_OPTION)
+        : answer === GOOGLE_FORMS_OTHER_OPTION;
+
+    const chooseOther = () => {
+        if (!isMulti) return onChange(GOOGLE_FORMS_OTHER_OPTION);
+        onChange(otherSelected
+            ? selectedValues.filter((value) => value !== GOOGLE_FORMS_OTHER_OPTION)
+            : [...selectedValues, GOOGLE_FORMS_OTHER_OPTION]);
+    };
 
     return (
         <div className={styles.options}>
@@ -137,12 +156,38 @@ function QuestionInput({
                     </button>
                 );
             })}
+            {question.allowOther && (
+                <div className={`${styles.otherOption} ${otherSelected ? styles.otherOptionSelected : ""}`}>
+                    <button
+                        className={otherSelected ? styles.optionSelected : ""}
+                        type="button"
+                        aria-pressed={otherSelected}
+                        onClick={chooseOther}
+                    >
+                        <span className={isMulti ? styles.checkbox : styles.radio}>{otherSelected && <FaCheck/>}</span>
+                        <span>Other</span>
+                        <small>{String.fromCharCode(65 + (question.options?.length ?? 0))}</small>
+                    </button>
+                    {otherSelected && (
+                        <input
+                            autoFocus
+                            className={styles.otherInput}
+                            type="text"
+                            value={otherAnswer}
+                            placeholder="Type your answer"
+                            aria-label={`Other answer for ${question.prompt}`}
+                            onChange={(event) => onOtherChange(event.target.value)}
+                        />
+                    )}
+                </div>
+            )}
         </div>
     );
 }
 
 function SurveyExperience({form}: {form: ResolvedGoogleFormSurvey}) {
     const [answers, setAnswers] = useState<Record<string, Answer>>({});
+    const [otherAnswers, setOtherAnswers] = useState<Record<string, string>>({});
     const [hasStarted, setHasStarted] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [motion, setMotion] = useState<Motion>("idle");
@@ -161,6 +206,11 @@ function SurveyExperience({form}: {form: ResolvedGoogleFormSurvey}) {
 
     const updateAnswer = (answer: Answer) => {
         setAnswers((current) => ({...current, [question.id]: answer}));
+        setError("");
+    };
+
+    const updateOtherAnswer = (answer: string) => {
+        setOtherAnswers((current) => ({...current, [question.id]: answer}));
         setError("");
     };
 
@@ -193,7 +243,7 @@ function SurveyExperience({form}: {form: ResolvedGoogleFormSurvey}) {
             await fetch(form.responseUrl, {
                 method: "POST",
                 mode: "no-cors",
-                body: createGoogleFormPayload(form, answers),
+                body: createGoogleFormPayload(form, answers, otherAnswers),
                 keepalive: true,
             });
             setIsComplete(true);
@@ -206,7 +256,7 @@ function SurveyExperience({form}: {form: ResolvedGoogleFormSurvey}) {
 
     const next = () => {
         if (motion !== "idle" || isSubmitting) return;
-        const validationError = validateAnswer(question, answers[question.id]);
+        const validationError = validateAnswer(question, answers[question.id], otherAnswers[question.id]);
         if (validationError) {
             setDragX(0);
             setError(validationError);
@@ -330,7 +380,13 @@ function SurveyExperience({form}: {form: ResolvedGoogleFormSurvey}) {
                     {question.description && <p className={styles.questionDescription}>{question.description}</p>}
 
                     <div className={styles.answerArea}>
-                        <QuestionInput question={question} answer={answers[question.id]} onChange={updateAnswer}/>
+                        <QuestionInput
+                            question={question}
+                            answer={answers[question.id]}
+                            otherAnswer={otherAnswers[question.id] ?? ""}
+                            onChange={updateAnswer}
+                            onOtherChange={updateOtherAnswer}
+                        />
                     </div>
 
                     <div className={styles.cardFooter}>

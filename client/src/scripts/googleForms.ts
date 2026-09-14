@@ -27,6 +27,7 @@ export interface GoogleFormQuestion {
     minLabel?: string;
     maxLabel?: string;
     options?: GoogleFormOption[];
+    allowOther?: boolean;
 }
 
 export interface GoogleFormSurvey {
@@ -137,6 +138,7 @@ export const resolveGoogleForm = (form: GoogleFormSurvey): ResolvedGoogleFormSur
 export const createGoogleFormPayload = (
     form: ResolvedGoogleFormSurvey,
     answers: Record<string, string | string[] | number>,
+    otherAnswers: Record<string, string> = {},
 ): URLSearchParams => {
     const payload = new URLSearchParams();
 
@@ -150,9 +152,17 @@ export const createGoogleFormPayload = (
         } else {
             payload.append(entryName, String(answer));
         }
+
+        const includesOther = answer === GOOGLE_FORMS_OTHER_OPTION
+            || (Array.isArray(answer) && answer.includes(GOOGLE_FORMS_OTHER_OPTION));
+        if (includesOther) {
+            payload.set(`${entryName}.other_option_response`, otherAnswers[question.id]?.trim() ?? "");
+        }
     }
 
     payload.set("fvv", "1");
     payload.set("pageHistory", "0");
     return payload;
 };
+
+export const GOOGLE_FORMS_OTHER_OPTION = "__other_option__";

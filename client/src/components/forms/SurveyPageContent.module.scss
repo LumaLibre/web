@@ -303,7 +303,8 @@
     grid-template-columns: 1fr 1fr;
     gap: 0.8rem;
 
-    > button {
+    > button,
+    .otherOption > button {
         display: grid;
         grid-template-columns: auto 1fr auto;
         align-items: center;
@@ -345,11 +346,57 @@
         }
     }
 
-    > .optionSelected {
+    > .optionSelected,
+    .otherOption > .optionSelected {
         border-color: rgba(235, 142, 250, 0.78);
         background: linear-gradient(145deg, rgba(194, 65, 220, 0.32), rgba(114, 28, 137, 0.28));
         box-shadow: 0 0.85rem 1.8rem rgba(128, 27, 150, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.04);
         color: #fff;
+    }
+}
+
+.otherOption {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(9rem, 0.7fr) minmax(12rem, 1.3fr);
+    gap: 0.7rem;
+    padding: 0.55rem;
+    border: 1px solid transparent;
+    border-radius: 1.15rem;
+    transition: border-color 160ms ease, background 160ms ease;
+
+    > button {
+        box-shadow: none;
+    }
+}
+
+.otherOptionSelected {
+    border-color: rgba(235, 142, 250, 0.2);
+    background: rgba(126, 35, 146, 0.13);
+}
+
+.otherInput {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    padding: 0 1rem;
+    border: 1px solid rgba(235, 208, 240, 0.2);
+    border-radius: 0.85rem;
+    outline: none;
+    background: rgba(11, 5, 13, 0.34);
+    color: #fff;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.76rem;
+    font-weight: 600;
+    transition: border-color 160ms ease, box-shadow 160ms ease;
+
+    &:focus {
+        border-color: rgba(225, 112, 247, 0.65);
+        box-shadow: 0 0 0 3px rgba(205, 73, 230, 0.13);
+    }
+
+    &::placeholder {
+        color: #77667d;
     }
 }
 
@@ -816,6 +863,15 @@
 
     .options {
         grid-template-columns: 1fr;
+    }
+
+    .otherOption {
+        grid-template-columns: 1fr;
+
+        > button,
+        .otherInput {
+            min-height: 3.8rem;
+        }
     }
 
     .cardTopline small {
