@@ -99,6 +99,13 @@ function StoreContent() {
         return <StoreUnavailable reason="No packages are available right now."/>;
     }
 
+    const quantityDisabledPackageIds = new Set(
+        categories
+            .flatMap(category => category.packages ?? [])
+            .filter(storePackage => storePackage.disable_quantity)
+            .map(storePackage => storePackage.id)
+    );
+
     const topLevel = categories
         .filter(category => !category.parent)
         .sort((a, b) => a.order - b.order);
@@ -248,7 +255,11 @@ function StoreContent() {
 
             <BasketFab onOpen={() => setDrawerOpen(true)} hidden={drawerOpen}/>
 
-            <BasketDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}/>
+            <BasketDrawer
+                open={drawerOpen}
+                onClose={() => setDrawerOpen(false)}
+                quantityDisabledPackageIds={quantityDisabledPackageIds}
+            />
         </section>
     );
 }

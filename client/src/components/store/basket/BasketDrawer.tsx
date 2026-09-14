@@ -6,7 +6,13 @@ import {formatPrice} from "@/scripts/tebex.ts";
 import {beginAuth, getAuthOptions, isBasketAuthorized, launchCheckout} from "@/scripts/checkout.ts";
 import {BasketAuthOption} from "@/scripts/model/Tebex.ts";
 
-function BasketDrawer({open, onClose}: { open: boolean, onClose: () => void }) {
+interface BasketDrawerProps {
+    open: boolean;
+    onClose: () => void;
+    quantityDisabledPackageIds: ReadonlySet<number>;
+}
+
+function BasketDrawer({open, onClose, quantityDisabledPackageIds}: BasketDrawerProps) {
     const {basket, error, setQuantity, removePackage, applyCoupon, completeBasket} = useBasket();
     const navigate = useNavigate();
 
@@ -92,8 +98,10 @@ function BasketDrawer({open, onClose}: { open: boolean, onClose: () => void }) {
                         </p>
                     )}
 
-                    {basket?.packages.map(item => (
-                        <div className={styles.item} key={item.id}>
+                    {basket?.packages.map(item => {
+                        const quantityDisabled = quantityDisabledPackageIds.has(item.id);
+
+                        return <div className={styles.item} key={item.id}>
                             {item.image && <img src={item.image} alt={item.name}/>}
                             <div className={styles.itemBody}>
                                 <span className={styles.itemName}>{item.name}</span>
@@ -110,6 +118,8 @@ function BasketDrawer({open, onClose}: { open: boolean, onClose: () => void }) {
                                     <button
                                         onClick={() => setQuantity(item.id, item.in_basket.quantity - 1)}
                                         aria-label={`Decrease quantity of ${item.name}`}
+                                        disabled={quantityDisabled}
+                                        title={quantityDisabled ? "Quantity changes are disabled for this package" : undefined}
                                     >
                                         −
                                     </button>
@@ -117,6 +127,8 @@ function BasketDrawer({open, onClose}: { open: boolean, onClose: () => void }) {
                                     <button
                                         onClick={() => setQuantity(item.id, item.in_basket.quantity + 1)}
                                         aria-label={`Increase quantity of ${item.name}`}
+                                        disabled={quantityDisabled}
+                                        title={quantityDisabled ? "Quantity changes are disabled for this package" : undefined}
                                     >
                                         +
                                     </button>
@@ -128,8 +140,8 @@ function BasketDrawer({open, onClose}: { open: boolean, onClose: () => void }) {
                                     </button>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        </div>;
+                    })}
                 </div>
 
                 {!isEmpty && (

@@ -78,10 +78,13 @@ function PackageModal(
         && /adding the package to your basket|options provided is invalid/i.test(error);
     const label = packageLabel(storePackage.name);
     const requiredRank = genericAddError && label.prefix && /\brank$/i.test(label.name)
-        ? label.prefix.replace(/^[^\p{L}\p{N}]+/u, "").trim()
+        ? label.prefix
+            .replace(/^[^\p{L}\p{N}]+/u, "")
+            .replace(/\s+only$/i, "")
+            .trim()
         : null;
     const purchaseError = requiredRank
-        ? `You need to own ${requiredRank} rank before purchasing '${label.name}'.`
+        ? `You need to own the ${requiredRank} rank before purchasing ${label.name}.`
         : error;
     const isMissingOptionsError = options.length > 0 && genericAddError && !requiredRank;
 
