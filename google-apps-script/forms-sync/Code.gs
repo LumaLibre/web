@@ -1,7 +1,7 @@
 const CACHE_SECONDS = 300;
 const CATALOG_MAX_AGE_MS = 10 * 60 * 1000;
-const CATALOG_CACHE_KEY = "forms-list-v5";
-const CATALOG_PROPERTY_KEY = "forms-list-v5-snapshot";
+const CATALOG_CACHE_KEY = "forms-list-v6";
+const CATALOG_PROPERTY_KEY = "forms-list-v6-snapshot";
 
 function doGet(event) {
   try {
@@ -115,8 +115,38 @@ function rebuildFormsCatalog_() {
     if (b.lastResponseAt) return 1;
     return b.modifiedAt.localeCompare(a.modifiedAt);
   });
+  assignFormSlugs_(forms);
   saveCatalogSnapshot_(forms);
   return forms;
+}
+
+// shorter urls
+function slugifyFormTitle_(title) {
+  const slug = String(title || "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 64);
+  return slug;
+}
+
+function shortFormId_(id) {
+  return String(id || "").replace(/[^A-Za-z0-9]/g, "").slice(-6).toLowerCase() || "form";
+}
+
+function assignFormSlugs_(forms) {
+  const counts = {};
+  forms.forEach(form => {
+    const base = slugifyFormTitle_(form.title) || "form-" + shortFormId_(form.id);
+    form.slug = base;
+    counts[base] = (counts[base] || 0) + 1;
+  });
+  forms.forEach(form => {
+    if (counts[form.slug] > 1) form.slug += "-" + shortFormId_(form.id);
+  });
 }
 
 function parseCatalogSnapshot_(serialized) {

@@ -15,7 +15,7 @@ import {
     inferGoogleFormKind,
     ResolvedGoogleFormSurvey,
 } from "@/scripts/googleForms.ts";
-import {fetchGoogleForm, getCachedGoogleForm} from "@/scripts/googleFormsSync.ts";
+import {fetchGoogleFormByRoute, getCachedGoogleFormByRoute} from "@/scripts/googleFormsSync.ts";
 import styles from "./SurveyPageContent.module.scss";
 
 type Answer = string | string[] | number;
@@ -347,17 +347,17 @@ function SurveyExperience({form}: {form: ResolvedGoogleFormSurvey}) {
 }
 
 function SurveyPageContent() {
-    const {surveyId = ""} = useParams();
-    const [form, setForm] = useState<ResolvedGoogleFormSurvey | null | undefined>(() => getCachedGoogleForm(surveyId) ?? undefined);
+    const {surveyId: routeKey = ""} = useParams();
+    const [form, setForm] = useState<ResolvedGoogleFormSurvey | null | undefined>(() => getCachedGoogleFormByRoute(routeKey) ?? undefined);
     const [loadError, setLoadError] = useState("");
     setTitle(form?.title ?? "Forms");
 
     useEffect(() => {
         let active = true;
-        const cached = getCachedGoogleForm(surveyId);
+        const cached = getCachedGoogleFormByRoute(routeKey);
         setForm(cached ?? undefined);
         setLoadError("");
-        fetchGoogleForm(surveyId)
+        fetchGoogleFormByRoute(routeKey)
             .then((result) => {
                 if (active) setForm(result);
             })
@@ -371,7 +371,7 @@ function SurveyPageContent() {
                 setLoadError("Live synchronization is temporarily unavailable.");
             });
         return () => { active = false; };
-    }, [surveyId]);
+    }, [routeKey]);
 
     if (form === undefined) {
         return (

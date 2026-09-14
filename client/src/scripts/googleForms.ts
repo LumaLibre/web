@@ -31,6 +31,7 @@ export interface GoogleFormQuestion {
 
 export interface GoogleFormSurvey {
     id: string;
+    slug?: string;
     title: string;
     eyebrow: string;
     description: string;
@@ -52,6 +53,7 @@ export interface ResolvedGoogleFormSurvey extends GoogleFormSurvey {
 
 export interface GoogleFormSummary {
     id: string;
+    slug?: string;
     title: string;
     eyebrow: string;
     description: string;
@@ -65,6 +67,33 @@ export interface GoogleFormSummary {
 }
 
 export type GoogleFormKind = "Application" | "Survey" | "Form";
+
+type GoogleFormIdentity = Pick<GoogleFormSummary, "id" | "slug" | "title">;
+
+const shortFormId = (id: string) => id.replace(/[^A-Za-z0-9]/g, "").slice(-6).toLowerCase() || "form";
+
+export const slugifyGoogleFormTitle = (title: string) => title
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 64);
+
+export const getGoogleFormSlug = (form: GoogleFormIdentity, catalog: GoogleFormIdentity[] = [form]) => {
+    if (form.slug) return form.slug;
+    const base = slugifyGoogleFormTitle(form.title) || `form-${shortFormId(form.id)}`;
+    const hasDuplicate = catalog.some((candidate) => candidate.id !== form.id
+        && (candidate.slug || slugifyGoogleFormTitle(candidate.title)) === base);
+    return hasDuplicate ? `${base}-${shortFormId(form.id)}` : base;
+};
+
+export const getGoogleFormPath = (form: GoogleFormIdentity, catalog: GoogleFormIdentity[] = [form]) =>
+    `/forms/${getGoogleFormSlug(form, catalog)}`;
+
+export const findGoogleFormByRoute = <T extends GoogleFormIdentity>(catalog: T[], routeKey: string): T | undefined =>
+    catalog.find((form) => form.id === routeKey || getGoogleFormSlug(form, catalog) === routeKey);
 
 // Some deployed Apps Script runtimes report Google's newer rating item as an
 // unsupported question. Keep the known public field mapping here so an older

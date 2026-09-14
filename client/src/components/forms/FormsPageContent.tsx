@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
-import {GoogleFormSummary, inferGoogleFormKind} from "@/scripts/googleForms.ts";
+import {getGoogleFormPath, GoogleFormSummary, inferGoogleFormKind} from "@/scripts/googleForms.ts";
 import {
     fetchGoogleForm,
     fetchGoogleFormsCatalog,
@@ -94,7 +94,7 @@ function FormsPageContent() {
                         {!isLoading && forms.map((form) => (
                             <Link
                                 className={`${styles.formCard} ${!form.acceptingResponses ? styles.closed : ""}`}
-                                to={`/forms/${form.id}`}
+                                to={getGoogleFormPath(form, catalog ?? [form])}
                                 key={form.id}
                                 onMouseEnter={() => void fetchGoogleForm(form.id).catch(() => undefined)}
                                 onFocus={() => void fetchGoogleForm(form.id).catch(() => undefined)}

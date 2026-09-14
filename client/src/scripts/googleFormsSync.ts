@@ -1,4 +1,5 @@
 import {
+    findGoogleFormByRoute,
     GoogleFormSummary,
     GoogleFormSurvey,
     ResolvedGoogleFormSurvey,
@@ -189,6 +190,15 @@ export const getCachedGoogleForm = (id: string): ResolvedGoogleFormSurvey | null
     }
 };
 
+export const getCachedGoogleFormByRoute = (routeKey: string): ResolvedGoogleFormSurvey | null => {
+    const direct = getCachedGoogleForm(routeKey);
+    if (direct) return direct;
+
+    const catalog = getCachedGoogleFormsCatalog();
+    const summary = catalog ? findGoogleFormByRoute(catalog, routeKey) : undefined;
+    return summary ? getCachedGoogleForm(summary.id) : null;
+};
+
 const saveGoogleForm = (id: string, data: ResolvedGoogleFormSurvey) => {
     try {
         window.localStorage.setItem(formCacheKey(id), JSON.stringify({savedAt: Date.now(), data}));
@@ -213,4 +223,20 @@ export const fetchGoogleForm = async (id: string): Promise<ResolvedGoogleFormSur
 
     pendingFormRequests.set(id, request);
     return request;
+};
+
+export const fetchGoogleFormByRoute = async (routeKey: string): Promise<ResolvedGoogleFormSurvey | null> => {
+    const cachedCatalog = getCachedGoogleFormsCatalog();
+    let summary = cachedCatalog ? findGoogleFormByRoute(cachedCatalog, routeKey) : undefined;
+    const looksLikeGoogleFormId = routeKey.length >= 40 && /^[A-Za-z0-9_-]+$/.test(routeKey);
+
+    if (!summary && looksLikeGoogleFormId) return fetchGoogleForm(routeKey);
+
+    if (!summary) {
+        const catalog = await fetchGoogleFormsCatalog();
+        summary = findGoogleFormByRoute(catalog, routeKey);
+    }
+
+    // Existing ID-based URLs remain valid even if the catalog is briefly stale.
+    return fetchGoogleForm(summary?.id ?? routeKey);
 };
