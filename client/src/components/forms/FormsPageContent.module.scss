@@ -197,15 +197,6 @@
     }
 }
 
-.loadingCard {
-    min-height: 22.5rem;
-    border-radius: 15px;
-    background: linear-gradient(100deg, rgba(32, 12, 44, 0.9) 20%, rgba(75, 34, 91, 0.95) 40%, rgba(32, 12, 44, 0.9) 60%);
-    background-size: 200% 100%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    animation: shimmer 1.25s linear infinite;
-}
-
 .emptyState {
     grid-column: 1 / -1;
     padding: 4rem 1rem;
@@ -324,10 +315,6 @@
     }
 }
 
-@keyframes shimmer {
-    to { background-position: -200% 0; }
-}
-
 @media (max-width: 1024px) {
     .grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -344,15 +331,13 @@
         grid-template-columns: 1fr;
     }
 
-    .formCard,
-    .loadingCard {
+    .formCard {
         min-height: 20rem;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .grid,
-    .loadingCard {
+    .grid {
         animation: none;
     }
 

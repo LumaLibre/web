@@ -16,6 +16,7 @@ import {
     ResolvedGoogleFormSurvey,
 } from "@/scripts/googleForms.ts";
 import {fetchGoogleFormByRoute, getCachedGoogleFormByRoute} from "@/scripts/googleFormsSync.ts";
+import FormsLoadingScreen from "./FormsLoadingScreen.tsx";
 import styles from "./SurveyPageContent.module.scss";
 
 type Answer = string | string[] | number;
@@ -374,15 +375,7 @@ function SurveyPageContent() {
     }, [routeKey]);
 
     if (form === undefined) {
-        return (
-            <main className={styles.page}>
-                <section className={styles.messageCard}>
-                    <span className={styles.loadingSpinner}/>
-                    <p className={styles.eyebrow}>Community forms</p>
-                    <h1>Loading form…</h1>
-                </section>
-            </main>
-        );
+        return <FormsLoadingScreen embedded/>;
     }
 
     if (!form) {

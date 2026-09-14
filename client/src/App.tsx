@@ -7,6 +7,7 @@ import LoadingPage from "@/pages/LoadingPage.tsx";
 import VotePage from "@/pages/VotePage.tsx";
 import RulesPage from "@/pages/RulesPage.tsx";
 import NewsPostPage from "@/pages/NewsPostPage.tsx";
+import FormsLoadingScreen from "@/components/forms/FormsLoadingScreen.tsx";
 
 const NewsPage = React.lazy(() => import("@/pages/NewsPage.tsx"));
 const PrivacyPage = React.lazy(() => import("@/pages/PrivacyPage.tsx"));
@@ -31,6 +32,12 @@ const Lazy = ({ children }: { children: React.ReactNode }) => {
     );
 };
 
+const FormsLazy = ({children}: {children: React.ReactNode}) => (
+    <React.Suspense fallback={<FormsLoadingScreen/>}>
+        {children}
+    </React.Suspense>
+);
+
 
 function App() {
     return (
@@ -48,7 +55,7 @@ function App() {
                 <Route path="/store" element={<Lazy><StorePage /></Lazy>} />
                 <Route path="/store/:categorySlug" element={<Lazy><StorePage /></Lazy>} />
                 <Route path="/forms" element={<Lazy><FormsPage /></Lazy>} />
-                <Route path="/forms/:surveyId" element={<Lazy><SurveyPage /></Lazy>} />
+                <Route path="/forms/:surveyId" element={<FormsLazy><SurveyPage /></FormsLazy>} />
                 <Route path="*" element={<Lazy><NotFoundPage /></Lazy>} />
             </Routes>
         </div>

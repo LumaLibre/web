@@ -6,6 +6,7 @@ import {
     fetchGoogleFormsCatalog,
     getCachedGoogleFormsCatalog,
 } from "@/scripts/googleFormsSync.ts";
+import FormsLoadingScreen from "./FormsLoadingScreen.tsx";
 import styles from "./FormsPageContent.module.scss";
 
 const PAGE_SIZE = 3;
@@ -78,6 +79,8 @@ function FormsPageContent() {
         };
     }, [catalog, currentPage, isLoading]);
 
+    if (isLoading) return <FormsLoadingScreen embedded/>;
+
     return (
         <main className={styles.page}>
                 <section className={styles.hero}>
@@ -90,8 +93,7 @@ function FormsPageContent() {
 
                 <section className={styles.carousel} aria-label="Available forms" aria-live="polite">
                     <div className={styles.grid} key={currentPage}>
-                        {isLoading && Array.from({length: PAGE_SIZE}, (_, index) => <div className={styles.loadingCard} key={index}/>) }
-                        {!isLoading && forms.map((form) => (
+                        {forms.map((form) => (
                             <Link
                                 className={`${styles.formCard} ${!form.acceptingResponses ? styles.closed : ""}`}
                                 to={getGoogleFormPath(form, catalog ?? [form])}
@@ -110,7 +112,7 @@ function FormsPageContent() {
                                 </footer>
                             </Link>
                         ))}
-                        {!isLoading && forms.length === 0 && <div className={styles.emptyState}>No forms are available right now.</div>}
+                        {forms.length === 0 && <div className={styles.emptyState}>No forms are available right now.</div>}
                     </div>
 
                     {totalPages > 1 && (
