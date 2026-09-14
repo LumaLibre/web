@@ -95,20 +95,6 @@ export const getGoogleFormPath = (form: GoogleFormIdentity, catalog: GoogleFormI
 export const findGoogleFormByRoute = <T extends GoogleFormIdentity>(catalog: T[], routeKey: string): T | undefined =>
     catalog.find((form) => form.id === routeKey || getGoogleFormSlug(form, catalog) === routeKey);
 
-// Some deployed Apps Script runtimes report Google's newer rating item as an
-// unsupported question. Keep the known public field mapping here so an older
-// sync response cannot force an otherwise compatible form back to Google.
-const questionCompatibility: Record<string, Record<string, Partial<GoogleFormQuestion>>> = {
-    "1d8sAVJ--CwP0b88zBB6u9YVA2sIPNnaSMvrfYzPYYLo": {
-        "690152628": {
-            entryId: "1548547223",
-            type: "rating",
-            scaleMin: 1,
-            scaleMax: 5,
-        },
-    },
-};
-
 export const inferGoogleFormKind = (title: string): GoogleFormKind => {
     const normalizedTitle = title.toLowerCase();
 
@@ -118,10 +104,7 @@ export const inferGoogleFormKind = (title: string): GoogleFormKind => {
 };
 
 export const resolveGoogleForm = (form: GoogleFormSurvey): ResolvedGoogleFormSurvey => {
-    const compatibility = questionCompatibility[form.id];
-    const questions = compatibility
-        ? form.questions.map((question) => ({...question, ...compatibility[question.id]}))
-        : form.questions;
+    const questions = form.questions;
     const nativeOnly = questions.some((question) => question.type === "unsupported" || !question.entryId);
     const normalizedForm = {...form, eyebrow: inferGoogleFormKind(form.title), questions, nativeOnly};
     const responderUrl = form.responderUrl;

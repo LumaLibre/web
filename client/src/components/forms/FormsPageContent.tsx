@@ -5,6 +5,7 @@ import {
     fetchGoogleForm,
     fetchGoogleFormsCatalog,
     getCachedGoogleFormsCatalog,
+    refreshGoogleFormsServerCache,
 } from "@/scripts/googleFormsSync.ts";
 import FormsLoadingScreen from "./FormsLoadingScreen.tsx";
 import styles from "./FormsPageContent.module.scss";
@@ -33,6 +34,12 @@ function FormsPageContent() {
                 if (!active) return;
                 setCatalog(result);
                 setSyncWarning("");
+                void refreshGoogleFormsServerCache()
+                    .then(() => fetchGoogleFormsCatalog())
+                    .then((refreshed) => {
+                        if (active) setCatalog(refreshed);
+                    })
+                    .catch(() => undefined);
             })
             .catch(() => {
                 if (!active) return;
@@ -61,17 +68,9 @@ function FormsPageContent() {
         if (isLoading || formIds.length === 0) return;
         let active = true;
         const timer = window.setTimeout(() => {
-            void (async () => {
-                for (const id of formIds) {
-                    if (!active) return;
-                    try {
-                        await fetchGoogleForm(id);
-                    } catch {
-                        // Preloading is an optional speed optimization.
-                    }
-                }
-            })();
-        }, 350);
+            if (!active) return;
+            void Promise.allSettled(formIds.map((id) => fetchGoogleForm(id)));
+        }, 100);
 
         return () => {
             active = false;
@@ -108,7 +107,7 @@ function FormsPageContent() {
                                 <span>{form.description.split("\n")[0]}</span>
                                 <footer>
                                     <small>{form.questionCount} questions · About {form.estimatedMinutes} min</small>
-                                    <strong>Open form</strong>
+                                    {/*<strong>Open form</strong>*/}
                                 </footer>
                             </Link>
                         ))}

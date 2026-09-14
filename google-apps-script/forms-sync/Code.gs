@@ -1,7 +1,10 @@
 const CACHE_SECONDS = 300;
-const CATALOG_MAX_AGE_MS = 10 * 60 * 1000;
+const CATALOG_MAX_AGE_MS = 3 * 60 * 1000;
 const CATALOG_CACHE_KEY = "forms-list-v6";
 const CATALOG_PROPERTY_KEY = "forms-list-v6-snapshot";
+const FORM_MAX_AGE_MS = 3 * 60 * 1000;
+const FORM_CACHE_KEY_PREFIX = "form-v6-";
+const FORM_PROPERTY_KEY_PREFIX = "form-v6-snapshot-";
 
 function doGet(event) {
   try {
@@ -28,6 +31,10 @@ function doGet(event) {
       if (!id) throw new Error("A form ID is required.");
       return output_({ok: true, form: getForm_(id)}, event);
     }
+    if (action === "refresh") {
+      const id = String(parameters.id || "").trim();
+      return output_({ok: true, refreshed: refreshServerCacheIfStale_(id)}, event);
+    }
     throw new Error("Unknown action.");
   } catch (error) {
     return output_({ok: false, error: String(error && error.message || error)}, event);
@@ -41,7 +48,7 @@ function listForms_() {
   if (isFreshCatalogSnapshot_(cachedSnapshot)) return cachedSnapshot.forms;
 
   const persistedSnapshot = readCatalogSnapshot_();
-  if (isFreshCatalogSnapshot_(persistedSnapshot)) {
+  if (persistedSnapshot) {
     cacheCatalogSnapshot_(persistedSnapshot);
     return persistedSnapshot.forms;
   }
@@ -191,12 +198,21 @@ function clampNumber_(value, min, max, fallback) {
   return Math.max(min, Math.min(max, parsed));
 }
 
-function getForm_(id) {
-  const file = DriveApp.getFileById(id);
+function getForm_(id, forceRefresh) {
   const cache = CacheService.getScriptCache();
-  const cacheKey = "form-v5-" + id;
-  const cached = cache.get(cacheKey);
+  const cacheKey = FORM_CACHE_KEY_PREFIX + id;
+  const cached = forceRefresh ? null : cache.get(cacheKey);
   if (cached) return JSON.parse(cached);
+
+  const snapshotKey = FORM_PROPERTY_KEY_PREFIX + id;
+  const persistedForm = parseFormSnapshot_(PropertiesService.getScriptProperties().getProperty(snapshotKey));
+  if (persistedForm && !forceRefresh) {
+    const serializedForm = JSON.stringify(persistedForm.form);
+    if (serializedForm.length < 95000) cache.put(cacheKey, serializedForm, CACHE_SECONDS);
+    return persistedForm.form;
+  }
+
+  const file = DriveApp.getFileById(id);
 
   const form = FormApp.openById(id);
   const questionItems = form.getItems().filter(isQuestionItem_);
@@ -241,7 +257,56 @@ function getForm_(id) {
 
   const serialized = JSON.stringify(result);
   if (serialized.length < 95000) cache.put(cacheKey, serialized, CACHE_SECONDS);
+  const snapshot = JSON.stringify({refreshedAt: Date.now(), form: result});
+  if (snapshot.length < 8500) {
+    PropertiesService.getScriptProperties().setProperty(snapshotKey, snapshot);
+  }
   return result;
+}
+
+function parseFormSnapshot_(serialized) {
+  if (!serialized) return null;
+  try {
+    const parsed = JSON.parse(serialized);
+    if (parsed && Number.isFinite(parsed.refreshedAt) && Array.isArray(parsed.form && parsed.form.questions)) {
+      return parsed;
+    }
+  } catch (error) {
+    console.warn("Could not read the form snapshot: " + error);
+  }
+  return null;
+}
+
+function refreshServerCacheIfStale_(id) {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(250)) return false;
+
+  try {
+    if (id) {
+      const snapshotKey = FORM_PROPERTY_KEY_PREFIX + id;
+      const snapshot = parseFormSnapshot_(PropertiesService.getScriptProperties().getProperty(snapshotKey));
+      if (snapshot && Date.now() - snapshot.refreshedAt < FORM_MAX_AGE_MS) return false;
+      getForm_(id, true);
+      return true;
+    }
+
+    const catalog = readCatalogSnapshot_();
+    const catalogIsFresh = isFreshCatalogSnapshot_(catalog);
+    const forms = catalogIsFresh ? catalog.forms : rebuildFormsCatalog_();
+    let refreshed = !catalogIsFresh;
+
+    forms.filter(form => form.acceptingResponses).forEach(form => {
+      const snapshotKey = FORM_PROPERTY_KEY_PREFIX + form.id;
+      const snapshot = parseFormSnapshot_(PropertiesService.getScriptProperties().getProperty(snapshotKey));
+      if (!snapshot || Date.now() - snapshot.refreshedAt >= FORM_MAX_AGE_MS) {
+        getForm_(form.id, true);
+        refreshed = true;
+      }
+    });
+    return refreshed;
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 function serializeQuestion_(form, item, knownEntryId) {

@@ -15,7 +15,12 @@ import {
     inferGoogleFormKind,
     ResolvedGoogleFormSurvey,
 } from "@/scripts/googleForms.ts";
-import {fetchGoogleFormByRoute, getCachedGoogleFormByRoute} from "@/scripts/googleFormsSync.ts";
+import {
+    fetchGoogleForm,
+    fetchGoogleFormByRoute,
+    getCachedGoogleFormByRoute,
+    refreshGoogleFormsServerCache,
+} from "@/scripts/googleFormsSync.ts";
 import FormsLoadingScreen from "./FormsLoadingScreen.tsx";
 import styles from "./SurveyPageContent.module.scss";
 
@@ -360,7 +365,16 @@ function SurveyPageContent() {
         setLoadError("");
         fetchGoogleFormByRoute(routeKey)
             .then((result) => {
-                if (active) setForm(result);
+                if (!active) return;
+                setForm(result);
+                if (result) {
+                    void refreshGoogleFormsServerCache(result.id)
+                        .then(() => fetchGoogleForm(result.id))
+                        .then((refreshed) => {
+                            if (active) setForm(refreshed);
+                        })
+                        .catch(() => undefined);
+                }
             })
             .catch(() => {
                 if (!active) return;

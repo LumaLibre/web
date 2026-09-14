@@ -25,12 +25,10 @@ interface FormDetailResponse {
 // This endpoint exposes only the form catalog and question metadata intended for
 // the public forms experience. It is not a Google credential or access token.
 const endpoint = "https://script.google.com/macros/s/AKfycbwjQX5lN1T-zZtySOa8tNn6j_1vZaB0QIwICvg2sdzt0h3N0YZez6zQ4FB22GQYcbd1TA/exec";
-const PAGE_CACHE_PREFIX = "luma-google-forms-page-v1";
-const PAGE_CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
 const CATALOG_BATCH_SIZE = 12;
-const FORM_CACHE_PREFIX = "luma-google-form-v2";
-const FORM_CACHE_MAX_AGE = 30 * 60 * 1000;
 const pendingFormRequests = new Map<string, Promise<ResolvedGoogleFormSurvey | null>>();
+const pageCache = new Map<string, GoogleFormsPage>();
+const formCache = new Map<string, ResolvedGoogleFormSurvey>();
 
 export interface GoogleFormsPage {
     forms: GoogleFormSummary[];
@@ -38,16 +36,6 @@ export interface GoogleFormsPage {
     pageSize: number;
     total: number;
     totalPages: number;
-}
-
-interface CachedGoogleFormsPage {
-    savedAt: number;
-    data: GoogleFormsPage;
-}
-
-interface CachedGoogleForm {
-    savedAt: number;
-    data: ResolvedGoogleFormSurvey;
 }
 
 const validEndpoint = () => {
@@ -94,29 +82,14 @@ const jsonp = <T>(parameters: Record<string, string>): Promise<T> => {
 
 export const hasGoogleFormsSync = Boolean(validEndpoint());
 
-const cacheKey = (page: number, pageSize: number) => `${PAGE_CACHE_PREFIX}:${page}:${pageSize}`;
+const cacheKey = (page: number, pageSize: number) => `${page}:${pageSize}`;
 
 export const getCachedGoogleFormsPage = (page: number, pageSize = 3): GoogleFormsPage | null => {
-    try {
-        const raw = window.localStorage.getItem(cacheKey(page, pageSize));
-        if (!raw) return null;
-        const cached = JSON.parse(raw) as CachedGoogleFormsPage;
-        if (Date.now() - cached.savedAt > PAGE_CACHE_MAX_AGE || !Array.isArray(cached.data?.forms)) {
-            window.localStorage.removeItem(cacheKey(page, pageSize));
-            return null;
-        }
-        return cached.data;
-    } catch {
-        return null;
-    }
+    return pageCache.get(cacheKey(page, pageSize)) ?? null;
 };
 
 const saveGoogleFormsPage = (data: GoogleFormsPage) => {
-    try {
-        window.localStorage.setItem(cacheKey(data.page, data.pageSize), JSON.stringify({savedAt: Date.now(), data}));
-    } catch {
-        // The catalog still works when browser storage is unavailable.
-    }
+    pageCache.set(cacheKey(data.page, data.pageSize), data);
 };
 
 export const fetchGoogleFormsPage = async (page: number, pageSize = 3): Promise<GoogleFormsPage> => {
@@ -173,21 +146,8 @@ export const fetchGoogleFormsCatalog = async (): Promise<GoogleFormSummary[]> =>
     return sortGoogleFormsCatalog([...uniqueForms.values()]);
 };
 
-const formCacheKey = (id: string) => `${FORM_CACHE_PREFIX}:${id}`;
-
 export const getCachedGoogleForm = (id: string): ResolvedGoogleFormSurvey | null => {
-    try {
-        const raw = window.localStorage.getItem(formCacheKey(id));
-        if (!raw) return null;
-        const cached = JSON.parse(raw) as CachedGoogleForm;
-        if (Date.now() - cached.savedAt > FORM_CACHE_MAX_AGE || !Array.isArray(cached.data?.questions)) {
-            window.localStorage.removeItem(formCacheKey(id));
-            return null;
-        }
-        return resolveGoogleForm(cached.data);
-    } catch {
-        return null;
-    }
+    return formCache.get(id) ?? null;
 };
 
 export const getCachedGoogleFormByRoute = (routeKey: string): ResolvedGoogleFormSurvey | null => {
@@ -200,11 +160,12 @@ export const getCachedGoogleFormByRoute = (routeKey: string): ResolvedGoogleForm
 };
 
 const saveGoogleForm = (id: string, data: ResolvedGoogleFormSurvey) => {
-    try {
-        window.localStorage.setItem(formCacheKey(id), JSON.stringify({savedAt: Date.now(), data}));
-    } catch {
-        // The form still works when browser storage is unavailable.
-    }
+    formCache.set(id, data);
+};
+
+export const refreshGoogleFormsServerCache = async (id?: string): Promise<void> => {
+    if (!hasGoogleFormsSync) return;
+    await jsonp<{ok: boolean}>({action: "refresh", ...(id ? {id} : {})});
 };
 
 export const fetchGoogleForm = async (id: string): Promise<ResolvedGoogleFormSurvey | null> => {
