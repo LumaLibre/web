@@ -81,6 +81,7 @@ export interface StoreCategory {
     id: number;
     name: string;
     slug: string | null;
+    hidden?: boolean;
     parent: StoreCategory | null;
     tiered: boolean;
     description: string;

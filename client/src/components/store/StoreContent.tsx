@@ -102,6 +102,7 @@ function StoreContent() {
     const topLevel = categories
         .filter(category => !category.parent)
         .sort((a, b) => a.order - b.order);
+    const sidebarCategories = topLevel.filter(category => !category.hidden);
 
     const activeCategory = activeSlug
         ? topLevel.find(category => categorySlug(category) === activeSlug) ?? null
@@ -134,7 +135,7 @@ function StoreContent() {
                         >
                             Overview
                         </button>
-                        {topLevel.map(category => (
+                        {sidebarCategories.map(category => (
                             <button
                                 key={category.id}
                                 className={activeCategory?.id === category.id ? styles.sectionActive : ""}

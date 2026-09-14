@@ -7,6 +7,7 @@ import {useBasket} from "@/components/store/BasketContext.tsx";
 import React, {useState} from "react";
 import {useQueryClient} from "@tanstack/react-query";
 import {requiredOptions} from "@/scripts/packageOptions.ts";
+import {packageLabel} from "@/scripts/packageGroups.ts";
 
 function PackageCard(
     {storePackage, onSelect}: { storePackage: StorePackage, onSelect: () => void }
@@ -16,6 +17,7 @@ function PackageCard(
     const [adding, setAdding] = useState(false);
 
     const pricing = pricingOf(storePackage);
+    const label = packageLabel(storePackage.name);
     const image = storePackage.image
         ?? storePackage.media?.find(m => m.primary && m.type === "image")?.url
         ?? null;
@@ -77,10 +79,13 @@ function PackageCard(
                 {pricing.percentOff !== null && (
                     <span className={styles.saleBadge}>-{pricing.percentOff}%</span>
                 )}
+                {pricing.percentOff === null && label.prefix && (
+                    <span className={styles.prefixBadge}>{label.prefix}</span>
+                )}
             </div>
 
             <div className={styles.body}>
-                <h3 className={styles.name}>{storePackage.name}</h3>
+                <h3 className={styles.name}>{label.name}</h3>
 
                 <div className={styles.footer}>
                     <div className={styles.pricing}>

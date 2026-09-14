@@ -17,6 +17,7 @@ import {storeHtml} from "@/scripts/storeHtml.ts";
 import {useBasket} from "@/components/store/BasketContext.tsx";
 import {useScrollLock} from "@/components/ui/UseScrollLock.ts";
 import {usePresence} from "@/components/ui/UsePresence.ts";
+import {packageLabel} from "@/scripts/packageGroups.ts";
 
 function PackageModal(
     {storePackage: selected, onClose}: { storePackage: StorePackage | null, onClose: () => void }
@@ -73,8 +74,16 @@ function PackageModal(
 
     // The grid has no `options` for a package, so its add fails and lands here.
     // That 400 is expected and the option controls already say what is needed.
-    const isMissingOptionsError = options.length > 0 && error !== null
+    const genericAddError = error !== null
         && /adding the package to your basket|options provided is invalid/i.test(error);
+    const label = packageLabel(storePackage.name);
+    const requiredRank = genericAddError && label.prefix && /\brank$/i.test(label.name)
+        ? label.prefix.replace(/^[^\p{L}\p{N}]+/u, "").trim()
+        : null;
+    const purchaseError = requiredRank
+        ? `You need to own ${requiredRank} rank before purchasing '${label.name}'.`
+        : error;
+    const isMissingOptionsError = options.length > 0 && genericAddError && !requiredRank;
 
     const handleAdd = async (targetUsername?: string) => {
         if (discordOption && DISCORD_PUBLIC_CLIENT_ID && !discord) {
@@ -293,11 +302,11 @@ function PackageModal(
                         <p className={styles.actionHint}>
                             You'll need to sign into Discord in order to purchase this package.
                         </p>
-                    ) : error && !isMissingOptionsError ? (
+                    ) : purchaseError && !isMissingOptionsError ? (
                         <p className={styles.actionError}>
-                            {/receive the gift is invalid/i.test(error)
+                            {/receive the gift is invalid/i.test(purchaseError)
                                 ? "We couldn't find that Minecraft account. Check the spelling and try again."
-                                : error}
+                                : purchaseError}
                         </p>
                     ) : null}
                 </div>
