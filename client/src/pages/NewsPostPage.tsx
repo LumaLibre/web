@@ -24,6 +24,10 @@ function NewsPostPage() {
     const id = routeId ? `${routeId}${location.hash}` : null;
 
     useEffect(() => {
+        window.scrollTo({top: 0, left: 0, behavior: "auto"});
+    }, [routeId]);
+
+    useEffect(() => {
         if (id && location.hash) {
             navigate(newsPostPath(id), {replace: true});
         }
