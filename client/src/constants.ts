@@ -6,7 +6,7 @@ export const DISCORD_INV_SHORT = "lumamc.net/chat";
 export const DISCORD_INV = `https://${DISCORD_INV_SHORT}`;
 export const LUMA_IP_ADDRESS = "play.lumamc.net";
 
-export const LUMA_SERVERSTATS_ENDPOINT = `https://api.mcsrvstat.us/2/${LUMA_IP_ADDRESS}`;
+export const LUMA_SERVERSTATS_ENDPOINT = `https://api.mcstatus.io/v2/status/java/${LUMA_IP_ADDRESS}`;
 export const LUMA_DISCORD_ENDPOINT = `https://discord.com/api/guilds/${LUMA_DISCORD_GUILD_ID}/embed.json`;
 export const WIKI = "https://wiki.lumamc.net/";
 export const WIKI_LINK = (endpoint: string) => {
