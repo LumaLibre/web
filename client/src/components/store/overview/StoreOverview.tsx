@@ -92,7 +92,7 @@ function StoreOverview({topCustomer}: { topCustomer?: Partial<TopCustomer> & { h
                         <div className={styles.supporterList}>
                             {supporters.map((payment, index) => (
                                 <SupporterCard
-                                    key={payment.username_id ?? `${payment.username}-${index}`}
+                                    key={`${payment.username_id ?? payment.username}-${index}`}
                                     payment={payment}
                                     index={index}
                                 />
