@@ -159,6 +159,21 @@ export async function addPackageToBasket(
     targetUsername?: string,
     variableData?: Record<string, string>
 ): Promise<Basket> {
+    const basket = await fetchBasket(ident);
+    const recipient = (name?: string | null) =>
+        (name?.trim() || basket.username || "").toLowerCase();
+    const existing = basket.packages.find(item =>
+        item.id === packageId
+        && recipient(item.in_basket.gift_username) !== recipient(targetUsername)
+    );
+    if (existing) {
+        const existingRecipient = existing.in_basket.gift_username || "yourself";
+        throw new Error(
+            `This package is already in your basket for ${existingRecipient}. ` +
+            "Tebex does not support gifting multiple of the same package at once. Please purchase it separately for another recipient, or remove the existing copy first."
+        );
+    }
+
     return request<Basket>(`${TEBEX_BASKETS_ENDPOINT}/${ident}/packages`, {
         method: "POST",
         body: JSON.stringify({
