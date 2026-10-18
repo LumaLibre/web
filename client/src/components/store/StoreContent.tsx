@@ -22,7 +22,8 @@ import {storeHtml} from "@/scripts/storeHtml.ts";
 import {consumePendingPackage, storedDiscordIdentity} from "@/scripts/discordAuth.ts";
 import {faBasketShopping} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {MINOTAR_API} from "@/constants.ts";
+import PlayerHelm from "@/components/store/username/PlayerHelm.tsx";
+import {MC_HEADS_API} from "@/constants.ts";
 
 function StoreContent() {
     const {basket, itemCount, username, changeUsername, addedCount} = useBasket();
@@ -159,11 +160,7 @@ function StoreContent() {
                     <div className={styles.identityBlock}>
                         {username ? (
                             <>
-                                <img
-                                    src={`${MINOTAR_API}helm/${encodeURIComponent(username)}/32`}
-                                    alt=""
-                                    aria-hidden="true"
-                                />
+                                <PlayerHelm username={username}/>
                                 <div className={styles.identityText}>
                                     <span className={styles.identityLabel}>Shopping for</span>
                                     <span className={styles.identityName}>{username}</span>
@@ -171,10 +168,16 @@ function StoreContent() {
                                 <button onClick={changeUsername}>Change</button>
                             </>
                         ) : (
-                            <p className={styles.identityEmpty}>
-                                You'll be asked for your Minecraft username when you add
-                                something to your basket.
-                            </p>
+                            <>
+                                <img
+                                    src={`${MC_HEADS_API}avatar/89a995928090d842d4afdb2296ffe24f2e944272205ceba848ee4046e01f3168/32`}
+                                    alt=""
+                                    aria-hidden="true"
+                                />
+                                <p className={styles.identityEmpty}>
+                                    We'll ask for your username when you add something to your basket.
+                                </p>
+                            </>
                         )}
                     </div>
 
