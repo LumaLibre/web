@@ -33,6 +33,7 @@ object CheckoutLimits {
         val response = client.send(request, HttpResponse.BodyHandlers.ofString())
         check(response.statusCode() == 200) { "Checkout limits unavailable" }
         val limits = parse(JsonParser.parseString(response.body()).asJsonObject)
+        catalog.observe(limits)
         cache.entries.removeIf { it.value.expiresAt <= now }
         if (cache.size < 256) cache[ident] = Cached(now + 30_000, limits)
         return limits
