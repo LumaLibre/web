@@ -94,6 +94,7 @@
 }
 
 .imagePanel {
+    position: relative;
     box-sizing: border-box;
     aspect-ratio: 1 / 1;
     border-radius: 12px;
@@ -146,8 +147,17 @@
     }
 }
 
+.priceSummary {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
 .pricing {
     display: flex;
+    flex-wrap: wrap;
     align-items: baseline;
     gap: 0.5rem;
     font-family: 'Poppins', sans-serif;

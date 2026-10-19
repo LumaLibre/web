@@ -18,11 +18,14 @@ import {useBasket} from "@/components/store/BasketContext.tsx";
 import {useScrollLock} from "@/components/ui/UseScrollLock.ts";
 import {usePresence} from "@/components/ui/UsePresence.ts";
 import {packageLabel} from "@/scripts/packageGroups.ts";
+import {packageLimitMessage} from "@/scripts/packageLimits.ts";
+import SoldOutStamp from "@/components/store/packagecard/SoldOutStamp.tsx";
+import PackageLimitDetails from "@/components/store/packagecard/PackageLimitDetails.tsx";
 
 function PackageModal(
     {storePackage: selected, onClose}: { storePackage: StorePackage | null, onClose: () => void }
 ) {
-    const {addPackage, error} = useBasket();
+    const {addPackage, error, basket, packageLimit} = useBasket();
     const [adding, setAdding] = useState(false);
     const [giftOpen, setGiftOpen] = useState(false);
     const [giftTo, setGiftTo] = useState("");
@@ -38,8 +41,8 @@ function PackageModal(
     const {rendered: storePackage, closing} = usePresence(selected);
 
     const {data: packageDetail, isLoading: packageDetailLoading} = useQuery<StorePackage>({
-        queryKey: ["storePackage", storePackage?.id],
-        queryFn: () => fetchPackage(storePackage!.id),
+        queryKey: ["storePackage", storePackage?.id, basket?.ident],
+        queryFn: () => fetchPackage(storePackage!.id, basket?.ident),
         enabled: storePackage !== null
     });
 
@@ -59,6 +62,8 @@ function PackageModal(
     }
 
     const pricing = pricingOf(storePackage);
+    const limit = packageLimit(storePackage.id);
+    const giftLimit = giftTo.trim() ? packageLimit(storePackage.id, giftTo.trim()) : null;
     const image = storePackage.image
         ?? storePackage.media?.find(m => m.primary && m.type === "image")?.url
         ?? null;
@@ -89,6 +94,7 @@ function PackageModal(
     const isMissingOptionsError = options.length > 0 && genericAddError && !requiredRank;
 
     const handleAdd = async (targetUsername?: string) => {
+        if (adding || packageLimit(storePackage.id, targetUsername)) return;
         if (discordOption && DISCORD_PUBLIC_CLIENT_ID && !discord) {
             setGiftOpen(false);
             return;
@@ -144,6 +150,7 @@ function PackageModal(
                 <div className={styles.content}>
                     {image && (
                         <div className={styles.imagePanel}>
+                            {limit && <SoldOutStamp/>}
                             <img src={image} alt={storePackage.name}/>
                         </div>
                     )}
@@ -161,21 +168,24 @@ function PackageModal(
                 {/* Outside the scrolling area so price and CTA stay visible no
                     matter how long the description is. */}
                 <div className={styles.actionBar}>
-                    <div className={styles.pricing}>
-                        {pricing.original !== null && (
-                            <span className={styles.basePrice}>
-                                {formatPrice(pricing.original, pricing.currency)}
+                    <div className={styles.priceSummary}>
+                        <div className={styles.pricing}>
+                            {pricing.original !== null && (
+                                <span className={styles.basePrice}>
+                                    {formatPrice(pricing.original, pricing.currency)}
+                                </span>
+                            )}
+                            <span className={pricing.original !== null ? styles.priceSale : styles.price}>
+                                {formatPrice(pricing.current, pricing.currency)}
                             </span>
-                        )}
-                        <span className={pricing.original !== null ? styles.priceSale : styles.price}>
-                            {formatPrice(pricing.current, pricing.currency)}
-                        </span>
-                        {pricing.percentOff !== null && (
-                            <span className={styles.saleTag}>-{pricing.percentOff}%</span>
-                        )}
-                        {storePackage.type === "subscription" && (
-                            <span className={styles.subscription}>per month</span>
-                        )}
+                            {pricing.percentOff !== null && (
+                                <span className={styles.saleTag}>-{pricing.percentOff}%</span>
+                            )}
+                            {storePackage.type === "subscription" && (
+                                <span className={styles.subscription}>per month</span>
+                            )}
+                        </div>
+                        <PackageLimitDetails packageId={storePackage.id}/>
                     </div>
 
                     {textOptions.length > 0 && (
@@ -221,17 +231,17 @@ function PackageModal(
                     )}
 
                     <div className={styles.actionButtons}>
-                        {canShowPurchaseActions && (
+                        {(canShowPurchaseActions || limit) && (
                             <button
                                 className={styles.addButton}
                                 onClick={() => handleAdd()}
-                                disabled={adding}
+                                disabled={adding || limit !== null}
                             >
-                                {adding ? "Adding…" : "Add to basket"}
+                                {limit ? "Sold Out!" : adding ? "Adding…" : "Add to basket"}
                             </button>
                         )}
 
-                        {canGift && canShowPurchaseActions && (
+                        {canGift && canShowPurchaseActions && limit !== "global" && (
                             <button
                                 className={styles.giftToggle}
                                 onClick={() => setGiftOpen(open => !open)}
@@ -258,7 +268,7 @@ function PackageModal(
                             </span>
                         )}
 
-                        {needsDiscordLogin && (
+                        {needsDiscordLogin && !limit && (
                             <button
                                 className={styles.discordLogin}
                                 onClick={() => beginDiscordLogin(
@@ -273,7 +283,7 @@ function PackageModal(
                         )}
                     </div>
 
-                    {canGift && canShowPurchaseActions && giftOpen && (
+                    {canGift && canShowPurchaseActions && limit !== "global" && giftOpen && (
                         <div className={styles.giftRow}>
                             <input
                                 type="text"
@@ -292,16 +302,20 @@ function PackageModal(
                             />
                             <button
                                 onClick={() => handleAdd(giftTo.trim())}
-                                disabled={adding || giftTo.trim().length === 0}
+                                disabled={adding || giftTo.trim().length === 0 || giftLimit !== null}
                             >
-                                Gift
+                                {giftLimit ? "Sold Out!" : "Gift"}
                             </button>
                         </div>
                     )}
 
                     {/* Tebex resolves the recipient on the add call, so an
                         unknown name is reported here rather than at checkout. */}
-                    {needsDiscordLogin ? (
+                    {(limit || giftLimit) ? (
+                        <p className={styles.actionHint} role="status">
+                            {packageLimitMessage((giftOpen && giftLimit) || limit || giftLimit!)}
+                        </p>
+                    ) : needsDiscordLogin ? (
                         <p className={styles.actionHint}>
                             You'll need to sign into Discord in order to purchase this package.
                         </p>

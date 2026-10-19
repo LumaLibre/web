@@ -4,17 +4,23 @@ import {PackageGroup} from "@/scripts/packageGroups.ts";
 import {formatPrice} from "@/scripts/tebex.ts";
 import {pricingOf} from "@/scripts/pricing.ts";
 import {StorePackage} from "@/scripts/model/Tebex.ts";
+import {useBasket} from "@/components/store/BasketContext.tsx";
+import SoldOutStamp from "./SoldOutStamp.tsx";
 
 const imageOf = (pkg: StorePackage): string | null =>
     pkg.image ?? pkg.media?.find(m => m.primary && m.type === "image")?.url ?? null;
 
 function PackageGroupCard({group, onSelect}: { group: PackageGroup, onSelect: () => void }) {
+    const {packageLimit} = useBasket();
+    const available = group.packages.filter(pkg => !packageLimit(pkg.id));
+    const soldOut = available.length === 0;
     const [front, ...rest] = group.packages;
     const frontImage = imageOf(front);
 
     const behind = rest.slice(0, 3);
 
-    const cheapestPricing = pricingOf(group.cheapest);
+    const cheapestPricing = pricingOf(available.reduce((min, pkg) =>
+        pkg.total_price < min.total_price ? pkg : min, available[0] ?? group.cheapest));
     const bestPercentOff = group.packages
         .map(pkg => pricingOf(pkg).percentOff ?? 0)
         .reduce((best, percent) => Math.max(best, percent), 0);
@@ -50,15 +56,16 @@ function PackageGroupCard({group, onSelect}: { group: PackageGroup, onSelect: ()
                 onKeyDown={e => (e.key === "Enter" || e.key === " ") && onSelect()}
             >
                 <div className={styles.imageWrapper}>
+                    {soldOut && <SoldOutStamp/>}
                     {frontImage
                         ? <img src={frontImage} alt={group.name} loading="lazy"/>
                         : <div className={styles.imageFallback} aria-hidden="true"/>}
-                    <span className={styles.optionBadge}>
+                    {!soldOut && <span className={styles.optionBadge}>
                         {group.packages.length} options
-                    </span>
-                    {bestPercentOff > 0
+                    </span>}
+                    {!soldOut && (bestPercentOff > 0
                         ? <span className={styles.salePrefixBadge}>-{bestPercentOff}%</span>
-                        : group.prefix && <span className={styles.prefixBadge}>{group.prefix}</span>}
+                        : group.prefix && <span className={styles.prefixBadge}>{group.prefix}</span>)}
                 </div>
 
                 <div className={styles.body}>
@@ -78,7 +85,7 @@ function PackageGroupCard({group, onSelect}: { group: PackageGroup, onSelect: ()
                                 {formatPrice(cheapestPricing.current, cheapestPricing.currency)}
                             </span>
                         </div>
-                        <span className={styles.chooseButton}>Choose</span>
+                        <span className={styles.chooseButton}>{soldOut ? "Sold Out!" : "Choose"}</span>
                     </div>
                 </div>
             </div>

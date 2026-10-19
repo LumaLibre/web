@@ -1,5 +1,7 @@
 import React, {createContext, useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {Basket} from "@/scripts/model/Tebex.ts";
+import {activePackageLimit, PackageLimit, PackageLimitNotice, packageLimitMessage, purchaseLimitFromMessage} from "@/scripts/packageLimits.ts";
+import {ConfiguredPackageLimits, fetchConfiguredPackageLimits, fetchKnownPackageLimits} from "@/scripts/packageLimits.ts";
 import {
     addPackageToBasket,
     createBasket,
@@ -26,6 +28,8 @@ interface BasketContextValue {
     username: string | null;
     loading: boolean;
     error: string | null;
+    packageLimit: (packageId: number, recipient?: string) => PackageLimit | null;
+    configuredLimits: Record<string, ConfiguredPackageLimits>;
     itemCount: number;
     awaitingUsername: boolean;
     setUsername: (username: string) => Promise<void>;
@@ -75,6 +79,49 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
     const [pendingAdd, setPendingAdd] = useState<PendingAdd | null>(null);
     const [promptOpen, setPromptOpen] = useState(false);
     const [addedCount, setAddedCount] = useState(0);
+    const [limitNotices, setLimitNotices] = useState<PackageLimitNotice[]>([]);
+    const [configuredLimits, setConfiguredLimits] = useState<Record<string, ConfiguredPackageLimits>>({});
+
+    useEffect(() => {
+        setConfiguredLimits({});
+        const controller = new AbortController();
+        const refreshLimits = async () => {
+            // A basket lookup also updates the shared configuration cache. It
+            // never creates a basket or adds anything merely to inspect a limit.
+            const current = basket && !basket.complete && basket.packages.length
+                ? await fetchConfiguredPackageLimits(basket.ident, controller.signal).catch(() => ({}))
+                : {};
+            const known = await fetchKnownPackageLimits(controller.signal).catch(() => ({}));
+            if (!controller.signal.aborted) setConfiguredLimits({...known, ...current});
+        };
+        void refreshLimits();
+        const timer = window.setInterval(refreshLimits, 60_000);
+        return () => {
+            controller.abort();
+            window.clearInterval(timer);
+        };
+    }, [basket]);
+
+    useEffect(() => {
+        if (limitNotices.length === 0) return;
+        const timer = window.setTimeout(() => {
+            setLimitNotices(notices => notices.filter(notice => notice.expiresAt > Date.now()));
+        }, Math.max(0, Math.min(...limitNotices.map(notice => notice.expiresAt)) - Date.now()));
+        return () => window.clearTimeout(timer);
+    }, [limitNotices]);
+
+    const packageLimit = useCallback((packageId: number, recipient?: string) =>
+        activePackageLimit(limitNotices, packageId, recipient || username || ""), [limitNotices, username]);
+
+    const recordLimit = useCallback((error: unknown, packageId: number, recipient: string, quantity: number) => {
+        const message = error instanceof Error ? error.message : "";
+        const scope = purchaseLimitFromMessage(message);
+        // A rejected multi-item quantity does not prove that even one is unavailable.
+        if (!scope || quantity !== 1) return;
+        setLimitNotices(notices => [...notices, {
+            packageId, scope, recipient: recipient.trim().toLowerCase(), expiresAt: Date.now() + 5 * 60 * 1000
+        }]);
+    }, []);
 
     const adopt = useCallback((next: Basket) => {
         setBasket(next);
@@ -139,11 +186,12 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
                 ));
                 setAddedCount(count => count + 1);
             } catch (e) {
+                recordLimit(e, pendingAdd.packageId, pendingAdd.targetUsername || trimmed, pendingAdd.quantity);
                 setError(e instanceof Error ? e.message : "Could not add that package.");
             }
             setPendingAdd(null);
         }
-    }, [adopt, pendingAdd]);
+    }, [adopt, pendingAdd, recordLimit]);
 
     const changeUsername = useCallback(() => {
         setError(null);
@@ -187,6 +235,11 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
         targetUsername?: string,
         variableData?: Record<string, string>
     ): Promise<"added" | "queued" | "failed"> => {
+        const limit = packageLimit(packageId, targetUsername);
+        if (limit) {
+            setError(packageLimitMessage(limit));
+            return "failed";
+        }
         let ident = basket?.ident ?? null;
 
         if (!ident) {
@@ -217,18 +270,21 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
         try {
             adopt(await addPackageToBasket(ident, packageId, quantity, targetUsername, variableData));
         } catch (e) {
+            recordLimit(e, packageId, targetUsername || username || "", quantity);
             setError(e instanceof Error ? e.message : "Something went wrong.");
             return "failed";
         }
         setAddedCount(count => count + 1);
         return "added";
-    }, [basket, username, adopt]);
+    }, [basket, username, adopt, packageLimit, recordLimit]);
 
     const value = useMemo<BasketContextValue>(() => ({
         basket,
         username,
         loading,
         error,
+        packageLimit,
+        configuredLimits,
         itemCount: basket?.packages.reduce((sum, p) => sum + p.in_basket.quantity, 0) ?? 0,
         awaitingUsername: pendingAdd !== null || promptOpen,
         setUsername,
@@ -238,10 +294,14 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
         addPackage,
         addedCount,
         removePackage: async packageId => {
-            await mutate(ident => removePackageFromBasket(ident, packageId));
+            if (await mutate(ident => removePackageFromBasket(ident, packageId))) {
+                setLimitNotices(notices => notices.filter(notice => notice.packageId !== packageId));
+            }
         },
         setQuantity: async (packageId, quantity) => {
-            await mutate(ident => updateBasketPackageQuantity(ident, packageId, quantity));
+            if (await mutate(ident => updateBasketPackageQuantity(ident, packageId, quantity))) {
+                setLimitNotices(notices => notices.filter(notice => notice.packageId !== packageId));
+            }
         },
         applyCoupon: async code => {
             await mutate(ident => applyCouponRequest(ident, code));
@@ -253,7 +313,7 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
             await mutate(ident => fetchBasket(ident));
         }
     }), [
-        basket, username, loading, error, pendingAdd, promptOpen, addedCount,
+        basket, username, loading, error, pendingAdd, promptOpen, addedCount, packageLimit, configuredLimits,
         setUsername, changeUsername, cancelUsernamePrompt, completeBasket, addPackage, mutate
     ]);
 

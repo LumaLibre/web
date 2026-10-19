@@ -39,7 +39,10 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
         let detail = "";
         try {
             const body = await response.json();
-            detail = body?.title ?? body?.detail ?? body?.message ?? "";
+            detail = [body?.title, body?.detail, body?.message]
+                .filter((value): value is string => typeof value === "string" && value.length > 0)
+                .filter((value, index, values) => values.indexOf(value) === index)
+                .join(" — ");
         } catch {
         }
         const status = [response.status, response.statusText].filter(Boolean).join(" ");

@@ -5,6 +5,9 @@ import path from 'path';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  server: {
+    proxy: { '/api/store': 'http://127.0.0.1:7070' }
+  },
   resolve: {
     alias: { '@': path.resolve(__dirname, 'src') }
   }

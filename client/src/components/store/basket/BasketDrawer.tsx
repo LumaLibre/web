@@ -5,6 +5,7 @@ import {useBasket} from "@/components/store/BasketContext.tsx";
 import {formatPrice} from "@/scripts/tebex.ts";
 import {beginAuth, getAuthOptions, isBasketAuthorized, launchCheckout} from "@/scripts/checkout.ts";
 import {BasketAuthOption} from "@/scripts/model/Tebex.ts";
+import PackageLimitDetails from "@/components/store/packagecard/PackageLimitDetails.tsx";
 
 interface BasketDrawerProps {
     open: boolean;
@@ -105,6 +106,7 @@ function BasketDrawer({open, onClose, quantityDisabledPackageIds}: BasketDrawerP
                             {item.image && <img src={item.image} alt={item.name}/>}
                             <div className={styles.itemBody}>
                                 <span className={styles.itemName}>{item.name}</span>
+                                <PackageLimitDetails packageId={item.id}/>
                                 {/* Gifts go to someone else, so say so before payment. */}
                                 {item.in_basket.gift_username && (
                                     <span className={styles.giftTo}>

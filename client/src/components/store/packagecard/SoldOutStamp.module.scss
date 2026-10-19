@@ -1,0 +1,20 @@
+.stamp {
+    position: absolute;
+    top: 1.25rem;
+    right: 0.65rem;
+    z-index: 2;
+    transform: rotate(12deg);
+    padding: 0.45rem 0.8rem;
+    border: 2px solid #e5a7bd;
+    border-radius: 7px;
+    outline: 1px solid rgba(229, 167, 189, 0.35);
+    outline-offset: 3px;
+    background: linear-gradient(135deg, #462238, #28152e);
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.35), inset 0 0 12px rgba(229, 167, 189, 0.08);
+    color: #ffe0eb;
+    font-family: 'Paytone One', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.2;
+    letter-spacing: 0.03em;
+    pointer-events: none;
+}

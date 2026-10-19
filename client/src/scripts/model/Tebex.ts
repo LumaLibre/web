@@ -72,7 +72,7 @@ export interface StorePackage {
     options?: PackageOption[];
     order: number;
     slug: string;
-    user_limit: number;
+    user_limit: number | null;
     created_at: string;
     updated_at: string;
 }

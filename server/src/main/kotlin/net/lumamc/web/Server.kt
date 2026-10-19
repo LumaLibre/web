@@ -9,6 +9,7 @@ import net.lumamc.web.model.RenderOptions
 import net.lumamc.web.model.SkinCache
 import net.lumamc.web.model.SkinRenderer
 import net.lumamc.web.news.NewsManager
+import net.lumamc.web.store.CheckoutLimits
 import java.awt.Color
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -51,6 +52,26 @@ class Server {
             // Handle discord redirects here instead of in the frontend
             .get("/chat") { ctx -> ctx.redirect(DISCORD_INVITE) }
             .get("/discord") { ctx -> ctx.redirect(DISCORD_INVITE) }
+            .get("/api/store/package-limits") { ctx ->
+                ctx.header("Cache-Control", "no-store")
+                ctx.json(CheckoutLimits.knownLimits())
+            }
+            .get("/api/store/baskets/{ident}/limits") { ctx ->
+                ctx.header("Cache-Control", "no-store")
+                val ident = ctx.pathParam("ident")
+                if (!CheckoutLimits.validIdent(ident)) {
+                    ctx.status(400).json(mapOf("message" to "Invalid basket identifier"))
+                    return@get
+                }
+                try {
+                    ctx.json(CheckoutLimits.fetch(ident))
+                } catch (e: InterruptedException) {
+                    Thread.currentThread().interrupt()
+                    ctx.status(503).json(mapOf("message" to "Package limits are temporarily unavailable"))
+                } catch (e: Exception) {
+                    ctx.status(502).json(mapOf("message" to "Package limits are temporarily unavailable"))
+                }
+            }
             .get("/api/news/summaries") { ctx ->
                 val limit = ctx.queryParam("limit")?.toIntOrNull()
                 ctx.json(NewsManager.getNewsPostSummaries(limit))
