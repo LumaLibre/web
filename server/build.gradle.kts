@@ -10,6 +10,7 @@ repositories {
 }
 
 dependencies {
+    testImplementation(kotlin("test"))
     implementation("io.javalin:javalin:6.4.0")
     implementation("com.google.code.gson:gson:2.12.1")
     implementation("eu.okaeri:okaeri-configs-yaml-snakeyaml:5.0.5")

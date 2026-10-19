@@ -2,6 +2,7 @@ package net.lumamc.web.store
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import net.lumamc.web.Util
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -14,7 +15,7 @@ object CheckoutLimits {
     data class Limits(val global: Limit?, val user: Limit?)
     private data class Cached(val expiresAt: Long, val limits: Map<String, Limits>)
     private val cache = ConcurrentHashMap<String, Cached>()
-    private val catalog = KnownPackageLimits()
+    private val catalog by lazy { KnownPackageLimits(Util.getDataFolderPath().resolve("package-limits.json")) }
     private val client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build()
 
     fun validIdent(ident: String) = ident.matches(Regex("[A-Za-z0-9-]{10,128}"))
@@ -62,33 +63,5 @@ object CheckoutLimits {
             ?.toIntOrNull()?.takeIf { it > 0 } ?: return null
         val timestamp = value.get("timestamp")?.takeIf { it.isJsonPrimitive }?.asString?.toLongOrNull() ?: 0
         return Limit(count, timestamp)
-    }
-}
-
-/** Short-lived, shared configuration cache. Contains no basket/customer identities
- * or purchase counts. Unknown packages are never assumed to be unlimited. */
-class KnownPackageLimits(
-    private val clock: () -> Long = System::currentTimeMillis,
-    private val ttl: Long = 10 * 60 * 1000
-) {
-    private data class Entry(val limits: CheckoutLimits.Limits, val expiresAt: Long)
-    private val entries = ConcurrentHashMap<String, Entry>()
-
-    fun observe(limits: Map<String, CheckoutLimits.Limits>) {
-        val now = clock()
-        entries.entries.removeIf { it.value.expiresAt <= now }
-        for ((id, value) in limits) {
-            if (entries.size >= 4096 && !entries.containsKey(id)) continue
-            // Window timestamps may change per request; the catalog only needs caps.
-            entries[id] = Entry(CheckoutLimits.Limits(
-                value.global?.copy(timestamp = 0), value.user?.copy(timestamp = 0)
-            ), now + ttl)
-        }
-    }
-
-    fun read(): Map<String, CheckoutLimits.Limits> {
-        val now = clock()
-        entries.entries.removeIf { it.value.expiresAt <= now }
-        return entries.mapValues { it.value.limits }
     }
 }
