@@ -25,8 +25,9 @@ class KnownPackageLimits(private val file: Path) {
                 for ((id, element) in packages.entrySet()) {
                     if (!validId(id) || !element.isJsonObject || entries.size >= 4096) continue
                     val value = element.asJsonObject
-                    val limits = CheckoutLimits.Limits(readLimit(value, "global"), readLimit(value, "user"))
-                    if (limits.global != null || limits.user != null) entries[id] = limits
+                    val limits = CheckoutLimits.Limits(readLimit(value, "global"), readLimit(value, "user"),
+                        value.get("observedAt")?.asLong ?: 0, value.get("globalSoldOutUntil")?.asLong ?: 0)
+                    if (limits.global != null || limits.user != null || limits.globalSoldOutUntil > 0) entries[id] = limits
                 }
             } catch (e: Exception) {
                 entries.clear()
@@ -39,8 +40,8 @@ class KnownPackageLimits(private val file: Path) {
     fun observe(limits: Map<String, CheckoutLimits.Limits>) {
         for ((id, value) in limits) {
             if (!validId(id)) continue
-            val normalized = CheckoutLimits.Limits(normalize(value.global), normalize(value.user))
-            if (normalized.global == null && normalized.user == null) {
+            val normalized = value.copy(global = normalize(value.global), user = normalize(value.user))
+            if (normalized.global == null && normalized.user == null && normalized.globalSoldOutUntil == 0L) {
                 if (entries.remove(id) != null) dirty = true
             } else if (entries[id] != normalized && (entries.containsKey(id) || entries.size < 4096)) {
                 entries[id] = normalized
@@ -78,12 +79,13 @@ class KnownPackageLimits(private val file: Path) {
 
     private fun validId(id: String) = id.toLongOrNull()?.let { it > 0 } == true
 
-    private fun normalize(limit: CheckoutLimits.Limit?) = limit?.takeIf { it.limit > 0 }?.copy(timestamp = 0)
+    private fun normalize(limit: CheckoutLimits.Limit?) = limit?.takeIf { it.limit > 0 }
 
     private fun readLimit(value: JsonObject, name: String): CheckoutLimits.Limit? {
         val limit = value.get(name)?.takeIf { it.isJsonObject }?.asJsonObject
             ?.get("limit")?.takeIf { it.isJsonPrimitive }?.asString
             ?.toIntOrNull()?.takeIf { it > 0 } ?: return null
-        return CheckoutLimits.Limit(limit, 0)
+        val timestamp = value.getAsJsonObject(name).get("timestamp")?.asLong ?: 0
+        return CheckoutLimits.Limit(limit, timestamp)
     }
 }

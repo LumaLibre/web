@@ -102,10 +102,15 @@
 }
 
 .panels {
+    --store-panel-height: 15.5rem;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: start;
+    align-items: stretch;
     gap: 1.25rem;
+
+    &:has(.howItWorks) {
+        --store-panel-height: auto;
+    }
 
     @media (max-width: 768px) {
         grid-template-columns: minmax(0, 1fr);
@@ -113,6 +118,10 @@
 }
 
 .panel {
+    box-sizing: border-box;
+    height: var(--store-panel-height);
+    display: flex;
+    flex-direction: column;
     background: $card-color;
     border-radius: 15px;
     padding: 1.25rem;
@@ -128,6 +137,11 @@
     }
 }
 
+.howItWorks {
+    height: auto;
+    min-height: 0;
+}
+
 .steps {
     color: $secondary-color;
     font-size: 0.85rem;
@@ -137,12 +151,13 @@
     padding-left: 1.1rem;
 
     li:not(:last-child) { margin-bottom: 0.45rem; }
-    strong { color: #ffffff; }
 }
 
 .supporterList {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(52px, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 0.9rem 0.5rem;
     justify-items: center;
+    align-items: center;
+    flex: 1;
 }

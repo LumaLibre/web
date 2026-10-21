@@ -21,6 +21,10 @@ interface Envelope<T> {
     data: T;
 }
 
+export class TebexRequestError extends Error {
+    constructor(public status: number, message: string) { super(message); }
+}
+
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
     if (!isStoreConfigured()) {
         throw new Error("Tebex public token is missing.");
@@ -46,7 +50,7 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
         } catch {
         }
         const status = [response.status, response.statusText].filter(Boolean).join(" ");
-        throw new Error(
+        throw new TebexRequestError(response.status,
             `Tebex request failed: ${status}${detail ? ` — ${detail}` : ""}`
         );
     }
@@ -72,7 +76,7 @@ export async function fetchCategories(basketIdent?: string): Promise<StoreCatego
 }
 
 export async function fetchCategory(
-    categoryId: number,
+    categoryId: number | string,
     basketIdent?: string
 ): Promise<StoreCategory> {
     const params = new URLSearchParams({includePackages: "1"});
@@ -80,8 +84,18 @@ export async function fetchCategory(
         params.set("basketIdent", basketIdent);
     }
     return request<StoreCategory>(
-        `${TEBEX_HEADLESS_ENDPOINT}/categories/${categoryId}?${params}`
+        `${TEBEX_HEADLESS_ENDPOINT}/categories/${encodeURIComponent(categoryId)}?${params}`
     );
+}
+
+export async function fetchOptionalCategory(slug: string, basketIdent?: string): Promise<StoreCategory | null> {
+    try {
+        return await fetchCategory(slug, basketIdent);
+    } catch (error) {
+        if (error instanceof TebexRequestError && (error.status === 404 ||
+            (error.status === 422 && /category not found/i.test(error.message)))) return null;
+        throw error;
+    }
 }
 
 export async function fetchPackages(basketIdent?: string): Promise<StorePackage[]> {

@@ -15,8 +15,8 @@ import BasketDrawer from "@/components/store/basket/BasketDrawer.tsx";
 import BasketFab from "@/components/store/basket/BasketFab.tsx";
 import UsernameModal from "@/components/store/username/UsernameModal.tsx";
 import {useBasket} from "@/components/store/BasketContext.tsx";
-import {fetchCategories, fetchSidebar, isStoreConfigured} from "@/scripts/tebex.ts";
-import {isSidebarCategory} from "@/scripts/storeCategories.ts";
+import {fetchCategories, fetchOptionalCategory, fetchSidebar, isStoreConfigured} from "@/scripts/tebex.ts";
+import {isSidebarCategory, limitedOfferPackages} from "@/scripts/storeCategories.ts";
 import {SidebarModule, StoreCategory, StorePackage} from "@/scripts/model/Tebex.ts";
 import {buildStoreEntries, categorySlug, PackageGroup} from "@/scripts/packageGroups.ts";
 import {storeHtml} from "@/scripts/storeHtml.ts";
@@ -38,8 +38,20 @@ function StoreContent() {
         queryKey: ["storeCategories", basket?.ident],
         queryFn: () => fetchCategories(basket?.ident),
         enabled: isStoreConfigured(),
-        placeholderData: keepPreviousData
+        placeholderData: keepPreviousData,
+        refetchInterval: 60_000
     });
+
+    const directSlug = activeSlug ?? "lto";
+    const listedCategory = categories?.find(category => categorySlug(category) === directSlug);
+    const {data: directCategory, isPending: directPending, error: directError} = useQuery({
+        queryKey: ["storeCategory", directSlug, basket?.ident],
+        queryFn: () => fetchOptionalCategory(directSlug, basket?.ident),
+        enabled: isStoreConfigured() && !listedCategory,
+        refetchInterval: 60_000
+    });
+    const ltoCategory = categories?.find(category => categorySlug(category) === "lto")
+        ?? (directSlug === "lto" ? directCategory : null);
 
     const {data: sidebar} = useQuery<SidebarModule[]>({
         queryKey: ["storeSidebar"],
@@ -62,7 +74,7 @@ function StoreContent() {
     // Returning from Discord: put the player back in the modal they left, with
     // the account now linked. Adding stays their decision.
     useEffect(() => {
-        if (!categories || !storedDiscordIdentity()) {
+        if (!categories || (!listedCategory && directPending) || !storedDiscordIdentity()) {
             return;
         }
         const packageId = consumePendingPackage();
@@ -70,7 +82,7 @@ function StoreContent() {
             return;
         }
 
-        for (const category of categories) {
+        for (const category of [...categories, ...(directCategory ? [directCategory] : [])]) {
             const match = (category.packages ?? []).find(p => p.id === packageId);
             if (!match) {
                 continue;
@@ -83,7 +95,7 @@ function StoreContent() {
             setSelectedPackage(match);
             return;
         }
-    }, [categories]);
+    }, [categories, directCategory, directPending, listedCategory]);
 
     if (!isStoreConfigured()) {
         return (
@@ -97,12 +109,12 @@ function StoreContent() {
     if (error) {
         return <StoreUnavailable reason="We couldn't reach the store." detail={error.message}/>;
     }
-    if (!categories || categories.length === 0) {
+    if (!categories) {
         return <StoreUnavailable reason="No packages are available right now."/>;
     }
 
     const quantityDisabledPackageIds = new Set(
-        categories
+        [...categories, ...(directCategory ? [directCategory] : [])]
             .flatMap(category => category.packages ?? [])
             .filter(storePackage => storePackage.disable_quantity)
             .map(storePackage => storePackage.id)
@@ -114,14 +126,15 @@ function StoreContent() {
     const sidebarCategories = topLevel.filter(isSidebarCategory);
 
     const activeCategory = activeSlug
-        ? topLevel.find(category => categorySlug(category) === activeSlug) ?? null
+        ? categories.find(category => categorySlug(category) === activeSlug) ?? directCategory ?? null
         : null;
 
+    if (activeSlug && !activeCategory && directPending) return <LoadingPageContent/>;
     if (activeSlug && !activeCategory) {
         return (
             <StoreUnavailable
                 reason={`There's no "${activeSlug}" section in our store.`}
-                detail="It may have been renamed or removed."
+                detail={directError?.message ?? "It may have been renamed or removed."}
             />
         );
     }
@@ -202,7 +215,10 @@ function StoreContent() {
                 </aside>
 
                 <div className={styles.main}>
-                    {!activeCategory && <StoreOverview topCustomer={topCustomer}/>}
+                    {!activeCategory && <StoreOverview topCustomer={topCustomer}
+                        limitedPackages={limitedOfferPackages(ltoCategory)}
+                        offersLoading={!listedCategory && directPending}
+                        offersError={directError ? "Limited-time offers are temporarily unavailable." : undefined}/>}
 
                     {activeCategory && (
                         <div className={styles.category}>

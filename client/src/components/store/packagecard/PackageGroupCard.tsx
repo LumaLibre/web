@@ -6,6 +6,8 @@ import {pricingOf} from "@/scripts/pricing.ts";
 import {StorePackage} from "@/scripts/model/Tebex.ts";
 import {useBasket} from "@/components/store/BasketContext.tsx";
 import SoldOutStamp from "./SoldOutStamp.tsx";
+import StockBadge from "./StockBadge.tsx";
+import badgeStyles from "./StockBadge.module.scss";
 
 const imageOf = (pkg: StorePackage): string | null =>
     pkg.image ?? pkg.media?.find(m => m.primary && m.type === "image")?.url ?? null;
@@ -56,16 +58,19 @@ function PackageGroupCard({group, onSelect}: { group: PackageGroup, onSelect: ()
                 onKeyDown={e => (e.key === "Enter" || e.key === " ") && onSelect()}
             >
                 <div className={styles.imageWrapper}>
-                    {soldOut && <SoldOutStamp/>}
+                    {soldOut && <SoldOutStamp belowBadge/>}
                     {frontImage
                         ? <img src={frontImage} alt={group.name} loading="lazy"/>
                         : <div className={styles.imageFallback} aria-hidden="true"/>}
                     {!soldOut && <span className={styles.optionBadge}>
                         {group.packages.length} options
                     </span>}
-                    {!soldOut && (bestPercentOff > 0
-                        ? <span className={styles.salePrefixBadge}>-{bestPercentOff}%</span>
-                        : group.prefix && <span className={styles.prefixBadge}>{group.prefix}</span>)}
+                    <div className={badgeStyles.badges}>
+                        <StockBadge packageIds={group.packages.map(pkg => pkg.id)}/>
+                        {!soldOut && (bestPercentOff > 0
+                            ? <span className={styles.salePrefixBadge}>-{bestPercentOff}%</span>
+                            : group.prefix && <span className={styles.prefixBadge}>{group.prefix}</span>)}
+                    </div>
                 </div>
 
                 <div className={styles.body}>

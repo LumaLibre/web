@@ -3,6 +3,7 @@ package net.lumamc.web.console
 import net.lumamc.web.console.commands.ReloadCommand
 import net.lumamc.web.console.commands.RestartCommand
 import net.lumamc.web.console.commands.StopCommand
+import net.lumamc.web.console.commands.StockImportCommand
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.Scanner
@@ -23,6 +24,7 @@ class ConsoleCommandManager private constructor() {
         registerCommand(StopCommand())
         registerCommand(RestartCommand())
         registerCommand(ReloadCommand())
+        registerCommand(StockImportCommand())
     }
 
     fun registerCommand(command: ConsoleCommand): ConsoleCommandManager {

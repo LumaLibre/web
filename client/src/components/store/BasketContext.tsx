@@ -1,7 +1,7 @@
 import React, {createContext, useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {Basket} from "@/scripts/model/Tebex.ts";
 import {activePackageLimit, PackageLimit, PackageLimitNotice, packageLimitMessage, purchaseLimitFromMessage} from "@/scripts/packageLimits.ts";
-import {ConfiguredPackageLimits, fetchConfiguredPackageLimits, fetchKnownPackageLimits} from "@/scripts/packageLimits.ts";
+import {ConfiguredPackageLimits, fetchKnownPackageLimits, packageStock} from "@/scripts/packageLimits.ts";
 import {
     addPackageToBasket,
     createBasket,
@@ -83,19 +83,14 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
     const [configuredLimits, setConfiguredLimits] = useState<Record<string, ConfiguredPackageLimits>>({});
 
     useEffect(() => {
-        setConfiguredLimits({});
         const controller = new AbortController();
         const refreshLimits = async () => {
-            // A basket lookup also updates the shared configuration cache. It
-            // never creates a basket or adds anything merely to inspect a limit.
-            const current = basket && !basket.complete && basket.packages.length
-                ? await fetchConfiguredPackageLimits(basket.ident, controller.signal).catch(() => ({}))
-                : {};
+            // Read only. Private server discovery and signed webhooks own stock.
             const known = await fetchKnownPackageLimits(controller.signal).catch(() => ({}));
-            if (!controller.signal.aborted) setConfiguredLimits({...known, ...current});
+            if (!controller.signal.aborted) setConfiguredLimits(known);
         };
         void refreshLimits();
-        const timer = window.setInterval(refreshLimits, 60_000);
+        const timer = window.setInterval(refreshLimits, 15_000);
         return () => {
             controller.abort();
             window.clearInterval(timer);
@@ -111,7 +106,9 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
     }, [limitNotices]);
 
     const packageLimit = useCallback((packageId: number, recipient?: string) =>
-        activePackageLimit(limitNotices, packageId, recipient || username || ""), [limitNotices, username]);
+        configuredLimits[packageId]?.soldOut || packageStock(configuredLimits[packageId])?.remaining === 0
+            ? "global" : activePackageLimit(limitNotices, packageId, recipient || username || ""),
+        [limitNotices, username, configuredLimits]);
 
     const recordLimit = useCallback((error: unknown, packageId: number, recipient: string, quantity: number) => {
         const message = error instanceof Error ? error.message : "";

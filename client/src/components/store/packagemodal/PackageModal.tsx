@@ -1,5 +1,7 @@
 import styles from "./PackageModal.module.scss";
-import {useEffect, useState} from "react";
+import {CSSProperties, useEffect, useRef, useState} from "react";
+import offerStyles from "@/components/store/overview/OfferPreview.module.scss";
+import StockBadge from "@/components/store/packagecard/StockBadge.tsx";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faDiscord} from "@fortawesome/free-brands-svg-icons";
 import {useQuery} from "@tanstack/react-query";
@@ -23,9 +25,15 @@ import SoldOutStamp from "@/components/store/packagecard/SoldOutStamp.tsx";
 import PackageLimitDetails from "@/components/store/packagecard/PackageLimitDetails.tsx";
 
 function PackageModal(
-    {storePackage: selected, onClose}: { storePackage: StorePackage | null, onClose: () => void }
+    {storePackage: selected, onClose, hideDescription = false, offerOrigin}: {
+        storePackage: StorePackage | null;
+        onClose: () => void;
+        hideDescription?: boolean;
+        offerOrigin?: {left: number; top: number; width: number; height: number};
+    }
 ) {
-    const {addPackage, error, basket, packageLimit} = useBasket();
+    const {addPackage, error, basket, packageLimit, awaitingUsername} = useBasket();
+    const modalRef = useRef<HTMLDivElement>(null);
     const [adding, setAdding] = useState(false);
     const [giftOpen, setGiftOpen] = useState(false);
     const [giftTo, setGiftTo] = useState("");
@@ -40,7 +48,7 @@ function PackageModal(
 
     const {rendered: storePackage, closing} = usePresence(selected);
 
-    const {data: packageDetail, isLoading: packageDetailLoading} = useQuery<StorePackage>({
+    const {data: packageDetail, isLoading: packageDetailLoading, error: packageDetailError} = useQuery<StorePackage>({
         queryKey: ["storePackage", storePackage?.id, basket?.ident],
         queryFn: () => fetchPackage(storePackage!.id, basket?.ident),
         enabled: storePackage !== null
@@ -49,13 +57,36 @@ function PackageModal(
     useScrollLock(storePackage !== null);
 
     useEffect(() => {
-        if (!selected) {
+        if (!selected || awaitingUsername) {
             return;
         }
         const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
         window.addEventListener("keydown", onKey);
         return () => window.removeEventListener("keydown", onKey);
-    }, [selected, onClose]);
+    }, [selected, onClose, awaitingUsername]);
+
+    useEffect(() => {
+        if (!storePackage || !offerOrigin) return;
+        const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        return () => { if (previous?.isConnected) previous.focus({preventScroll: true}); };
+    }, [storePackage?.id, Boolean(offerOrigin)]);
+
+    useEffect(() => {
+        if (!storePackage || !offerOrigin || awaitingUsername) return;
+        const modal = modalRef.current;
+        modal?.querySelector<HTMLButtonElement>("button")?.focus({preventScroll: true});
+        const trap = (event: KeyboardEvent) => {
+            if (event.key !== "Tab" || !modal) return;
+            const items = [...modal.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled), a[href], [tabindex="0"]')]
+                .filter(item => item.getClientRects().length);
+            const first = items[0];
+            const last = items[items.length - 1];
+            if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+            else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+        };
+        modal?.addEventListener("keydown", trap);
+        return () => { modal?.removeEventListener("keydown", trap); };
+    }, [storePackage?.id, Boolean(offerOrigin), awaitingUsername]);
 
     if (!storePackage) {
         return null;
@@ -75,7 +106,7 @@ function PackageModal(
     const discordOption = options.find(option => option.type === "discord_id") ?? null;
     const textOptions = options.filter(option => option.type !== "discord_id");
     const needsDiscordLogin = discordOption !== null && !discord && DISCORD_PUBLIC_CLIENT_ID !== "";
-    const canShowPurchaseActions = !packageDetailLoading && !needsDiscordLogin;
+    const canShowPurchaseActions = !packageDetailLoading && !packageDetailError && !needsDiscordLogin;
 
     // The grid has no `options` for a package, so its add fails and lands here.
     // That 400 is expected and the option controls already say what is needed.
@@ -94,7 +125,7 @@ function PackageModal(
     const isMissingOptionsError = options.length > 0 && genericAddError && !requiredRank;
 
     const handleAdd = async (targetUsername?: string) => {
-        if (adding || packageLimit(storePackage.id, targetUsername)) return;
+        if (adding || packageDetailLoading || packageDetailError || packageLimit(storePackage.id, targetUsername)) return;
         if (discordOption && DISCORD_PUBLIC_CLIENT_ID && !discord) {
             setGiftOpen(false);
             return;
@@ -134,12 +165,18 @@ function PackageModal(
 
     return (
         <div
-            className={`${styles.scrim} ${closing ? styles.closing : ""}`}
+            className={`${styles.scrim} ${offerOrigin ? offerStyles.scrim : ""} ${closing ? styles.closing : ""}`}
             onClick={onClose}
             role="presentation"
         >
             <div
-                className={`${styles.modal} ${closing ? styles.closing : ""}`}
+                ref={modalRef}
+                className={`${styles.modal} ${offerOrigin ? offerStyles.modal : ""} ${closing ? styles.closing : ""}`}
+                style={offerOrigin ? {
+                    "--from-x": `${offerOrigin.left + offerOrigin.width / 2 - window.innerWidth / 2}px`,
+                    "--from-y": `${offerOrigin.top + offerOrigin.height / 2 - window.innerHeight / 2}px`,
+                    "--from-scale": String(offerOrigin.width / Math.min(680, window.innerWidth - 48))
+                } as CSSProperties : undefined}
                 onClick={e => e.stopPropagation()}
                 role="dialog"
                 aria-modal="true"
@@ -147,7 +184,7 @@ function PackageModal(
             >
                 <button className={styles.closeButton} onClick={onClose} aria-label="Close">×</button>
 
-                <div className={styles.content}>
+                <div className={`${styles.content} ${offerOrigin ? offerStyles.content : ""}`}>
                     {image && (
                         <div className={styles.imagePanel}>
                             {limit && <SoldOutStamp/>}
@@ -156,12 +193,14 @@ function PackageModal(
                     )}
 
                     <div className={styles.details}>
-                        <h2 className={styles.name}>{storePackage.name}</h2>
+                        {offerOrigin && <span className={offerStyles.eyebrow}>Limited-time offer</span>}
+                        <h2 className={`${styles.name} ${offerOrigin ? offerStyles.title : ""}`}>{storePackage.name}</h2>
+                        {offerOrigin && <div className={offerStyles.stock}><StockBadge packageIds={[storePackage.id]}/></div>}
 
-                        <div
+                        {!hideDescription && <div
                             className={styles.description}
                             dangerouslySetInnerHTML={storeHtml(storePackage.description)}
-                        />
+                        />}
                     </div>
                 </div>
 
@@ -185,7 +224,7 @@ function PackageModal(
                                 <span className={styles.subscription}>per month</span>
                             )}
                         </div>
-                        <PackageLimitDetails packageId={storePackage.id}/>
+                        <PackageLimitDetails packageId={storePackage.id} showStock={!offerOrigin}/>
                     </div>
 
                     {textOptions.length > 0 && (
@@ -311,7 +350,7 @@ function PackageModal(
 
                     {/* Tebex resolves the recipient on the add call, so an
                         unknown name is reported here rather than at checkout. */}
-                    {(limit || giftLimit) ? (
+                    {packageDetailError ? <p className={styles.actionError} role="alert">We couldn't load this package. Please close it and try again.</p> : (limit || giftLimit) ? (
                         <p className={styles.actionHint} role="status">
                             {packageLimitMessage((giftOpen && giftLimit) || limit || giftLimit!)}
                         </p>

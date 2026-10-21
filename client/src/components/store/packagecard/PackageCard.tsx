@@ -10,6 +10,8 @@ import {requiredOptions} from "@/scripts/packageOptions.ts";
 import {packageLabel} from "@/scripts/packageGroups.ts";
 import SoldOutStamp from "./SoldOutStamp.tsx";
 import PackageLimitDetails from "./PackageLimitDetails.tsx";
+import StockBadge from "./StockBadge.tsx";
+import badgeStyles from "./StockBadge.module.scss";
 
 function PackageCard(
     {storePackage, onSelect}: { storePackage: StorePackage, onSelect: () => void }
@@ -78,21 +80,24 @@ function PackageCard(
             onKeyDown={e => (e.key === "Enter" || e.key === " ") && onSelect()}
         >
             <div className={styles.imageWrapper}>
-                {soldOut && <SoldOutStamp/>}
+                {soldOut && <SoldOutStamp belowBadge/>}
                 {image
                     ? <img src={image} alt={storePackage.name} loading="lazy"/>
                     : <div className={styles.imageFallback} aria-hidden="true"/>}
-                {!soldOut && pricing.percentOff !== null && (
-                    <span className={styles.saleBadge}>-{pricing.percentOff}%</span>
-                )}
-                {!soldOut && pricing.percentOff === null && label.prefix && (
-                    <span className={styles.prefixBadge}>{label.prefix}</span>
-                )}
+                <div className={badgeStyles.badges}>
+                    <StockBadge packageIds={[storePackage.id]}/>
+                    {!soldOut && pricing.percentOff !== null && (
+                        <span className={styles.saleBadge}>-{pricing.percentOff}%</span>
+                    )}
+                    {!soldOut && pricing.percentOff === null && label.prefix && (
+                        <span className={styles.prefixBadge}>{label.prefix}</span>
+                    )}
+                </div>
             </div>
 
             <div className={styles.body}>
                 <h3 className={styles.name}>{label.name}</h3>
-                <PackageLimitDetails packageId={storePackage.id}/>
+                <PackageLimitDetails packageId={storePackage.id} showStock={false}/>
                 {limit && (
                     <p className={styles.stockStatus}>
                         {limit === "global" ? "Stock: Sold out" : "Your purchase limit has been reached"}

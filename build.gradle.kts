@@ -13,7 +13,6 @@ allprojects {
     group = "net.lumamc.web"
     version = "1.0-SNAPSHOT"
 
-    apply(plugin = "dev.jsinco.pterodactyldeploy")
 }
 
 repositories {
@@ -21,6 +20,16 @@ repositories {
 }
 
 tasks {
+
+    val validateDeploymentConfig by registering {
+        doLast {
+            val missing = listOf("PTERO_TOKEN", "PTERO_URL", "PTERO_SERVER")
+                .filter { System.getenv(it).isNullOrBlank() }
+            if (missing.isNotEmpty()) {
+                throw GradleException("Cannot deploy: configure ${missing.joinToString()} in the publishing environment.")
+            }
+        }
+    }
 
     clean {
         doLast {
@@ -33,6 +42,7 @@ tasks {
     }
 
     build {
+        mustRunAfter(validateDeploymentConfig)
         dependsOn(":client:yarnBuild")
         dependsOn(":server:build")
 
@@ -51,12 +61,10 @@ tasks {
             }
         }
 
-        if (System.getenv("PTERO_URL") != null) { // todo: need to fix this on pterodeploy
-            finalizedBy(pterodactylDeploy)
-        }
     }
 
     pterodactylDeploy {
+        dependsOn(validateDeploymentConfig, build)
         apiKey = System.getenv("PTERO_TOKEN")
         url = System.getenv("PTERO_URL")
         serverId = System.getenv("PTERO_SERVER")

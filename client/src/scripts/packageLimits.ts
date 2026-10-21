@@ -8,15 +8,38 @@ export interface ConfiguredLimit {
 export interface ConfiguredPackageLimits {
     global?: ConfiguredLimit | null;
     user?: ConfiguredLimit | null;
+    remaining?: number | null;
+    estimated?: boolean;
+    soldOut?: boolean;
+    checkedAt?: number;
 }
 
-export function configuredLimitLabels(limits?: ConfiguredPackageLimits): string[] {
+export function packageStock(limits?: ConfiguredPackageLimits): {remaining: number; total: number} | null {
+    const total = limits?.global?.limit;
+    if (typeof total !== "number" || !Number.isSafeInteger(total) || total <= 0) return null;
+    const remaining = limits?.remaining;
+    return {
+        total,
+        remaining: limits?.soldOut ? 0 : typeof remaining === "number" && Number.isSafeInteger(remaining) && remaining >= 0
+            ? Math.min(remaining, total) : total
+    };
+}
+
+export function combinedPackageStock(limits: (ConfiguredPackageLimits | undefined)[]): {remaining: number; total: number} | null {
+    const stocks = limits.map(packageStock);
+    // A group total is meaningful only when every option has a known cap.
+    if (!stocks.length || stocks.some(stock => stock === null)) return null;
+    return stocks.reduce<{remaining: number; total: number}>((sum, stock) => ({
+        remaining: sum.remaining + stock!.remaining,
+        total: sum.total + stock!.total
+    }), {remaining: 0, total: 0});
+}
+
+export function configuredLimitLabels(limits?: ConfiguredPackageLimits, showStock = true): string[] {
     const labels: string[] = [];
-    const global = limits?.global?.limit;
+    const stock = packageStock(limits);
     const user = limits?.user?.limit;
-    if (typeof global === "number" && Number.isSafeInteger(global) && global > 0) {
-        labels.push(`Stock: ${global}`);
-    }
+    if (showStock && stock) labels.push(`Stock: ${stock.remaining}`);
     if (typeof user === "number" && Number.isSafeInteger(user) && user > 0) {
         labels.push(`Max of ${user} per person`);
     }

@@ -1,6 +1,9 @@
 output/
 server/run/
 package-limits.json
+stock-ledger.json
+stock-inspection-pending.json
+stock-history.json
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar

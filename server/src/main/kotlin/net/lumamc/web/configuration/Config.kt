@@ -25,6 +25,21 @@ class Config : OkaeriConfig() {
         }
 
     var discordNewsChannelId: Long = -1
+
+    @Comment("Server-side Tebex package discovery using private baskets.")
+    var storeInspectionEnabled = true
+    @Comment("Tebex webhook signing secret")
+    var storeWebhookSecret = ""
+    var storeInspectionUsername = "MHF_Steve"
+    var storePublicToken = "thl1-b56d66035505068200ecc30aad8c3e5f417c08e4" // non-sensitive
+    @Comment("Seconds between private discovery runs, min 300")
+    var storeInspectionIntervalSeconds: Long = 600
+    @Comment("Optional package IDs to inspect, leave empty means all public packages.")
+    var storeInspectionPackageIds: List<Long> = emptyList()
+    @Comment("Required option values for inspection, keyed by package ID")
+    var storeInspectionVariables: MutableMap<String, MutableMap<String, String>> = mutableMapOf()
+    var storeRefundRestoresPackageIds: List<Long> = emptyList()
+    var storeHistoryCompleteSince = ""
     var authors: Map<String, String> = mapOf(
         "Jsinco" to "J",
         "Kataray" to "Kat",

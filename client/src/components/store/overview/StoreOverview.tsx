@@ -1,16 +1,22 @@
 import styles from "./StoreOverview.module.scss";
 import {useQuery} from "@tanstack/react-query";
 import {fetchSidebar} from "@/scripts/tebex.ts";
-import {SidebarModule, TopCustomer} from "@/scripts/model/Tebex.ts";
+import {SidebarModule, StorePackage, TopCustomer} from "@/scripts/model/Tebex.ts";
 import {DISCORD_INV} from "@/constants.ts";
 import SupporterCard from "@/components/store/overview/SupporterCard.tsx";
 import PaymentMethods from "@/components/store/overview/PaymentMethods.tsx";
 import TopSupporter from "@/components/store/overview/TopSupporter.tsx";
+import LimitedOffers from "./LimitedOffers.tsx";
 
 const STORE_COVER = "/StoreCover.webp";
 const SUPPORTER_LIMIT = 5;
 
-function StoreOverview({topCustomer}: { topCustomer?: Partial<TopCustomer> & { header?: string } }) {
+function StoreOverview({topCustomer, limitedPackages, offersLoading, offersError}: {
+    topCustomer?: Partial<TopCustomer> & { header?: string };
+    limitedPackages: StorePackage[];
+    offersLoading?: boolean;
+    offersError?: string;
+}) {
     const {data: sidebar} = useQuery<SidebarModule[]>({
         queryKey: ["storeSidebar"],
         queryFn: fetchSidebar
@@ -75,16 +81,20 @@ function StoreOverview({topCustomer}: { topCustomer?: Partial<TopCustomer> & { h
             )}
 
             <div className={styles.panels}>
-                <section className={styles.panel}>
-                    <h3>How it works</h3>
-                    <ol className={styles.steps}>
-                        <li>Pick a package and add it to your basket.</li>
-                        <li>Enter your Minecraft username.</li>
-                        <li>Pay through Tebex, we never see your card details!</li>
-                        <li>Rewards arrive in-game on Luma, usually within a minute.</li>
-                        <li>Support Luma and enjoy your packages!</li>
-                    </ol>
-                </section>
+                {limitedPackages.length === 0 && !offersLoading && !offersError ? (
+                    <section className={`${styles.panel} ${styles.howItWorks}`}>
+                        <h3>How it works</h3>
+                        <ol className={styles.steps}>
+                            <li>Pick a package and add it to your basket.</li>
+                            <li>Enter your Minecraft username.</li>
+                            <li>Pay through Tebex, we never see your card details!</li>
+                            <li>Rewards arrive in-game on Luma, usually within a minute.</li>
+                            <li>Support Luma and enjoy your packages!</li>
+                        </ol>
+                    </section>
+                ) : (
+                    <LimitedOffers packages={limitedPackages} loading={offersLoading} error={offersError}/>
+                )}
 
                 {supporters.length > 0 && (
                     <section className={styles.panel}>

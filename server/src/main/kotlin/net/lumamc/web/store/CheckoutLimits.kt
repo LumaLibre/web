@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 object CheckoutLimits {
     data class Limit(val limit: Int, val timestamp: Long)
-    data class Limits(val global: Limit?, val user: Limit?)
+    data class Limits(val global: Limit?, val user: Limit?, val observedAt: Long = 0, val globalSoldOutUntil: Long = 0)
     private data class Cached(val expiresAt: Long, val limits: Map<String, Limits>)
     private val cache = ConcurrentHashMap<String, Cached>()
     private val catalog by lazy { KnownPackageLimits(Util.getDataFolderPath().resolve("package-limits.json")) }
@@ -22,10 +22,13 @@ object CheckoutLimits {
 
     fun knownLimits(): Map<String, Limits> = catalog.read()
 
-    fun fetch(ident: String): Map<String, Limits> {
+    // only the private inspector can publish shared configuration
+    fun observe(limits: Map<String, Limits>) = catalog.observe(limits)
+
+    fun fetch(ident: String, fresh: Boolean = false): Map<String, Limits> {
         require(validIdent(ident))
         val now = System.currentTimeMillis()
-        cache[ident]?.takeIf { it.expiresAt > now }?.let { return it.limits }
+        if (!fresh) cache[ident]?.takeIf { it.expiresAt > now }?.let { return it.limits }
         val request = HttpRequest.newBuilder(URI.create("https://checkout.tebex.io/api/baskets/$ident"))
             .timeout(Duration.ofSeconds(10))
             .header("Accept", "application/json")
@@ -34,7 +37,6 @@ object CheckoutLimits {
         val response = client.send(request, HttpResponse.BodyHandlers.ofString())
         check(response.statusCode() == 200) { "Checkout limits unavailable" }
         val limits = parse(JsonParser.parseString(response.body()).asJsonObject)
-        catalog.observe(limits)
         cache.entries.removeIf { it.value.expiresAt <= now }
         if (cache.size < 256) cache[ident] = Cached(now + 30_000, limits)
         return limits
