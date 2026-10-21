@@ -1,18 +1,24 @@
 package net.lumamc.web.model
 
 import net.lumamc.web.Util
+import com.google.gson.JsonParser
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.IOException
 import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
+import java.time.Duration
 import javax.imageio.ImageIO
 
 object SkinCache {
 
     // TODO: config
     private const val MAX_ENTRIES = 60
-    private const val DOWNLOAD_URL = "https://minotar.net/download/"
+    private const val CACHE_TTL_MS = 60 * 60 * 1000L
+    private val client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build()
 
     private val cacheDir: File = Util.getDataFolderPath().resolve("cache").toFile()
     private val lock = Any()
@@ -27,8 +33,7 @@ object SkinCache {
         val file = fileFor(idOrName)
 
         synchronized(lock) {
-            if (file.exists()) {
-                file.setLastModified(System.currentTimeMillis())
+            if (file.exists() && System.currentTimeMillis() - file.lastModified() in 0 until CACHE_TTL_MS) {
                 val cached = ImageIO.read(file)
                 if (cached != null) {
                     return cached
@@ -51,9 +56,20 @@ object SkinCache {
     }
 
     private fun download(idOrName: String): ByteArray {
-        val url = URI.create(DOWNLOAD_URL + idOrName).toURL()
-        url.openStream().use { stream ->
-            return stream.readBytes()
+        val url = SkinSource.textureUrl(idOrName) { endpoint ->
+            JsonParser.parseString(downloadUrl(endpoint, 64 * 1024).toString(Charsets.UTF_8)).asJsonObject
+        }
+        return downloadUrl(url, 2 * 1024 * 1024)
+    }
+
+    private fun downloadUrl(url: String, maxBytes: Int): ByteArray {
+        val request = HttpRequest.newBuilder(URI.create(url)).timeout(Duration.ofSeconds(15)).GET().build()
+        val response = client.send(request, HttpResponse.BodyHandlers.ofInputStream())
+        response.body().use { stream ->
+            if (response.statusCode() != 200) throw IOException("Skin service returned HTTP ${response.statusCode()}")
+            val bytes = stream.readNBytes(maxBytes + 1)
+            if (bytes.size > maxBytes) throw IOException("Skin response exceeds size limit")
+            return bytes
         }
     }
 
@@ -71,7 +87,7 @@ object SkinCache {
     }
 
     private fun fileFor(idOrName: String): File {
-        val key = idOrName.lowercase().filter { it.isLetterOrDigit() || it == '_' || it == '-' }
+        val key = SkinSource.cacheKey(idOrName)
         return File(cacheDir, "$key.png")
     }
 }

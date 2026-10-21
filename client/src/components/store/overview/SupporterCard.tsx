@@ -21,7 +21,7 @@ function SupporterCard({payment, index}: { payment: RecentPayment, index: number
                 {renderState !== "failed" && (
                     <img
                         className={`${styles.render} ${renderState === "loaded" ? styles.renderVisible : ""}`}
-                        src={playerBodyRenderUrl(payment.username_id, index)}
+                        src={playerBodyRenderUrl(payment.username_id, index, payment.username)}
                         alt=""
                         aria-hidden="true"
                         loading="lazy"

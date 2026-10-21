@@ -117,6 +117,19 @@
     }
 }
 
+.offersAnchor {
+    min-width: 0;
+    display: grid;
+    border-radius: 15px;
+    scroll-margin-top: 6rem;
+
+    &:target, &.highlightedOffers {
+        outline: 2px solid $primary-color;
+        outline-offset: 4px;
+        box-shadow: 0 0 24px rgba(175, 39, 205, 0.35);
+    }
+}
+
 .panel {
     box-sizing: border-box;
     height: var(--store-panel-height);

@@ -24,7 +24,7 @@ function TopSupporter(
                 {renderState !== "failed" && (
                     <img
                         className={`${styles.render} ${renderState === "loaded" ? styles.renderVisible : ""}`}
-                        src={topSupporterRenderUrl(customer.username_id)}
+                        src={topSupporterRenderUrl(customer.username_id, customer.username)}
                         alt=""
                         aria-hidden="true"
                         loading="lazy"

@@ -7,6 +7,8 @@ import SupporterCard from "@/components/store/overview/SupporterCard.tsx";
 import PaymentMethods from "@/components/store/overview/PaymentMethods.tsx";
 import TopSupporter from "@/components/store/overview/TopSupporter.tsx";
 import LimitedOffers from "./LimitedOffers.tsx";
+import {useEffect, useRef} from "react";
+import {useLocation} from "react-router-dom";
 
 const STORE_COVER = "/StoreCover.webp";
 const SUPPORTER_LIMIT = 5;
@@ -17,6 +19,19 @@ function StoreOverview({topCustomer, limitedPackages, offersLoading, offersError
     offersLoading?: boolean;
     offersError?: string;
 }) {
+    const location = useLocation();
+    const offersRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        if (location.hash.toLowerCase() !== "#lto" || offersLoading) return;
+        const frame = requestAnimationFrame(() => {
+            offersRef.current?.scrollIntoView({
+                behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+                block: "center"
+            });
+        });
+        return () => cancelAnimationFrame(frame);
+    }, [location.hash, location.key, offersLoading, limitedPackages.length]);
+
     const {data: sidebar} = useQuery<SidebarModule[]>({
         queryKey: ["storeSidebar"],
         queryFn: fetchSidebar
@@ -81,6 +96,8 @@ function StoreOverview({topCustomer, limitedPackages, offersLoading, offersError
             )}
 
             <div className={styles.panels}>
+                <div id="lto" ref={offersRef}
+                     className={`${styles.offersAnchor} ${location.hash.toLowerCase() === "#lto" ? styles.highlightedOffers : ""}`}>
                 {limitedPackages.length === 0 && !offersLoading && !offersError ? (
                     <section className={`${styles.panel} ${styles.howItWorks}`}>
                         <h3>How it works</h3>
@@ -95,6 +112,7 @@ function StoreOverview({topCustomer, limitedPackages, offersLoading, offersError
                 ) : (
                     <LimitedOffers packages={limitedPackages} loading={offersLoading} error={offersError}/>
                 )}
+                </div>
 
                 {supporters.length > 0 && (
                     <section className={styles.panel}>

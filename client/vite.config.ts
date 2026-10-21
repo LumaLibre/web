@@ -6,7 +6,10 @@ import path from 'path';
 export default defineConfig({
   plugins: [react()],
   server: {
-    proxy: { '/api/store': 'http://127.0.0.1:7070' }
+    proxy: {
+      '/api/store': 'http://127.0.0.1:7070',
+      '/api/render': 'http://127.0.0.1:7070'
+    }
   },
   resolve: {
     alias: { '@': path.resolve(__dirname, 'src') }
