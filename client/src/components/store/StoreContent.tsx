@@ -16,6 +16,7 @@ import BasketFab from "@/components/store/basket/BasketFab.tsx";
 import UsernameModal from "@/components/store/username/UsernameModal.tsx";
 import {useBasket} from "@/components/store/BasketContext.tsx";
 import {fetchCategories, fetchSidebar, isStoreConfigured} from "@/scripts/tebex.ts";
+import {isSidebarCategory} from "@/scripts/storeCategories.ts";
 import {SidebarModule, StoreCategory, StorePackage} from "@/scripts/model/Tebex.ts";
 import {buildStoreEntries, categorySlug, PackageGroup} from "@/scripts/packageGroups.ts";
 import {storeHtml} from "@/scripts/storeHtml.ts";
@@ -110,7 +111,7 @@ function StoreContent() {
     const topLevel = categories
         .filter(category => !category.parent)
         .sort((a, b) => a.order - b.order);
-    const sidebarCategories = topLevel.filter(category => !category.hidden);
+    const sidebarCategories = topLevel.filter(isSidebarCategory);
 
     const activeCategory = activeSlug
         ? topLevel.find(category => categorySlug(category) === activeSlug) ?? null
