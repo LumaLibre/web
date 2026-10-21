@@ -81,7 +81,7 @@ export interface StoreCategory {
     id: number;
     name: string;
     slug: string | null;
-    hidden?: boolean;
+    hidden?: boolean | "true" | "false" | 0 | 1 | "0" | "1";
     parent: StoreCategory | null;
     tiered: boolean;
     description: string;
