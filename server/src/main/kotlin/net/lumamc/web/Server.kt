@@ -183,4 +183,6 @@ class Server {
     }
 
     fun importStockHistory(): Int = inventory.importHistory(Util.getDataFolderPath().resolve("stock-history.json"))
+
+    fun refreshStoreInventory(): String = inventory.refresh()
 }

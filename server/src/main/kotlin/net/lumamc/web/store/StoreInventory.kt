@@ -9,6 +9,8 @@ import java.nio.file.Files
 import java.time.Instant
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.RejectedExecutionException
+import java.util.concurrent.atomic.AtomicBoolean
 
 data class PackageStock(
     val global: CheckoutLimits.Limit?, val user: CheckoutLimits.Limit?,
@@ -43,6 +45,7 @@ class StoreInventory(private val cfg: Config, directory: Path, val webhookSecret
     private val executor = Executors.newSingleThreadScheduledExecutor { task ->
         Thread(task, "tebex-package-inspector").apply { isDaemon = true }
     }
+    private val refreshPending = AtomicBoolean(false)
     private val historyFrom = cfg.storeHistoryCompleteSince.takeIf { it.isNotBlank() }?.let {
         runCatching { Instant.parse(it).epochSecond }.getOrElse {
             logger.warn("Invalid storeHistoryCompleteSince; displaying upper bounds")
@@ -64,10 +67,38 @@ class StoreInventory(private val cfg: Config, directory: Path, val webhookSecret
             return
         }
         executor.scheduleWithFixedDelay({
-            try { inspector.run(cfg.storeInspectionPackageIds, cfg.storeInspectionVariables) }
-            catch (e: InterruptedException) { Thread.currentThread().interrupt() }
-            catch (e: Exception) { logger.warn("Package inspection paused; will retry next interval ({}).", e.javaClass.simpleName) }
+            if (refreshPending.compareAndSet(false, true)) inspectPackages()
         }, 0, interval, TimeUnit.SECONDS)
+    }
+
+    /** Console only. Shares the scheduled worker so private baskets never overlap. */
+    fun refresh(): String {
+        if (cfg.storeInspectionUsername.isBlank() || cfg.storePublicToken.isBlank()) {
+            return "Cannot refresh: configure storeInspectionUsername and storePublicToken in config.yml."
+        }
+        if (!refreshPending.compareAndSet(false, true)) return "A Tebex refresh is already running or queued."
+        try {
+            executor.execute { inspectPackages(manual = true) }
+        } catch (_: RejectedExecutionException) {
+            refreshPending.set(false)
+            return "Cannot refresh while the store server is stopping."
+        }
+        return "Tebex refresh queued. Package limits and availability will update as inspection completes."
+    }
+
+    private fun inspectPackages(manual: Boolean = false) {
+        try {
+            if (manual) logger.info("Refreshing Tebex package limits, including LTO packages. Discord-required packages are skipped.")
+            inspector.run(cfg.storeInspectionPackageIds, cfg.storeInspectionVariables)
+            if (manual) logger.info("Tebex refresh finished. See inspection messages for any package failures. Store stock updates within 15 seconds.")
+        } catch (e: InterruptedException) {
+            Thread.currentThread().interrupt()
+            if (manual) logger.info("Tebex refresh interrupted; already discovered limits were saved.")
+        } catch (e: Exception) {
+            logger.warn("Tebex refresh did not finish ({}). Previously saved limits are retained; retry with 'refresh'.", e.javaClass.simpleName)
+        } finally {
+            refreshPending.set(false)
+        }
     }
 
     fun accept(event: JsonObject): Boolean = (purchaseHistory ?: error("Purchase history unavailable")).accept(event)
