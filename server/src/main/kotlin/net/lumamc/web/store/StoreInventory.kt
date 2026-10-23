@@ -21,15 +21,17 @@ data class PackageStock(
 object StockCalculation {
     fun calculate(id: String, limits: CheckoutLimits.Limits, purchaseHistory: PurchaseHistory?, now: Long,
                   freshness: Long, historyFrom: Long?, restoreRefunds: Boolean): PackageStock {
-        val confirmedSoldOut = limits.globalSoldOutUntil > now
         val cutoff = limits.global?.timestamp
+        val lifetime = cutoff == 0L
+        val confirmedSoldOut = limits.globalSoldOutUntil > now || (lifetime && limits.globalSoldOutUntil > 0)
         val fresh = limits.observedAt > 0 && now - limits.observedAt in 0..freshness
         // A zero cutoff is Tebex's "No period" limit: count all recorded purchases.
-        if (purchaseHistory == null || !fresh || cutoff == null || cutoff < 0 || cutoff > limits.observedAt) {
-            return PackageStock(limits.global, limits.user, soldOut = confirmedSoldOut, checkedAt = limits.observedAt)
+        if (purchaseHistory == null || (!lifetime && !fresh) || cutoff == null || cutoff < 0 || cutoff > limits.observedAt) {
+            return PackageStock(limits.global, limits.user, remaining = if (confirmedSoldOut) 0 else null,
+                soldOut = confirmedSoldOut, checkedAt = limits.observedAt)
         }
         val remaining = (limits.global.limit.toLong() - purchaseHistory.sold(id, cutoff, restoreRefunds)).coerceAtLeast(0)
-        return PackageStock(limits.global, limits.user, remaining,
+        return PackageStock(limits.global, limits.user, if (confirmedSoldOut) 0 else remaining,
             estimated = historyFrom == null || historyFrom > cutoff,
             soldOut = confirmedSoldOut || remaining == 0L, checkedAt = limits.observedAt)
     }

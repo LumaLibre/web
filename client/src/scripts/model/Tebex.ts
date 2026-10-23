@@ -119,7 +119,7 @@ export interface Basket {
     email: string | null;
     username: string | null;
     username_id: number | null;
-    coupons: { code: string }[];
+    coupons: { code?: string; coupon_code?: string }[];
     giftcards: { card_number: string }[];
     creator_code: string;
     cancel_url: string;

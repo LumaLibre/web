@@ -244,6 +244,24 @@ export async function applyGiftCard(ident: string, cardNumber: string): Promise<
     });
 }
 
+export async function applyBasketCode(ident: string, value: string): Promise<Basket> {
+    const code = value.trim();
+    if (!code) throw new Error("Enter a coupon or gift card code.");
+    const isValidationError = (error: unknown): boolean => error instanceof TebexRequestError
+        && (error.status === 400 || error.status === 422);
+    try {
+        return await applyCoupon(ident, code);
+    } catch (error) {
+        if (!isValidationError(error)) throw error;
+    }
+    try {
+        return await applyGiftCard(ident, code);
+    } catch (error) {
+        if (!isValidationError(error)) throw error;
+        throw new Error("This coupon or gift card could not be applied. Check the code and whether it is valid for your basket.");
+    }
+}
+
 export async function removeGiftCard(ident: string, cardNumber: string): Promise<Basket> {
     return request<Basket>(`${TEBEX_HEADLESS_ENDPOINT}/baskets/${ident}/giftcards/remove`, {
         method: "POST",

@@ -14,10 +14,11 @@ interface BasketDrawerProps {
 }
 
 function BasketDrawer({open, onClose, quantityDisabledPackageIds}: BasketDrawerProps) {
-    const {basket, error, setQuantity, removePackage, applyCoupon, completeBasket} = useBasket();
+    const {basket, error, setQuantity, removePackage, applyCode, completeBasket} = useBasket();
     const navigate = useNavigate();
 
-    const [couponCode, setCouponCode] = useState("");
+    const [code, setCode] = useState("");
+    const [applyingCode, setApplyingCode] = useState(false);
     const [authOptions, setAuthOptions] = useState<BasketAuthOption[] | null>(null);
     const [busy, setBusy] = useState(false);
     const [checkoutError, setCheckoutError] = useState<string | null>(null);
@@ -65,13 +66,17 @@ function BasketDrawer({open, onClose, quantityDisabledPackageIds}: BasketDrawerP
         }
     };
 
-    const handleApplyCoupon = async () => {
-        const code = couponCode.trim();
-        if (!code) {
+    const handleApplyCode = async () => {
+        const submitted = code.trim();
+        if (!submitted || applyingCode || busy) {
             return;
         }
-        await applyCoupon(code);
-        setCouponCode("");
+        setApplyingCode(true);
+        try {
+            if (await applyCode(submitted)) setCode("");
+        } finally {
+            setApplyingCode(false);
+        }
     };
 
     return (
@@ -148,22 +153,35 @@ function BasketDrawer({open, onClose, quantityDisabledPackageIds}: BasketDrawerP
 
                 {!isEmpty && (
                     <div className={styles.summary}>
-                        <div className={styles.couponRow}>
+                        <form className={styles.couponRow} onSubmit={event => {
+                            event.preventDefault();
+                            void handleApplyCode();
+                        }}>
                             <input
                                 type="text"
-                                value={couponCode}
-                                placeholder="Coupon code"
-                                onChange={e => setCouponCode(e.target.value)}
-                                onKeyDown={e => e.key === "Enter" && handleApplyCoupon()}
+                                value={code}
+                                placeholder="Coupon or gift card code"
+                                aria-label="Coupon or gift card code"
+                                autoComplete="off"
+                                disabled={applyingCode || busy}
+                                onChange={e => setCode(e.target.value)}
                             />
-                            <button onClick={handleApplyCoupon}>Apply</button>
-                        </div>
+                            <button type="submit" disabled={!code.trim() || applyingCode || busy}>
+                                {applyingCode ? "Applying…" : "Apply"}
+                            </button>
+                        </form>
 
                         {basket && basket.coupons.length > 0 && (
                             <p className={styles.appliedCoupon}>
-                                Coupon applied: {basket.coupons.map(c => c.code).join(", ")}
+                                Coupon applied: {basket.coupons.map(c => c.coupon_code ?? c.code).join(", ")}
                             </p>
                         )}
+
+                        {basket?.giftcards?.map(card => (
+                            <p className={styles.appliedCoupon} key={card.card_number} role="status">
+                                Gift card applied: •••• {card.card_number.replace(/\s/g, "").slice(-4)}
+                            </p>
+                        ))}
 
                         {/* Totals come straight from Tebex — tax and discounts are
                             computed server-side and must not be recalculated here. */}
@@ -202,7 +220,7 @@ function BasketDrawer({open, onClose, quantityDisabledPackageIds}: BasketDrawerP
                         <button
                             className={styles.checkoutButton}
                             onClick={handleCheckout}
-                            disabled={busy}
+                            disabled={busy || applyingCode}
                         >
                             {busy ? "Please wait…" : isBasketAuthorized(basket!) ? "Checkout" : "Sign in & checkout"}
                         </button>

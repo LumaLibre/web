@@ -10,6 +10,7 @@ import {
     removePackageFromBasket,
     updateBasketPackageQuantity,
     applyCoupon as applyCouponRequest,
+    applyBasketCode,
     removeCoupon as removeCouponRequest
 } from "@/scripts/tebex.ts";
 
@@ -46,6 +47,7 @@ interface BasketContextValue {
     removePackage: (packageId: number) => Promise<void>;
     setQuantity: (packageId: number, quantity: number) => Promise<void>;
     applyCoupon: (code: string) => Promise<void>;
+    applyCode: (code: string) => Promise<boolean>;
     removeCoupon: (code: string) => Promise<void>;
     refresh: () => Promise<void>;
 }
@@ -303,6 +305,7 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
         applyCoupon: async code => {
             await mutate(ident => applyCouponRequest(ident, code));
         },
+        applyCode: code => mutate(ident => applyBasketCode(ident, code)),
         removeCoupon: async code => {
             await mutate(ident => removeCouponRequest(ident, code));
         },

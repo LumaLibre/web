@@ -142,6 +142,7 @@
         cursor: pointer;
 
         &:hover { background: rgba(255, 255, 255, 0.16); border-color: transparent; }
+        &:disabled { opacity: 0.55; cursor: default; }
 
         &:disabled {
             background: rgba(255, 255, 255, 0.05);
