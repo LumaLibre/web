@@ -59,7 +59,10 @@ data class PageMetadata(
                 "https://lumamc.net/vote")
             "/store" -> PageMetadata("Store • LumaMC",
                 "Visit our digital store and support the development and expansion of LumaMC!",
-                "https://lumamc.net/store", "https://lumamc.net/StoreCover.webp", "Lumas shopping at an outdoor mall.")
+                "https://lumamc.net/store", "https://lumamc.net/StoreCover.webp")
+            "/news" -> PageMetadata("News • LumaMC",
+                "Browse the latest news and updates from LumaMC!",
+                "https://lumamc.net/news")
             else -> null
         }
 
