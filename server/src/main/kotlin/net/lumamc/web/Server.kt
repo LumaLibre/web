@@ -54,6 +54,19 @@ class Server {
             config.jsonMapper(gsonMapper)
             config.staticFiles.add(cfg.staticFilesDirectory, Location.EXTERNAL)
         }
+        for (path in listOf("/", "/rules", "/vote", "/store")) {
+            internalServer.get(path) { ctx ->
+                val index = File(cfg.staticFilesDirectory, "index.html")
+                if (!index.isFile) {
+                    ctx.status(404)
+                } else {
+                    ctx.header("Cache-Control", "no-cache")
+                    ctx.contentType("text/html; charset=utf-8")
+                    val template = index.readText()
+                    ctx.result(PageMetadata.forPath(path)?.render(template) ?: template)
+                }
+            }
+        }
         internalServer
             // Handle discord redirects here instead of in the frontend
             .get("/chat") { ctx -> ctx.redirect(DISCORD_INVITE) }
