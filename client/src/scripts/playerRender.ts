@@ -7,7 +7,9 @@ export function playerRenderIdentity(id: string, username?: string): string {
     if (username && isBedrockUsername(username)) {
         return /^\d{16,20}$/.test(id) ? id : username.trim();
     }
-    return id || username || "";
+    const identity = (id || username || "").trim();
+    return /^[\da-f]{8}-(?:[\da-f]{4}-){3}[\da-f]{12}$/i.test(identity)
+        ? identity.replace(/-/g, "") : identity;
 }
 
 export const rawPoses: Map<string, string> = new Map([

@@ -30,7 +30,12 @@ internal object SkinSource {
                 ?.toULongOrNull()?.takeIf { it > 0u }?.toString()
                 ?: throw IOException("Bedrock account not found")
         } else null
-        if (xuid == null) return "https://minotar.net/download/${encode(value)}"
+        if (xuid == null) {
+            val javaIdentity = if (value.matches(Regex("[a-fA-F0-9]{8}(-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}"))) {
+                value.replace("-", "")
+            } else value
+            return "https://minotar.net/download/${encode(javaIdentity)}"
+        }
         val skin = fetchJson("https://api.geysermc.org/v2/skin/$xuid")
         val texture = skin.get("texture_id")?.takeIf { it.isJsonPrimitive }?.asString
         if (texture == null || !texture.matches(Regex("[a-fA-F0-9]{32,64}"))) {

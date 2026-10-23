@@ -1,4 +1,4 @@
-import {API_ENDPOINT} from "@/constants.ts";
+import {playerRenderIdentity} from "@/scripts/playerRender.ts";
 
 
 export class RecordedVoter {
@@ -20,14 +20,14 @@ export class RecordedVoter {
     }
 
     getHeadRenderURL(): string {
-        //return `https://starlightskins.lunareclipse.studio/render/mojavatar/${this.uuid}/bust`;
-        return `${API_ENDPOINT}/render/wave/${this.uuid}?yaw=30&pitch=10&trim=true&scale=2`;
+        const identity = encodeURIComponent(playerRenderIdentity(this.uuid, this.name));
+        return `/api/render/wave/${identity}?yaw=30&pitch=10&trim=true&scale=2`;
     }
 
     getBodyRenderURL(pos: number): string {
-        //return `https://starlightskins.lunareclipse.studio/render/mojavatar/${this.uuid}/full`;
         const entries = [...RecordedVoter.poses.entries()];
         const [pose, args] = entries[(pos - 1) % entries.length];
-        return `https://lumamc.net/api/render/${pose}/${this.uuid}${args}`;
+        const identity = encodeURIComponent(playerRenderIdentity(this.uuid, this.name));
+        return `/api/render/${pose}/${identity}${args}`;
     }
 }

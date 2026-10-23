@@ -1,7 +1,6 @@
 import {useState} from "react";
 import {RecordedVoter} from "@/scripts/model/RecordedVoter.ts";
 import styles from "./TopVoter.module.scss";
-import {playerBodyRenderUrl, playerFaceUrl} from "@/scripts/playerRender.ts";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCrown} from "@fortawesome/free-solid-svg-icons";
 
