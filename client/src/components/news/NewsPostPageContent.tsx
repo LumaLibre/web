@@ -2,7 +2,7 @@ import {useQuery, useQueryClient} from "@tanstack/react-query";
 import { fetchNewsPost } from "@/scripts/newsPosts.ts";
 import {NewsPost, NewsPostSummary} from "@/scripts/model/NewsPost.ts";
 import styles from "./NewsPostPageContent.module.scss";
-import React, {JSX} from "react";
+import React, {JSX, useEffect} from "react";
 import Label from "@/components/label/Label.tsx";
 import NotFoundPageContent from "@/components/etc/404/404PageContent.tsx";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -85,6 +85,10 @@ function NewsPostPageContent({ id }: { id: string }) {
         queryFn: () => fetchNewsPost(id)
     });
 
+    const articleTitle = newsPost?.getDisplayTitle() ?? cachedSummary?.getDisplayTitle();
+    useEffect(() => {
+        document.title = `${articleTitle || "News Post"} • LumaMC`;
+    }, [articleTitle]);
 
     if (isLoading) return newsPostPageSection(<LoadingArticle summary={cachedSummary}/>);
     if (error) return <NotFoundPageContent error={error.message} />;

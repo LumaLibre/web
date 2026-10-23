@@ -12,8 +12,8 @@ data class NewsPostSummary(
     companion object {
         private const val MAX_EXCERPT_LENGTH = 400
 
-        fun fromNewsPost(post: NewsPost): NewsPostSummary {
-            val cleaned = post.content
+        internal fun excerpt(content: String): String {
+            val cleaned = content
                 .replace(Regex("<a?:[\\w-]+:\\d+>"), "✨")
                 .replace(Regex("<t:-?\\d+(?::[tTdDfFR])?>"), " ")
                 .replace(Regex("!\\[([^]]*)]\\([^)]+\\)"), "$1")
@@ -24,19 +24,22 @@ data class NewsPostSummary(
                 .replace(Regex("\\s+"), " ")
                 .trim()
 
-            val excerpt = if (cleaned.length <= MAX_EXCERPT_LENGTH) {
+            return if (cleaned.length <= MAX_EXCERPT_LENGTH) {
                 cleaned
             } else {
                 cleaned.take(MAX_EXCERPT_LENGTH).trimEnd() + "…"
             }
 
+        }
+
+        fun fromNewsPost(post: NewsPost): NewsPostSummary {
             return NewsPostSummary(
                 post.id,
                 post.title,
                 post.thumbnail,
                 post.author,
                 post.timestamp,
-                excerpt,
+                excerpt(post.content),
                 post.unlisted
             )
         }

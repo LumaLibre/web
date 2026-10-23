@@ -9,6 +9,7 @@ import net.lumamc.web.model.RenderOptions
 import net.lumamc.web.model.SkinCache
 import net.lumamc.web.model.SkinRenderer
 import net.lumamc.web.news.NewsManager
+import net.lumamc.web.news.NewsPageMetadata
 import net.lumamc.web.store.CheckoutLimits
 import net.lumamc.web.store.StoreInventory
 import net.lumamc.web.store.TebexSignature
@@ -57,6 +58,17 @@ class Server {
             // Handle discord redirects here instead of in the frontend
             .get("/chat") { ctx -> ctx.redirect(DISCORD_INVITE) }
             .get("/discord") { ctx -> ctx.redirect(DISCORD_INVITE) }
+            .get("/news/{id}") { ctx ->
+                val post = NewsManager.getNewsPost(ctx.pathParam("id"))
+                val index = File(cfg.staticFilesDirectory, "index.html")
+                if (post == null || !index.isFile) {
+                    ctx.status(404)
+                } else {
+                    ctx.header("Cache-Control", "no-cache")
+                    ctx.contentType("text/html; charset=utf-8")
+                    ctx.result(NewsPageMetadata.render(index.readText(), post))
+                }
+            }
             .get("/api/store/package-limits") { ctx ->
                 ctx.header("Cache-Control", "no-store")
                 ctx.json(inventory.snapshot())
