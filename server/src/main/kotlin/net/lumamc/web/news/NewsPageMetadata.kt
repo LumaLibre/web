@@ -14,7 +14,7 @@ object NewsPageMetadata {
         val description = description(post)
         val image = imageUrl(post.thumbnail)
         val url = "$ORIGIN/news/${URLEncoder.encode(post.id, StandardCharsets.UTF_8).replace("+", "%20")}"
-        return PageMetadata(pageTitle, description, url, image, displayTitle, "article").render(template)
+        return PageMetadata(pageTitle, description, url, image, null, "article").render(template)
     }
 
     internal fun description(post: NewsPost): String {

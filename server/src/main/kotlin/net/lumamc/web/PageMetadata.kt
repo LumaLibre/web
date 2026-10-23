@@ -6,7 +6,7 @@ data class PageMetadata(
     val description: String,
     val url: String,
     val image: String? = null,
-    val imageAlt: String = title,
+    val imageAlt: String? = null,
     val type: String = "website"
 ) {
     fun render(template: String): String {
@@ -26,9 +26,11 @@ data class PageMetadata(
             tag("name", "twitter:description", description)
             if (image != null) {
                 tag("property", "og:image", image)
-                tag("property", "og:image:alt", imageAlt)
                 tag("name", "twitter:image", image)
-                tag("name", "twitter:image:alt", imageAlt)
+                if (imageAlt != null) {
+                    tag("property", "og:image:alt", imageAlt)
+                    tag("name", "twitter:image:alt", imageAlt)
+                }
             }
         }
         return head.replace(template) { match ->
