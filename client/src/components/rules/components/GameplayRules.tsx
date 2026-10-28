@@ -93,7 +93,7 @@ const GameplayRules = () => {
                 </ul>
                 <AnchorHeading id="gameplay-redstone-farms">Redstone & Farm Regulations</AnchorHeading>
                 <strong>Our up-to-date redstone and farm limits can be found on
-                    our {quickLink('wiki', WIKI_LINK('basics/farms-and-limits'))}. Strictly
+                    our {quickLink('wiki', WIKI_LINK('basics/limits'))}. Strictly
                     prohibited redstone devices or machines are:</strong>
                 <ul>
                     <li>Lag machines.</li>
