@@ -1,0 +1,31 @@
+@use "@/App.module.scss" as *;
+
+.screen {
+    @include artBackground("@/assets/MainBackground.webp");
+    min-height: 60vh;
+    padding: 12rem 1.5rem 5rem;
+    text-align: center;
+    color: $secondary-color;
+    font-family: 'Poppins', sans-serif;
+
+    h1 { color: $primary-color; font-family: 'Paytone One', sans-serif; }
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+
+    a { color: $secondary-color; text-decoration: underline; }
+    button {
+        background: $primary-color;
+        color: white;
+        border: 0;
+        border-radius: 12px;
+        padding: 0.85rem 1rem;
+        font: inherit;
+        cursor: pointer;
+    }
+}

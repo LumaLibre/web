@@ -3,7 +3,7 @@ import {Basket, BasketAuthOption} from "@/scripts/model/Tebex.ts";
 import {fetchBasketAuthOptions} from "@/scripts/tebex.ts";
 import {HOST} from "@/constants.ts";
 
-export const authReturnUrl = (): string => `${HOST}store?authed=1`;
+export const authReturnUrl = (): string => `${HOST}checkout?authed=1`;
 
 export const isBasketAuthorized = (basket: Basket): boolean => basket.username !== null;
 

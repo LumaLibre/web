@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 data class PackageStock(
     val global: CheckoutLimits.Limit?, val user: CheckoutLimits.Limit?,
     val remaining: Long? = null, val estimated: Boolean = true,
-    val soldOut: Boolean = false, val checkedAt: Long = 0
+    val soldOut: Boolean = false, val checkedAt: Long = 0, val notForSale: Boolean = false
 )
 
 object StockCalculation {
@@ -39,6 +39,33 @@ object StockCalculation {
 
 class StoreInventory(private val cfg: Config, directory: Path, val webhookSecret: String) : AutoCloseable {
     private val logger = LoggerFactory.getLogger(StoreInventory::class.java)
+    private val saleRestrictions = PackageSaleRestrictions(directory.resolve("not-for-sale.json"))
+
+    fun toggleNotForSale(query: String): String {
+        val input = query.trim().trim('"', '\'')
+        if (input.isBlank()) return "Usage: nfs <package ID or name>"
+        return try {
+            val id = input.toLongOrNull()
+            val api by lazy { TebexInspectionApi(cfg.storePublicToken, cfg.storeInspectionUsername.ifBlank { "MHF_Steve" }) }
+            val pkg = if (id != null) saleRestrictions.marked(id) ?: api.packageById(id)
+                else PackageSaleRestrictions.resolve(input, api.catalog())
+            val blocked = try {
+                saleRestrictions.toggle(pkg)
+            } catch (e: Exception) {
+                logger.error("Could not save Not For Sale selection for package {}", pkg.id, e)
+                return "Could not save the Not For Sale selection; nothing changed. Check server file permissions and disk space."
+            }
+            "${pkg.name} (${pkg.id}): ${if (blocked) "Not For Sale" else "Not For Sale removed"}. " +
+                "Store updates within 15 seconds. This setting is saved across server restarts."
+        } catch (e: IllegalArgumentException) {
+            e.message ?: "Invalid package name or ID."
+        } catch (e: InterruptedException) {
+            Thread.currentThread().interrupt()
+            "Package lookup interrupted; nothing changed."
+        } catch (_: Exception) {
+            "Could not look up the package in Tebex; nothing changed. Try again or use the ID to unmark a package."
+        }
+    }
     private val purchaseHistory = runCatching { PurchaseHistory(directory.resolve("stock-ledger.json")) }.getOrElse {
         logger.error("Purchase history could not be loaded. Webhooks will return 503 until the purchase history is repaired.", it)
         null
@@ -118,10 +145,10 @@ class StoreInventory(private val cfg: Config, directory: Path, val webhookSecret
 
     fun snapshot(): Map<String, PackageStock> {
         val now = Instant.now().epochSecond
-        return CheckoutLimits.knownLimits().mapValues { (id, limits) ->
+        return saleRestrictions.applyTo(CheckoutLimits.knownLimits().mapValues { (id, limits) ->
             StockCalculation.calculate(id, limits, purchaseHistory.takeIf { webhookSecret.isNotBlank() }, now,
                 interval * 2, historyFrom, id.toLong() in cfg.storeRefundRestoresPackageIds)
-        }
+        })
     }
 
     override fun close() { executor.shutdownNow() }

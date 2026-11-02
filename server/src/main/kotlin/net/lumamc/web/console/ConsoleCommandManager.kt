@@ -5,6 +5,7 @@ import net.lumamc.web.console.commands.RestartCommand
 import net.lumamc.web.console.commands.StopCommand
 import net.lumamc.web.console.commands.StockImportCommand
 import net.lumamc.web.console.commands.RefreshCommand
+import net.lumamc.web.console.commands.NotForSaleCommand
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.Scanner
@@ -27,6 +28,7 @@ class ConsoleCommandManager private constructor() {
         registerCommand(ReloadCommand())
         registerCommand(StockImportCommand())
         registerCommand(RefreshCommand())
+        registerCommand(NotForSaleCommand())
     }
 
     fun registerCommand(command: ConsoleCommand): ConsoleCommandManager {

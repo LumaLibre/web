@@ -16,6 +16,7 @@ function PackageGroupCard({group, onSelect}: { group: PackageGroup, onSelect: ()
     const {packageLimit} = useBasket();
     const available = group.packages.filter(pkg => !packageLimit(pkg.id));
     const soldOut = available.length === 0;
+    const unavailableLabel = group.packages.some(pkg => packageLimit(pkg.id) === "not-for-sale") ? "Not For Sale" : "Sold Out!";
     const [front, ...rest] = group.packages;
     const frontImage = imageOf(front);
 
@@ -58,7 +59,7 @@ function PackageGroupCard({group, onSelect}: { group: PackageGroup, onSelect: ()
                 onKeyDown={e => (e.key === "Enter" || e.key === " ") && onSelect()}
             >
                 <div className={styles.imageWrapper}>
-                    {soldOut && <SoldOutStamp belowBadge/>}
+                    {soldOut && <SoldOutStamp belowBadge label={unavailableLabel}/>}
                     {frontImage
                         ? <img src={frontImage} alt={group.name} loading="lazy"/>
                         : <div className={styles.imageFallback} aria-hidden="true"/>}
@@ -90,7 +91,7 @@ function PackageGroupCard({group, onSelect}: { group: PackageGroup, onSelect: ()
                                 {formatPrice(cheapestPricing.current, cheapestPricing.currency)}
                             </span>
                         </div>
-                        <span className={styles.chooseButton}>{soldOut ? "Sold Out!" : "Choose"}</span>
+                        <span className={styles.chooseButton}>{soldOut ? "View options" : "Choose"}</span>
                     </div>
                 </div>
             </div>

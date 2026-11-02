@@ -468,10 +468,10 @@ function SurveyPageContent() {
                         <p className={styles.eyebrow}>{inferGoogleFormKind(form.title)}</p>
                         <h1>{form.title}</h1>
                         <p className={styles.description}>{form.description.split("\n")[0]}</p>
-                        <div className={styles.meta}>
+                        {/* <div className={styles.meta}>
                             <span><FaCircleCheck/></span>
                             <div><strong>About {form.estimatedMinutes} minutes</strong><small>One question at a time</small></div>
-                        </div>
+                        </div> */}
                     </aside>
 
                     <SurveyExperience form={form}/>

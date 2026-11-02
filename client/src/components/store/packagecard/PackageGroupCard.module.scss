@@ -213,6 +213,7 @@
 }
 
 .chooseButton {
+    border: 0;
     background: $primary-color;
     color: #ffffff;
     border-radius: 8px;
@@ -221,4 +222,5 @@
     font-size: 0.8rem;
     font-weight: 700;
     white-space: nowrap;
+    cursor: pointer;
 }

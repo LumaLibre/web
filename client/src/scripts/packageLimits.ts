@@ -1,4 +1,4 @@
-export type PackageLimit = "global" | "personal";
+export type PackageLimit = "global" | "personal" | "not-for-sale";
 
 export interface ConfiguredLimit {
     limit: number;
@@ -11,8 +11,17 @@ export interface ConfiguredPackageLimits {
     remaining?: number | null;
     estimated?: boolean;
     soldOut?: boolean;
+    notForSale?: boolean;
     checkedAt?: number;
 }
+
+export function configuredPackageLimit(limits?: ConfiguredPackageLimits): PackageLimit | null {
+    if (limits?.notForSale) return "not-for-sale";
+    return limits?.soldOut || packageStock(limits)?.remaining === 0 ? "global" : null;
+}
+
+export const packageLimitLabel = (limit: PackageLimit): string =>
+    limit === "not-for-sale" ? "Not For Sale" : limit === "global" ? "Sold Out!" : "Limit reached";
 
 export function packageStock(limits?: ConfiguredPackageLimits): {remaining: number; total: number} | null {
     const total = limits?.global?.limit;
@@ -86,6 +95,8 @@ export function activePackageLimit(
     return matches.some(notice => notice.scope === "global") ? "global" : matches[0]?.scope ?? null;
 }
 
-export const packageLimitMessage = (limit: PackageLimit): string => limit === "global"
+export const packageLimitMessage = (limit: PackageLimit): string => limit === "not-for-sale"
+    ? "This package is currently not for sale."
+    : limit === "global"
     ? "This package has reached its global purchase limit."
     : "This player has reached the purchase limit for this package.";

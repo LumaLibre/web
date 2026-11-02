@@ -20,15 +20,17 @@ import {useBasket} from "@/components/store/BasketContext.tsx";
 import {useScrollLock} from "@/components/ui/UseScrollLock.ts";
 import {usePresence} from "@/components/ui/UsePresence.ts";
 import {packageLabel} from "@/scripts/packageGroups.ts";
-import {packageLimitMessage} from "@/scripts/packageLimits.ts";
+import {packageLimitMessage, packageLimitLabel} from "@/scripts/packageLimits.ts";
 import SoldOutStamp from "@/components/store/packagecard/SoldOutStamp.tsx";
 import PackageLimitDetails from "@/components/store/packagecard/PackageLimitDetails.tsx";
 
 function PackageModal(
-    {storePackage: selected, onClose, hideDescription = false, offerOrigin}: {
+    {storePackage: selected, onClose, hideDescription = false, offerOrigin, quantity = 1, discordReturnTo}: {
         storePackage: StorePackage | null;
         onClose: () => void;
         hideDescription?: boolean;
+        quantity?: number;
+        discordReturnTo?: string;
         offerOrigin?: {left: number; top: number; width: number; height: number};
     }
 ) {
@@ -152,7 +154,7 @@ function PackageModal(
 
         setAdding(true);
         try {
-            const result = await addPackage(storePackage.id, 1, targetUsername, variableData);
+            const result = await addPackage(storePackage.id, quantity, targetUsername, variableData);
             if (result === "added") {
                 setGiftTo("");
                 setGiftOpen(false);
@@ -187,7 +189,7 @@ function PackageModal(
                 <div className={`${styles.content} ${offerOrigin ? offerStyles.content : ""}`}>
                     {image && (
                         <div className={styles.imagePanel}>
-                            {limit && <SoldOutStamp/>}
+                            {limit && <SoldOutStamp label={packageLimitLabel(limit)}/>}
                             <img src={image} alt={storePackage.name}/>
                         </div>
                     )}
@@ -276,11 +278,11 @@ function PackageModal(
                                 onClick={() => handleAdd()}
                                 disabled={adding || limit !== null}
                             >
-                                {limit ? "Sold Out!" : adding ? "Adding…" : "Add to basket"}
+                                {limit ? packageLimitLabel(limit) : adding ? "Adding…" : "Add to basket"}
                             </button>
                         )}
 
-                        {canGift && canShowPurchaseActions && limit !== "global" && (
+                        {canGift && canShowPurchaseActions && limit !== "global" && limit !== "not-for-sale" && (
                             <button
                                 className={styles.giftToggle}
                                 onClick={() => setGiftOpen(open => !open)}
@@ -312,7 +314,7 @@ function PackageModal(
                                 className={styles.discordLogin}
                                 onClick={() => beginDiscordLogin(
                                     DISCORD_PUBLIC_CLIENT_ID,
-                                    window.location.pathname,
+                                    discordReturnTo ?? window.location.pathname,
                                     storePackage.id
                                 )}
                             >
@@ -322,7 +324,7 @@ function PackageModal(
                         )}
                     </div>
 
-                    {canGift && canShowPurchaseActions && limit !== "global" && giftOpen && (
+                    {canGift && canShowPurchaseActions && limit !== "global" && limit !== "not-for-sale" && giftOpen && (
                         <div className={styles.giftRow}>
                             <input
                                 type="text"
@@ -343,7 +345,7 @@ function PackageModal(
                                 onClick={() => handleAdd(giftTo.trim())}
                                 disabled={adding || giftTo.trim().length === 0 || giftLimit !== null}
                             >
-                                {giftLimit ? "Sold Out!" : "Gift"}
+                                {giftLimit ? packageLimitLabel(giftLimit) : "Gift"}
                             </button>
                         </div>
                     )}

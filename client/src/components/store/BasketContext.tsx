@@ -1,7 +1,7 @@
 import React, {createContext, useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {Basket} from "@/scripts/model/Tebex.ts";
 import {activePackageLimit, PackageLimit, PackageLimitNotice, packageLimitMessage, purchaseLimitFromMessage} from "@/scripts/packageLimits.ts";
-import {ConfiguredPackageLimits, fetchKnownPackageLimits, packageStock} from "@/scripts/packageLimits.ts";
+import {ConfiguredPackageLimits, fetchKnownPackageLimits, configuredPackageLimit} from "@/scripts/packageLimits.ts";
 import {
     addPackageToBasket,
     createBasket,
@@ -88,7 +88,8 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
         const controller = new AbortController();
         const refreshLimits = async () => {
             // Read only. Private server discovery and signed webhooks own stock.
-            const known = await fetchKnownPackageLimits(controller.signal).catch(() => ({}));
+            const known = await fetchKnownPackageLimits(controller.signal).catch(() => null);
+            if (known === null) return; // Keep known restrictions through temporary API failures.
             if (!controller.signal.aborted) setConfiguredLimits(known);
         };
         void refreshLimits();
@@ -108,8 +109,8 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
     }, [limitNotices]);
 
     const packageLimit = useCallback((packageId: number, recipient?: string) =>
-        configuredLimits[packageId]?.soldOut || packageStock(configuredLimits[packageId])?.remaining === 0
-            ? "global" : activePackageLimit(limitNotices, packageId, recipient || username || ""),
+        configuredPackageLimit(configuredLimits[packageId])
+            ?? activePackageLimit(limitNotices, packageId, recipient || username || ""),
         [limitNotices, username, configuredLimits]);
 
     const recordLimit = useCallback((error: unknown, packageId: number, recipient: string, quantity: number) => {
@@ -176,6 +177,8 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
 
         if (pendingAdd) {
             try {
+                const limit = packageLimit(pendingAdd.packageId, pendingAdd.targetUsername || trimmed);
+                if (limit) throw new Error(packageLimitMessage(limit));
                 adopt(await addPackageToBasket(
                     created.ident,
                     pendingAdd.packageId,
@@ -190,7 +193,7 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
             }
             setPendingAdd(null);
         }
-    }, [adopt, pendingAdd, recordLimit]);
+    }, [adopt, pendingAdd, recordLimit, packageLimit]);
 
     const changeUsername = useCallback(() => {
         setError(null);
@@ -298,6 +301,11 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
             }
         },
         setQuantity: async (packageId, quantity) => {
+            const current = basket?.packages.find(pkg => pkg.id === packageId)?.in_basket.quantity ?? 0;
+            if (quantity > current && packageLimit(packageId) === "not-for-sale") {
+                setError(packageLimitMessage("not-for-sale"));
+                return;
+            }
             if (await mutate(ident => updateBasketPackageQuantity(ident, packageId, quantity))) {
                 setLimitNotices(notices => notices.filter(notice => notice.packageId !== packageId));
             }

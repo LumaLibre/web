@@ -12,6 +12,7 @@ import FormsLoadingScreen from "@/components/forms/FormsLoadingScreen.tsx";
 const NewsPage = React.lazy(() => import("@/pages/NewsPage.tsx"));
 const PrivacyPage = React.lazy(() => import("@/pages/PrivacyPage.tsx"));
 const StorePage = React.lazy(() => import("@/pages/StorePage.tsx"));
+const StoreLinkPage = React.lazy(() => import("@/pages/StoreLinkPage.tsx"));
 const StoreCompletePage = React.lazy(() => import("@/pages/StoreCompletePage.tsx"));
 const FormsPage = React.lazy(() => import("@/pages/FormsPage.tsx"));
 const SurveyPage = React.lazy(() => import("@/pages/SurveyPage.tsx"));
@@ -52,6 +53,9 @@ function App() {
                 <Route path="/privacy" element={<Lazy><PrivacyPage /></Lazy>} />
                 <Route path="/store/complete" element={<Lazy><StoreCompletePage /></Lazy>} />
                 <Route path="/store/discord" element={<Lazy><DiscordCallbackPage /></Lazy>} />
+                {["/checkout", "/checkout/packages", "/checkout/username", "/store/checkout", "/store/checkout/packages", "/store/checkout/username"].map(path => (
+                    <Route key={path} path={path} element={<Lazy><StoreLinkPage /></Lazy>} />
+                ))}
                 <Route path="/store" element={<Lazy><StorePage /></Lazy>} />
                 <Route path="/store/:categorySlug" element={<Lazy><StorePage /></Lazy>} />
                 <Route path="/forms" element={<Lazy><FormsPage /></Lazy>} />

@@ -12,6 +12,7 @@ import SoldOutStamp from "./SoldOutStamp.tsx";
 import PackageLimitDetails from "./PackageLimitDetails.tsx";
 import StockBadge from "./StockBadge.tsx";
 import badgeStyles from "./StockBadge.module.scss";
+import {packageLimitLabel, packageLimitMessage} from "@/scripts/packageLimits.ts";
 
 function PackageCard(
     {storePackage, onSelect}: { storePackage: StorePackage, onSelect: () => void }
@@ -80,7 +81,7 @@ function PackageCard(
             onKeyDown={e => (e.key === "Enter" || e.key === " ") && onSelect()}
         >
             <div className={styles.imageWrapper}>
-                {soldOut && <SoldOutStamp belowBadge/>}
+                {limit && <SoldOutStamp belowBadge label={packageLimitLabel(limit)}/>}
                 {image
                     ? <img src={image} alt={storePackage.name} loading="lazy"/>
                     : <div className={styles.imageFallback} aria-hidden="true"/>}
@@ -100,7 +101,7 @@ function PackageCard(
                 <PackageLimitDetails packageId={storePackage.id} showStock={false}/>
                 {limit && (
                     <p className={styles.stockStatus}>
-                        {limit === "global" ? "Stock: Sold out" : "Your purchase limit has been reached"}
+                        {packageLimitMessage(limit)}
                     </p>
                 )}
 
@@ -120,7 +121,7 @@ function PackageCard(
                     </div>
 
                     <button className={styles.addButton} onClick={handleAdd} disabled={adding || soldOut}>
-                        {soldOut ? "Sold Out!" : adding ? "Adding…" : "Add"}
+                        {limit ? packageLimitLabel(limit) : adding ? "Adding…" : "Add"}
                     </button>
                 </div>
             </div>

@@ -8,6 +8,7 @@ import StockBadge from "@/components/store/packagecard/StockBadge.tsx";
 import fallbackImage from "@/assets/icons/StoreIcon.webp";
 import PackageModal from "@/components/store/packagemodal/PackageModal.tsx";
 import styles from "./LimitedOffers.module.scss";
+import {packageLimitLabel} from "@/scripts/packageLimits.ts";
 
 export default function LimitedOffers({packages, loading, error}: {
     packages: StorePackage[];
@@ -39,7 +40,7 @@ export default function LimitedOffers({packages, loading, error}: {
                             <article className={styles.card} key={offer.id}
                                      style={{"--offer-accent": "#dcb0ef"} as CSSProperties}>
                                 <button type="button" className={styles.cardTrigger}
-                                        aria-label={`View ${name}${limit === "global" ? " — Sold Out!" : ""}`} aria-haspopup="dialog"
+                                        aria-label={`View ${name}${limit ? ` — ${packageLimitLabel(limit)}` : ""}`} aria-haspopup="dialog"
                                         onClick={() => setSelected(offer)}/>
                                 <svg className={styles.hanger} viewBox="0 0 240 48" preserveAspectRatio="none" aria-hidden="true">
                                     <path fillRule="evenodd" d="M16 0H224Q240 0 240 16V48H0V16Q0 0 16 0Z M91 20H105C110 20 110 12 120 12C130 12 130 20 135 20H149A6 6 0 0 1 149 32H91A6 6 0 0 1 91 20Z"/>
@@ -48,7 +49,7 @@ export default function LimitedOffers({packages, loading, error}: {
                                     <div className={styles.art}>
                                         <img src={image ?? fallbackImage} alt="" loading="lazy"/>
                                         <div className={styles.stock}><StockBadge packageIds={[offer.id]} compact/></div>
-                                        {limit && <span className={styles.soldOut}>{limit === "global" ? "Sold Out!" : "Limit reached"}</span>}
+                                        {limit && <span className={styles.soldOut}>{packageLimitLabel(limit)}</span>}
                                     </div>
                                     <div className={styles.details}>
                                         <h4>{name}</h4>

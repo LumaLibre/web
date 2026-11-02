@@ -5,6 +5,76 @@ const CATALOG_PROPERTY_KEY = "forms-list-v6-snapshot";
 const FORM_MAX_AGE_MS = 3 * 60 * 1000;
 const FORM_CACHE_KEY_PREFIX = "form-v7-";
 const FORM_PROPERTY_KEY_PREFIX = "form-v7-snapshot-";
+// 2,000 Unicode code points use at most 8 KB, below the 9 KB property limit.
+const PROPERTY_CHUNK_SIZE = 2000;
+
+function storageManifest_(serialized) {
+  if (!serialized) return null;
+  try {
+    const parsed = JSON.parse(serialized);
+    return parsed && parsed.storage === "chunks-v1" ? parsed : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+function readStoredValue_(key) {
+  const properties = PropertiesService.getScriptProperties();
+  const serialized = properties.getProperty(key);
+  if (!storageManifest_(serialized)) return serialized;
+
+  // Read the pointer and chunks together so a concurrent refresh cannot mix
+  // generations. Legacy single-property snapshots remain readable.
+  const values = properties.getProperties();
+  const manifest = storageManifest_(values[key]);
+  if (!manifest) return values[key] || null;
+  const chunks = [];
+  for (let index = 0; index < manifest.count; index++) {
+    const chunk = values[key + ":" + manifest.generation + ":" + index];
+    if (typeof chunk !== "string") throw new Error("Incomplete saved forms data. Please try again shortly.");
+    chunks.push(chunk);
+  }
+  return chunks.join("");
+}
+
+function writeStoredValue_(key, serialized) {
+  const properties = PropertiesService.getScriptProperties();
+  const previous = storageManifest_(properties.getProperty(key));
+  const characters = Array.from(serialized);
+  if (characters.length <= PROPERTY_CHUNK_SIZE) {
+    properties.setProperty(key, serialized);
+  } else {
+    const generation = Utilities.getUuid();
+    const count = Math.ceil(characters.length / PROPERTY_CHUNK_SIZE);
+    const chunks = {};
+    for (let index = 0; index < count; index++) {
+      chunks[key + ":" + generation + ":" + index] = characters
+        .slice(index * PROPERTY_CHUNK_SIZE, (index + 1) * PROPERTY_CHUNK_SIZE).join("");
+    }
+    // Publish only after every chunk is written. Failed writes leave the
+    // previous snapshot available, instead of making the cache the only copy.
+    try {
+      properties.setProperties(chunks);
+      properties.setProperty(key, JSON.stringify({storage: "chunks-v1", generation: generation, count: count}));
+    } catch (error) {
+      Object.keys(chunks).forEach(chunkKey => deleteStoredChunk_(properties, chunkKey));
+      throw error;
+    }
+  }
+  if (previous) {
+    for (let index = 0; index < previous.count; index++) {
+      deleteStoredChunk_(properties, key + ":" + previous.generation + ":" + index);
+    }
+  }
+}
+
+function deleteStoredChunk_(properties, key) {
+  try {
+    properties.deleteProperty(key);
+  } catch (error) {
+    console.warn("Could not remove an old forms snapshot chunk: " + error);
+  }
+}
 
 function doGet(event) {
   try {
@@ -68,7 +138,10 @@ function refreshFormsCatalog() {
 
 function refreshFormsCatalogIfStale_(staleSnapshot) {
   const lock = LockService.getScriptLock();
-  if (!lock.tryLock(1500)) return staleSnapshot ? staleSnapshot.forms : [];
+  if (!lock.tryLock(1500)) {
+    if (staleSnapshot) return staleSnapshot.forms;
+    throw new Error("The forms catalog is refreshing. Please try again shortly.");
+  }
 
   try {
     // Another request may have refreshed the catalog while this request waited.
@@ -78,6 +151,12 @@ function refreshFormsCatalogIfStale_(staleSnapshot) {
       return latestSnapshot.forms;
     }
     return rebuildFormsCatalog_();
+  } catch (error) {
+    // A cache-only snapshot can still serve visitors during a Google outage.
+    // Keep its original timestamp so the next request can retry the refresh.
+    if (!staleSnapshot) throw error;
+    console.warn("Could not refresh the forms catalog: " + error);
+    return staleSnapshot.forms;
   } finally {
     lock.releaseLock();
   }
@@ -112,6 +191,9 @@ function rebuildFormsCatalog_() {
       });
     } catch (error) {
       console.warn("Could not read form " + file.getId() + ": " + error);
+      // Do not persist a partial scan: a temporary read failure must not turn
+      // an already recognized form into a deleted form for every visitor.
+      throw new Error("Could not refresh the complete forms catalog. Please try again shortly.");
     }
   }
 
@@ -169,7 +251,7 @@ function parseCatalogSnapshot_(serialized) {
 }
 
 function readCatalogSnapshot_() {
-  return parseCatalogSnapshot_(PropertiesService.getScriptProperties().getProperty(CATALOG_PROPERTY_KEY));
+  return parseCatalogSnapshot_(readStoredValue_(CATALOG_PROPERTY_KEY));
 }
 
 function isFreshCatalogSnapshot_(snapshot) {
@@ -186,10 +268,8 @@ function cacheCatalogSnapshot_(snapshot) {
 function saveCatalogSnapshot_(forms) {
   const snapshot = {refreshedAt: Date.now(), forms: forms};
   const serialized = JSON.stringify(snapshot);
+  writeStoredValue_(CATALOG_PROPERTY_KEY, serialized);
   cacheCatalogSnapshot_(snapshot);
-  if (serialized.length < 8500) {
-    PropertiesService.getScriptProperties().setProperty(CATALOG_PROPERTY_KEY, serialized);
-  }
 }
 
 function clampNumber_(value, min, max, fallback) {
@@ -205,7 +285,7 @@ function getForm_(id, forceRefresh) {
   if (cached) return JSON.parse(cached);
 
   const snapshotKey = FORM_PROPERTY_KEY_PREFIX + id;
-  const persistedForm = parseFormSnapshot_(PropertiesService.getScriptProperties().getProperty(snapshotKey));
+  const persistedForm = parseFormSnapshot_(readStoredValue_(snapshotKey));
   if (persistedForm && !forceRefresh) {
     const serializedForm = JSON.stringify(persistedForm.form);
     if (serializedForm.length < 95000) cache.put(cacheKey, serializedForm, CACHE_SECONDS);
@@ -219,7 +299,7 @@ function getForm_(id, forceRefresh) {
   const questionShape = questionItems.map(item => serializeQuestion_(null, item, ""));
   const signature = JSON.stringify(questionShape);
   const propertyKey = "form-questions-v5-" + id;
-  const persisted = PropertiesService.getScriptProperties().getProperty(propertyKey);
+  const persisted = readStoredValue_(propertyKey);
   let questions;
 
   if (persisted) {
@@ -234,9 +314,7 @@ function getForm_(id, forceRefresh) {
   if (!questions) {
     questions = questionItems.map(item => serializeQuestion_(form, item));
     const serializedQuestions = JSON.stringify({signature: signature, questions: questions});
-    if (serializedQuestions.length < 8500) {
-      PropertiesService.getScriptProperties().setProperty(propertyKey, serializedQuestions);
-    }
+    writeStoredValue_(propertyKey, serializedQuestions);
   }
 
   const nativeOnly = questions.some(question => question.type === "unsupported" || !question.entryId);
@@ -256,11 +334,9 @@ function getForm_(id, forceRefresh) {
   };
 
   const serialized = JSON.stringify(result);
-  if (serialized.length < 95000) cache.put(cacheKey, serialized, CACHE_SECONDS);
   const snapshot = JSON.stringify({refreshedAt: Date.now(), form: result});
-  if (snapshot.length < 8500) {
-    PropertiesService.getScriptProperties().setProperty(snapshotKey, snapshot);
-  }
+  writeStoredValue_(snapshotKey, snapshot);
+  if (serialized.length < 95000) cache.put(cacheKey, serialized, CACHE_SECONDS);
   return result;
 }
 
@@ -284,7 +360,7 @@ function refreshServerCacheIfStale_(id) {
   try {
     if (id) {
       const snapshotKey = FORM_PROPERTY_KEY_PREFIX + id;
-      const snapshot = parseFormSnapshot_(PropertiesService.getScriptProperties().getProperty(snapshotKey));
+      const snapshot = parseFormSnapshot_(readStoredValue_(snapshotKey));
       if (snapshot && Date.now() - snapshot.refreshedAt < FORM_MAX_AGE_MS) return false;
       getForm_(id, true);
       return true;
@@ -297,7 +373,7 @@ function refreshServerCacheIfStale_(id) {
 
     forms.filter(form => form.acceptingResponses).forEach(form => {
       const snapshotKey = FORM_PROPERTY_KEY_PREFIX + form.id;
-      const snapshot = parseFormSnapshot_(PropertiesService.getScriptProperties().getProperty(snapshotKey));
+      const snapshot = parseFormSnapshot_(readStoredValue_(snapshotKey));
       if (!snapshot || Date.now() - snapshot.refreshedAt >= FORM_MAX_AGE_MS) {
         getForm_(form.id, true);
         refreshed = true;

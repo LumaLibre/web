@@ -1,20 +1,22 @@
 import styles from "./BasketDrawer.module.scss";
-import {useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import {useBasket} from "@/components/store/BasketContext.tsx";
 import {formatPrice} from "@/scripts/tebex.ts";
 import {beginAuth, getAuthOptions, isBasketAuthorized, launchCheckout} from "@/scripts/checkout.ts";
 import {BasketAuthOption} from "@/scripts/model/Tebex.ts";
 import PackageLimitDetails from "@/components/store/packagecard/PackageLimitDetails.tsx";
+import {fetchKnownPackageLimits} from "@/scripts/packageLimits.ts";
 
 interface BasketDrawerProps {
     open: boolean;
     onClose: () => void;
     quantityDisabledPackageIds: ReadonlySet<number>;
+    autoCheckout?: boolean;
 }
 
-function BasketDrawer({open, onClose, quantityDisabledPackageIds}: BasketDrawerProps) {
-    const {basket, error, setQuantity, removePackage, applyCode, completeBasket} = useBasket();
+function BasketDrawer({open, onClose, quantityDisabledPackageIds, autoCheckout = false}: BasketDrawerProps) {
+    const {basket, error, setQuantity, removePackage, applyCode, completeBasket, packageLimit} = useBasket();
     const navigate = useNavigate();
 
     const [code, setCode] = useState("");
@@ -22,6 +24,7 @@ function BasketDrawer({open, onClose, quantityDisabledPackageIds}: BasketDrawerP
     const [authOptions, setAuthOptions] = useState<BasketAuthOption[] | null>(null);
     const [busy, setBusy] = useState(false);
     const [checkoutError, setCheckoutError] = useState<string | null>(null);
+    const autoCheckoutStarted = useRef(false);
 
     // TODO: Change this
     // Swallow errors for packages that need discord integration
@@ -31,14 +34,22 @@ function BasketDrawer({open, onClose, quantityDisabledPackageIds}: BasketDrawerP
 
     const currency = basket?.currency ?? "USD";
     const isEmpty = !basket || basket.packages.length === 0;
+    const unavailableItems = basket?.packages.filter(item => packageLimit(item.id) === "not-for-sale") ?? [];
 
-    const handleCheckout = async () => {
-        if (!basket || isEmpty) {
+    const handleCheckout = useCallback(async () => {
+        if (!basket || isEmpty || unavailableItems.length > 0) {
             return;
         }
         setBusy(true);
         setCheckoutError(null);
         try {
+            // Recheck at checkout so a console toggle also covers packages already in a basket.
+            const availability = await fetchKnownPackageLimits();
+            const unavailable = basket.packages.filter(item => availability[item.id]?.notForSale);
+            if (unavailable.length) {
+                setCheckoutError(`Remove packages that are not for sale before checking out: ${unavailable.map(item => item.name).join(", ")}.`);
+                return;
+            }
             if (!isBasketAuthorized(basket)) {
                 const options = await getAuthOptions(basket);
                 if (options.length > 0) {
@@ -64,7 +75,13 @@ function BasketDrawer({open, onClose, quantityDisabledPackageIds}: BasketDrawerP
         } finally {
             setBusy(false);
         }
-    };
+    }, [basket, isEmpty, unavailableItems.length, completeBasket, onClose, navigate]);
+
+    useEffect(() => {
+        if (!autoCheckout || !open || autoCheckoutStarted.current) return;
+        autoCheckoutStarted.current = true;
+        void handleCheckout();
+    }, [autoCheckout, open, handleCheckout]);
 
     const handleApplyCode = async () => {
         const submitted = code.trim();
@@ -112,6 +129,7 @@ function BasketDrawer({open, onClose, quantityDisabledPackageIds}: BasketDrawerP
                             <div className={styles.itemBody}>
                                 <span className={styles.itemName}>{item.name}</span>
                                 <PackageLimitDetails packageId={item.id}/>
+                                {packageLimit(item.id) === "not-for-sale" && <span className={styles.giftTo}>Not For Sale</span>}
                                 {/* Gifts go to someone else, so say so before payment. */}
                                 {item.in_basket.gift_username && (
                                     <span className={styles.giftTo}>
@@ -134,7 +152,7 @@ function BasketDrawer({open, onClose, quantityDisabledPackageIds}: BasketDrawerP
                                     <button
                                         onClick={() => setQuantity(item.id, item.in_basket.quantity + 1)}
                                         aria-label={`Increase quantity of ${item.name}`}
-                                        disabled={quantityDisabled}
+                                        disabled={quantityDisabled || packageLimit(item.id) === "not-for-sale"}
                                         title={quantityDisabled ? "Quantity changes are disabled for this package" : undefined}
                                     >
                                         +
@@ -220,10 +238,13 @@ function BasketDrawer({open, onClose, quantityDisabledPackageIds}: BasketDrawerP
                         <button
                             className={styles.checkoutButton}
                             onClick={handleCheckout}
-                            disabled={busy || applyingCode}
+                            disabled={busy || applyingCode || unavailableItems.length > 0}
                         >
                             {busy ? "Please wait…" : isBasketAuthorized(basket!) ? "Checkout" : "Sign in & checkout"}
                         </button>
+                        {unavailableItems.length > 0 && <p className={styles.error} role="status">
+                            Remove packages marked Not For Sale to continue to checkout.
+                        </p>}
                     </div>
                 )}
 

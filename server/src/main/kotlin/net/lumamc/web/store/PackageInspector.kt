@@ -47,6 +47,14 @@ class TebexInspectionApi(private val token: String, private val username: String
 
     override fun packages() = discoverPackages { path -> request("$account$path") }
 
+    fun catalog() = discoverCatalog { path -> request("$account$path") }
+
+    fun packageById(id: Long): CatalogPackage {
+        require(id > 0)
+        val pkg = request("$account/packages/$id").getAsJsonObject("data")
+        return CatalogPackage(pkg.get("id").asLong, pkg.get("name").asString)
+    }
+
     override fun requiresDiscordId(id: Long): Boolean {
         require(id > 0)
         // The catalogue may omit options; individual package details include them.
@@ -55,6 +63,10 @@ class TebexInspectionApi(private val token: String, private val username: String
 
     companion object {
         internal fun discoverPackages(fetch: (String) -> JsonObject): List<Long> {
+            return discoverCatalog(fetch).map { it.id }
+        }
+
+        internal fun discoverCatalog(fetch: (String) -> JsonObject): List<CatalogPackage> {
             val catalog = fetch("/packages").getAsJsonArray("data")
             // The dedicated offers category can be omitted from navigation.
             val offers = try {
@@ -65,7 +77,11 @@ class TebexInspectionApi(private val token: String, private val username: String
                 null // Not created/published yet; keep inspecting the regular catalogue.
             }
             return (catalog.toList() + (offers?.toList() ?: emptyList()))
-                .map { it.asJsonObject.get("id").asLong }.filter { it > 0 }.distinct()
+                .map { element ->
+                    val pkg = element.asJsonObject
+                    val id = pkg.get("id").asLong
+                    CatalogPackage(id, pkg.get("name")?.asString ?: id.toString())
+                }.filter { it.id > 0 }.distinctBy { it.id }
         }
 
         internal fun requiresDiscordId(pkg: JsonObject): Boolean =

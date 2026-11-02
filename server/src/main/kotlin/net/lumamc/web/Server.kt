@@ -54,7 +54,9 @@ class Server {
             config.jsonMapper(gsonMapper)
             config.staticFiles.add(cfg.staticFilesDirectory, Location.EXTERNAL)
         }
-        for (path in listOf("/", "/rules", "/vote", "/store")) {
+        for (path in listOf("/", "/rules", "/vote", "/store",
+            "/checkout", "/checkout/packages", "/checkout/username",
+            "/store/checkout", "/store/checkout/packages", "/store/checkout/username")) {
             internalServer.get(path) { ctx ->
                 val index = File(cfg.staticFilesDirectory, "index.html")
                 if (!index.isFile) {
@@ -210,4 +212,6 @@ class Server {
     fun importStockHistory(): Int = inventory.importHistory(Util.getDataFolderPath().resolve("stock-history.json"))
 
     fun refreshStoreInventory(): String = inventory.refresh()
+
+    fun toggleNotForSale(query: String): String = inventory.toggleNotForSale(query)
 }
