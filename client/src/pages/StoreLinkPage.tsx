@@ -10,23 +10,22 @@ import {fetchPackage, isStoreConfigured} from "@/scripts/tebex.ts";
 import {hasRequiredOptions} from "@/scripts/packageOptions.ts";
 import {configuredPackageLimit, fetchKnownPackageLimits, packageLimitMessage} from "@/scripts/packageLimits.ts";
 import {StorePackage} from "@/scripts/model/Tebex.ts";
-import {parseStoreLink, storeLinkReturnPath} from "@/scripts/storeLinks.ts";
+import {parseStoreLink, storeLinkReturnPath, StoreLink} from "@/scripts/storeLinks.ts";
 import {consumePendingPackage} from "@/scripts/discordAuth.ts";
 import {setTitle} from "@/App.tsx";
 import styles from "./StoreLinkPage.module.scss";
 
 type Step = {type: "start" | "username" | "queued" | "packages" | "options" | "done" | "failed"};
 
-function StoreLinkContent() {
+type StoreLinkRequest = {link: StoreLink | null; error: string | null};
+
+function StoreLinkContent({request}: {request: StoreLinkRequest}) {
     const location = useLocation();
     const navigate = useNavigate();
     const {basket, username, loading, awaitingUsername, setUsername, changeUsername, addPackage, addedCount, error} = useBasket();
-    const [request] = useState(() => {
-        try { return {link: parseStoreLink(location.pathname, location.search), error: null}; }
-        catch (e) { return {link: null, error: e instanceof Error ? e.message : "Invalid store link."}; }
-    });
     const [step, setStep] = useState<Step>({type: "start"});
     const [message, setMessage] = useState<string | null>(request.error);
+    const [retryStep, setRetryStep] = useState<Step | null>(null);
     const [selectedPackage, setSelectedPackage] = useState<StorePackage | null>(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [autoCheckout, setAutoCheckout] = useState(false);
@@ -40,8 +39,9 @@ function StoreLinkContent() {
         if (consumed.current) return;
         consumed.current = true;
         consumePendingPackage();
-        navigate(location.pathname, {replace: true});
-    }, [location.pathname, navigate]);
+        // Keep the non-mutating override on refresh, while consuming additions and account changes.
+        navigate(`${location.pathname}${request.link?.overrideNotForSale ? "?override=true" : ""}`, {replace: true});
+    }, [location.pathname, navigate, request]);
 
     useEffect(() => {
         if (loading || !request.link || step.type === "done" || step.type === "failed") return;
@@ -70,6 +70,7 @@ function StoreLinkContent() {
         if (runningStep.current === step) return;
         runningStep.current = step;
         const link = request.link;
+        let canRetry = step.type === "packages";
         const run = async () => {
             if (!isStoreConfigured()) throw new Error("The store isn't connected yet.");
             if (step.type === "start") {
@@ -95,7 +96,8 @@ function StoreLinkContent() {
             }
             const detail = await fetchPackage(id, basket?.ident);
             const availability = await fetchKnownPackageLimits();
-            const limit = configuredPackageLimit(availability[id]);
+            canRetry = false;
+            const limit = configuredPackageLimit(availability[id], link.overrideNotForSale);
             if (limit) throw new Error(`${detail.name}: ${packageLimitMessage(limit)}`);
             if (detail.disable_quantity) {
                 setQuantityDisabledIds(ids => new Set([...ids, id]));
@@ -108,6 +110,8 @@ function StoreLinkContent() {
                 return;
             }
             previousAddedCount.current = addedCount;
+            // A failed mutation can have an ambiguous result; only offer retries for reads.
+            canRetry = false;
             const result = await addPackage(id, link.quantity);
             if (result === "failed") {
                 setMessage("This package could not be added. Check the basket error below.");
@@ -123,6 +127,7 @@ function StoreLinkContent() {
         };
         void run().catch(e => {
             setMessage(e instanceof Error ? e.message : "Could not process this store link.");
+            setRetryStep(canRetry ? step : null);
             setStep({type: "failed"});
         });
     }, [loading, request, step, awaitingUsername, basket, username, setUsername, changeUsername, addPackage, addedCount, error]);
@@ -138,6 +143,11 @@ function StoreLinkContent() {
             {error && <p role="alert">{error}</p>}
             {basket && <p>Purchasing as <strong>{basket.username ?? username}</strong></p>}
             <div className={styles.actions}>
+                {retryStep && <button onClick={() => {
+                    setMessage(null);
+                    setStep({...retryStep});
+                    setRetryStep(null);
+                }}>Retry</button>}
                 <Link to="/store">Continue shopping</Link>
                 <button onClick={() => setDrawerOpen(true)}>View basket</button>
             </div>
@@ -157,5 +167,12 @@ function StoreLinkContent() {
 
 export default function StoreLinkPage() {
     setTitle("Checkout");
-    return <BasketProvider><Navbar/><StoreLinkContent/><Footer/></BasketProvider>;
+    const location = useLocation();
+    const [request] = useState<StoreLinkRequest>(() => {
+        try { return {link: parseStoreLink(location.pathname, location.search), error: null}; }
+        catch (e) { return {link: null, error: e instanceof Error ? e.message : "Invalid store link."}; }
+    });
+    return <BasketProvider overrideNotForSale={request.link?.overrideNotForSale}>
+        <Navbar/><StoreLinkContent request={request}/><Footer/>
+    </BasketProvider>;
 }

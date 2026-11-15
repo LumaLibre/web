@@ -25,6 +25,7 @@ interface PendingAdd {
 }
 
 interface BasketContextValue {
+    overrideNotForSale: boolean;
     basket: Basket | null;
     username: string | null;
     loading: boolean;
@@ -73,7 +74,7 @@ const writeStored = (key: string, value: string | null) => {
     }
 };
 
-export function BasketProvider({children}: { children: React.ReactNode }) {
+export function BasketProvider({children, overrideNotForSale = false}: { children: React.ReactNode; overrideNotForSale?: boolean }) {
     const [basket, setBasket] = useState<Basket | null>(null);
     const [username, setUsernameState] = useState<string | null>(() => readStored(USERNAME_KEY));
     const [loading, setLoading] = useState(true);
@@ -109,9 +110,9 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
     }, [limitNotices]);
 
     const packageLimit = useCallback((packageId: number, recipient?: string) =>
-        configuredPackageLimit(configuredLimits[packageId])
+        configuredPackageLimit(configuredLimits[packageId], overrideNotForSale)
             ?? activePackageLimit(limitNotices, packageId, recipient || username || ""),
-        [limitNotices, username, configuredLimits]);
+        [limitNotices, username, configuredLimits, overrideNotForSale]);
 
     const recordLimit = useCallback((error: unknown, packageId: number, recipient: string, quantity: number) => {
         const message = error instanceof Error ? error.message : "";
@@ -281,6 +282,7 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
     }, [basket, username, adopt, packageLimit, recordLimit]);
 
     const value = useMemo<BasketContextValue>(() => ({
+        overrideNotForSale,
         basket,
         username,
         loading,
@@ -321,7 +323,7 @@ export function BasketProvider({children}: { children: React.ReactNode }) {
             await mutate(ident => fetchBasket(ident));
         }
     }), [
-        basket, username, loading, error, pendingAdd, promptOpen, addedCount, packageLimit, configuredLimits,
+        basket, username, loading, error, pendingAdd, promptOpen, addedCount, packageLimit, configuredLimits, overrideNotForSale,
         setUsername, changeUsername, cancelUsernamePrompt, completeBasket, addPackage, mutate
     ]);
 

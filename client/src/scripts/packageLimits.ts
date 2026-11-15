@@ -15,8 +15,8 @@ export interface ConfiguredPackageLimits {
     checkedAt?: number;
 }
 
-export function configuredPackageLimit(limits?: ConfiguredPackageLimits): PackageLimit | null {
-    if (limits?.notForSale) return "not-for-sale";
+export function configuredPackageLimit(limits?: ConfiguredPackageLimits, overrideNotForSale = false): PackageLimit | null {
+    if (limits?.notForSale && !overrideNotForSale) return "not-for-sale";
     return limits?.soldOut || packageStock(limits)?.remaining === 0 ? "global" : null;
 }
 

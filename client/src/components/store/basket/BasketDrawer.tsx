@@ -16,7 +16,7 @@ interface BasketDrawerProps {
 }
 
 function BasketDrawer({open, onClose, quantityDisabledPackageIds, autoCheckout = false}: BasketDrawerProps) {
-    const {basket, error, setQuantity, removePackage, applyCode, completeBasket, packageLimit} = useBasket();
+    const {basket, error, setQuantity, removePackage, applyCode, completeBasket, packageLimit, overrideNotForSale} = useBasket();
     const navigate = useNavigate();
 
     const [code, setCode] = useState("");
@@ -45,13 +45,13 @@ function BasketDrawer({open, onClose, quantityDisabledPackageIds, autoCheckout =
         try {
             // Recheck at checkout so a console toggle also covers packages already in a basket.
             const availability = await fetchKnownPackageLimits();
-            const unavailable = basket.packages.filter(item => availability[item.id]?.notForSale);
+            const unavailable = basket.packages.filter(item => availability[item.id]?.notForSale && !overrideNotForSale);
             if (unavailable.length) {
                 setCheckoutError(`Remove packages that are not for sale before checking out: ${unavailable.map(item => item.name).join(", ")}.`);
                 return;
             }
             if (!isBasketAuthorized(basket)) {
-                const options = await getAuthOptions(basket);
+                const options = await getAuthOptions(basket, overrideNotForSale);
                 if (options.length > 0) {
                     if (options.length === 1) {
                         beginAuth(options[0]);
@@ -75,7 +75,7 @@ function BasketDrawer({open, onClose, quantityDisabledPackageIds, autoCheckout =
         } finally {
             setBusy(false);
         }
-    }, [basket, isEmpty, unavailableItems.length, completeBasket, onClose, navigate]);
+    }, [basket, isEmpty, unavailableItems.length, completeBasket, onClose, navigate, overrideNotForSale]);
 
     useEffect(() => {
         if (!autoCheckout || !open || autoCheckoutStarted.current) return;

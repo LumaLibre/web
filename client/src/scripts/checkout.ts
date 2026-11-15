@@ -3,15 +3,16 @@ import {Basket, BasketAuthOption} from "@/scripts/model/Tebex.ts";
 import {fetchBasketAuthOptions} from "@/scripts/tebex.ts";
 import {HOST} from "@/constants.ts";
 
-export const authReturnUrl = (): string => `${HOST}checkout?authed=1`;
+export const authReturnUrl = (overrideNotForSale = false): string =>
+    `${HOST}checkout?authed=1${overrideNotForSale ? "&override=true" : ""}`;
 
 export const isBasketAuthorized = (basket: Basket): boolean => basket.username !== null;
 
-export async function getAuthOptions(basket: Basket): Promise<BasketAuthOption[]> {
+export async function getAuthOptions(basket: Basket, overrideNotForSale = false): Promise<BasketAuthOption[]> {
     if (isBasketAuthorized(basket)) {
         return [];
     }
-    return fetchBasketAuthOptions(basket.ident, authReturnUrl());
+    return fetchBasketAuthOptions(basket.ident, authReturnUrl(overrideNotForSale));
 }
 
 export function beginAuth(option: BasketAuthOption): void {
